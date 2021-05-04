@@ -11,7 +11,21 @@
 		331E18AC2640351200C4593E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18AB2640351200C4593E /* ContentView.swift */; };
 		331E18AE2640351600C4593E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 331E18AD2640351600C4593E /* Assets.xcassets */; };
 		331E18B12640351600C4593E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 331E18B02640351600C4593E /* Preview Assets.xcassets */; };
+		331E18BA2640397300C4593E /* VersionFeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18B92640397300C4593E /* VersionFeed.swift */; };
+		331E18BC26403A7400C4593E /* AppRelease.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18BB26403A7400C4593E /* AppRelease.swift */; };
+		331E18BE26403F3E00C4593E /* VersionChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18BD26403F3E00C4593E /* VersionChecker.swift */; };
+		331E18C626404D3C00C4593E /* BeamUpdaterProtoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18C526404D3C00C4593E /* BeamUpdaterProtoTests.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		331E18C826404D3C00C4593E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 331E189E2640351200C4593E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 331E18A52640351200C4593E;
+			remoteInfo = BeamUpdaterProto;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		331E18A62640351200C4593E /* BeamUpdaterProto.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BeamUpdaterProto.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -21,10 +35,23 @@
 		331E18B02640351600C4593E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		331E18B22640351600C4593E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		331E18B32640351600C4593E /* BeamUpdaterProto.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BeamUpdaterProto.entitlements; sourceTree = "<group>"; };
+		331E18B92640397300C4593E /* VersionFeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionFeed.swift; sourceTree = "<group>"; };
+		331E18BB26403A7400C4593E /* AppRelease.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRelease.swift; sourceTree = "<group>"; };
+		331E18BD26403F3E00C4593E /* VersionChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionChecker.swift; sourceTree = "<group>"; };
+		331E18C326404D3C00C4593E /* BeamUpdaterProtoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BeamUpdaterProtoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		331E18C526404D3C00C4593E /* BeamUpdaterProtoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeamUpdaterProtoTests.swift; sourceTree = "<group>"; };
+		331E18C726404D3C00C4593E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		331E18A32640351200C4593E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		331E18C026404D3C00C4593E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -38,6 +65,7 @@
 			isa = PBXGroup;
 			children = (
 				331E18A82640351200C4593E /* BeamUpdaterProto */,
+				331E18C426404D3C00C4593E /* BeamUpdaterProtoTests */,
 				331E18A72640351200C4593E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -46,6 +74,7 @@
 			isa = PBXGroup;
 			children = (
 				331E18A62640351200C4593E /* BeamUpdaterProto.app */,
+				331E18C326404D3C00C4593E /* BeamUpdaterProtoTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -55,10 +84,13 @@
 			children = (
 				331E18A92640351200C4593E /* BeamUpdaterProtoApp.swift */,
 				331E18AB2640351200C4593E /* ContentView.swift */,
+				331E18BD26403F3E00C4593E /* VersionChecker.swift */,
 				331E18AD2640351600C4593E /* Assets.xcassets */,
 				331E18B22640351600C4593E /* Info.plist */,
 				331E18B32640351600C4593E /* BeamUpdaterProto.entitlements */,
 				331E18AF2640351600C4593E /* Preview Content */,
+				331E18B92640397300C4593E /* VersionFeed.swift */,
+				331E18BB26403A7400C4593E /* AppRelease.swift */,
 			);
 			path = BeamUpdaterProto;
 			sourceTree = "<group>";
@@ -69,6 +101,15 @@
 				331E18B02640351600C4593E /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		331E18C426404D3C00C4593E /* BeamUpdaterProtoTests */ = {
+			isa = PBXGroup;
+			children = (
+				331E18C526404D3C00C4593E /* BeamUpdaterProtoTests.swift */,
+				331E18C726404D3C00C4593E /* Info.plist */,
+			);
+			path = BeamUpdaterProtoTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -91,6 +132,24 @@
 			productReference = 331E18A62640351200C4593E /* BeamUpdaterProto.app */;
 			productType = "com.apple.product-type.application";
 		};
+		331E18C226404D3C00C4593E /* BeamUpdaterProtoTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 331E18CA26404D3C00C4593E /* Build configuration list for PBXNativeTarget "BeamUpdaterProtoTests" */;
+			buildPhases = (
+				331E18BF26404D3C00C4593E /* Sources */,
+				331E18C026404D3C00C4593E /* Frameworks */,
+				331E18C126404D3C00C4593E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				331E18C926404D3C00C4593E /* PBXTargetDependency */,
+			);
+			name = BeamUpdaterProtoTests;
+			productName = BeamUpdaterProtoTests;
+			productReference = 331E18C326404D3C00C4593E /* BeamUpdaterProtoTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -102,6 +161,10 @@
 				TargetAttributes = {
 					331E18A52640351200C4593E = {
 						CreatedOnToolsVersion = 12.5;
+					};
+					331E18C226404D3C00C4593E = {
+						CreatedOnToolsVersion = 12.5;
+						TestTargetID = 331E18A52640351200C4593E;
 					};
 				};
 			};
@@ -119,6 +182,7 @@
 			projectRoot = "";
 			targets = (
 				331E18A52640351200C4593E /* BeamUpdaterProto */,
+				331E18C226404D3C00C4593E /* BeamUpdaterProtoTests */,
 			);
 		};
 /* End PBXProject section */
@@ -133,6 +197,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		331E18C126404D3C00C4593E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -140,12 +211,31 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				331E18BA2640397300C4593E /* VersionFeed.swift in Sources */,
+				331E18BE26403F3E00C4593E /* VersionChecker.swift in Sources */,
+				331E18BC26403A7400C4593E /* AppRelease.swift in Sources */,
 				331E18AC2640351200C4593E /* ContentView.swift in Sources */,
 				331E18AA2640351200C4593E /* BeamUpdaterProtoApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		331E18BF26404D3C00C4593E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				331E18C626404D3C00C4593E /* BeamUpdaterProtoTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		331E18C926404D3C00C4593E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 331E18A52640351200C4593E /* BeamUpdaterProto */;
+			targetProxy = 331E18C826404D3C00C4593E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		331E18B42640351600C4593E /* Debug */ = {
@@ -311,6 +401,46 @@
 			};
 			name = Release;
 		};
+		331E18CB26404D3C00C4593E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = A7SGM6JEMA;
+				INFOPLIST_FILE = BeamUpdaterProtoTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.tectec.BeamUpdaterProtoTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BeamUpdaterProto.app/Contents/MacOS/BeamUpdaterProto";
+			};
+			name = Debug;
+		};
+		331E18CC26404D3C00C4593E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = A7SGM6JEMA;
+				INFOPLIST_FILE = BeamUpdaterProtoTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.tectec.BeamUpdaterProtoTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BeamUpdaterProto.app/Contents/MacOS/BeamUpdaterProto";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -328,6 +458,15 @@
 			buildConfigurations = (
 				331E18B72640351600C4593E /* Debug */,
 				331E18B82640351600C4593E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		331E18CA26404D3C00C4593E /* Build configuration list for PBXNativeTarget "BeamUpdaterProtoTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				331E18CB26404D3C00C4593E /* Debug */,
+				331E18CC26404D3C00C4593E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
