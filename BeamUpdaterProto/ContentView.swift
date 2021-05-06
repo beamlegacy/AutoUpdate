@@ -50,11 +50,16 @@ struct ContentView: View {
             Spacer()
             HStack {
                 Spacer()
-                if let release = checker.newRelease {
+                switch checker.state {
+                case .updateAvailable(release: let release):
                     Button("Update to \(release.version)") {
                         checker.downloadNewestRelease()
                     }.disabled(downloadButtonDisabled())
-                } else {
+                case .updateInstalled:
+                    Button("Relaunch") {
+                        NSApp.terminate(self)
+                    }
+                default:
                     Button("Check for updates") {
                         checker.checkForUpdates()
                     }.disabled(checker.state == .checking)
