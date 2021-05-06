@@ -13,6 +13,7 @@ class VersionChecker: ObservableObject {
     enum VersionCheckerError: Error {
         case checkFailed
         case noUpdates
+        case cantCreateRequiredFolders
     }
 
     enum State: Equatable {
@@ -61,15 +62,12 @@ class VersionChecker: ObservableObject {
         }
     }
 
-    var cancellable: AnyCancellable?
-    var downloadTask: URLSessionDownloadTask?
-
     func downloadNewestRelease() {
 
         guard let release = newRelease else { return }
 
         let session = URLSession.shared
-        downloadTask = session.downloadTask(with: release.downloadURL) { fileURL, response, error in
+        let downloadTask = session.downloadTask(with: release.downloadURL) { fileURL, response, error in
             let fileManager = FileManager.default
 
             guard error == nil,
@@ -81,27 +79,28 @@ class VersionChecker: ObservableObject {
                 return
             }
 
-            let finalURL = appSupportURL.appendingPathComponent("\(release.downloadURL.lastPathComponent)")
+            let appFolder = appSupportURL.appendingPathComponent(self.currentAppName())
+
+            do {
+                try self.createAppFolderInAppSupportIfNeeded(appFolder)
+            } catch {
+                self.state = .error(errorDesc: error.localizedDescription)
+                return
+            }
+
+            let finalURL = appFolder.appendingPathComponent("\(release.downloadURL.lastPathComponent)")
             try? fileManager.moveItem(at: fileURL, to: finalURL)
             DispatchQueue.main.async {
                 self.state = .installing
-                self.processInstallation()
+                self.processInstallation(archiveURL: finalURL)
             }
         }
 
-        downloadTask?.resume()
-        cancellable = downloadTask!
-            .publisher(for: \.progress)
-            .receive(on: RunLoop.main)
-            .sink { value in
-                self.objectWillChange.send()
-                self.state = .downloading(progress: value)
-            }
-
-        self.state = .downloading(progress: downloadTask!.progress)
+        downloadTask.resume()
+        self.state = .downloading(progress: downloadTask.progress)
     }
 
-    private func processInstallation() {
+    private func processInstallation(archiveURL: URL) {
         let connection = NSXPCConnection(serviceName: "com.tectec.UpdateInstaller")
         connection.remoteObjectInterface = NSXPCInterface(with: UpdateInstallerProtocol.self)
         connection.resume()
@@ -110,9 +109,9 @@ class VersionChecker: ObservableObject {
             print("Received error:", error)
         } as? UpdateInstallerProtocol
 
-        service?.upperCaseString("hello XPC") { response in
-            print("Response from XPC service:", response)
-        }
+        service?.installUpdate(archiveURL: archiveURL, binaryToReplace: Bundle.main.bundleURL, reply: { response in
+            print(response)
+        })
     }
 
     private func checkRemoteUpdates(completion: @escaping (Result<AppRelease, VersionCheckerError>)->()) {
@@ -155,9 +154,27 @@ class VersionChecker: ObservableObject {
 
     func currentAppVersion() -> String {
         guard let infos = Bundle.main.infoDictionary,
-              let version = infos["CFBundleShortVersionString"] as? String else { fatalError("Cant' get apps version from CFBundleShortVersionString key in Info.plist")
+              let version = infos["CFBundleShortVersionString"] as? String else { fatalError("Cant' get app's version from CFBundleShortVersionString key in Info.plist")
         }
-
         return version
     }
+
+    func currentAppName() -> String {
+        guard let infos = Bundle.main.infoDictionary,
+              let name = infos["CFBundleName"] as? String else { fatalError("Cant' get app's name from CFBundleName key in Info.plist")
+        }
+        return name
+    }
+
+    private func createAppFolderInAppSupportIfNeeded(_ folderURL: URL) throws {
+        let fileManager = FileManager.default
+        guard !fileManager.fileExists(atPath: folderURL.path) else { return }
+
+        do {
+            try fileManager.createDirectory(at: folderURL, withIntermediateDirectories: true, attributes: nil)
+        } catch {
+            throw VersionCheckerError.cantCreateRequiredFolders
+        }
+    }
+
 }
