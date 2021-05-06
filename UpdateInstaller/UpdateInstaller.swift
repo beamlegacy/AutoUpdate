@@ -59,6 +59,8 @@ class UpdateInstaller: UpdateInstallerProtocol {
 
         guard unzippepAppsPaths.count == 1, let app = unzippepAppsPaths.first else { throw UpdateInstallerError.archiveContentNotCoherent }
 
+        try? fileManager.removeItem(at: archiveURL)
+
         return enclosingFolderURL.appendingPathComponent(app)
     }
 
