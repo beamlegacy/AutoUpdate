@@ -21,6 +21,7 @@
 		331E18E5264150CF00C4593E /* UpdateInstallerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18D326414DFC00C4593E /* UpdateInstallerProtocol.swift */; };
 		331E18E6264150D000C4593E /* UpdateInstallerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18D326414DFC00C4593E /* UpdateInstallerProtocol.swift */; };
 		331E18E82641513D00C4593E /* UpdateInstaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18E72641513D00C4593E /* UpdateInstaller.swift */; };
+		331FCC44264428F800FD3FA7 /* ProgressiveStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331FCC43264428F800FD3FA7 /* ProgressiveStatusView.swift */; };
 		33F7FFA826442363007E573B /* StatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F7FFA726442363007E573B /* StatusView.swift */; };
 /* End PBXBuildFile section */
 
@@ -75,6 +76,7 @@
 		331E18E12641504C00C4593E /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		331E18E32641507300C4593E /* UpdateInstallerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateInstallerDelegate.swift; sourceTree = "<group>"; };
 		331E18E72641513D00C4593E /* UpdateInstaller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateInstaller.swift; sourceTree = "<group>"; };
+		331FCC43264428F800FD3FA7 /* ProgressiveStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressiveStatusView.swift; sourceTree = "<group>"; };
 		33F7FFA726442363007E573B /* StatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -129,6 +131,7 @@
 				331E18A92640351200C4593E /* BeamUpdaterProtoApp.swift */,
 				331E18AB2640351200C4593E /* ContentView.swift */,
 				33F7FFA726442363007E573B /* StatusView.swift */,
+				331FCC43264428F800FD3FA7 /* ProgressiveStatusView.swift */,
 				331E18BD26403F3E00C4593E /* VersionChecker.swift */,
 				331E18AD2640351600C4593E /* Assets.xcassets */,
 				331E18B22640351600C4593E /* Info.plist */,
@@ -305,6 +308,7 @@
 				331E18E5264150CF00C4593E /* UpdateInstallerProtocol.swift in Sources */,
 				33F7FFA826442363007E573B /* StatusView.swift in Sources */,
 				331E18AC2640351200C4593E /* ContentView.swift in Sources */,
+				331FCC44264428F800FD3FA7 /* ProgressiveStatusView.swift in Sources */,
 				331E18AA2640351200C4593E /* BeamUpdaterProtoApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -13,7 +13,7 @@ struct StatusView: View {
     let subtitle: String
 
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 5.0) {
             Text(title)
                 .font(.headline)
             Text(subtitle)

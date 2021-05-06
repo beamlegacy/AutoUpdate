@@ -16,61 +16,36 @@ struct ContentView: View {
             switch checker.state {
             case .noUpdate:
                 if let lastCheck = checker.lastCheck {
-                    VStack(alignment: .leading) {
-                        Text("You are using \(checker.currentAppName()) \(checker.currentAppVersion())")
-                            .font(.headline)
-                        Text("Last check \(lastCheck)")
-                            .font(.callout)
-                    }
+                    StatusView(title: "You are using \(checker.currentAppName()) \(checker.currentAppVersion())",
+                               subtitle: "Last check \(lastCheck)")
                 } else {
-                    VStack(alignment: .leading) {
-                        Text("You are using \(checker.currentAppName()) \(checker.currentAppVersion())")
-                            .font(.headline)
-                        Text("Updates never checked")
-                            .font(.callout)
-                    }
+                    StatusView(title: "You are using \(checker.currentAppName()) \(checker.currentAppVersion())",
+                               subtitle: "Updates never checked")
                 }
             case .checking:
-                VStack(alignment: .leading) {
-                    Text("You are using \(checker.currentAppName()) \(checker.currentAppVersion())")
-                        .font(.headline)
-                    Text("Checking for updates…")
-                        .font(.callout)
-                    ProgressView()
-                }
+                ProgressiveStatusView(title: "You are using \(checker.currentAppName()) \(checker.currentAppVersion())",
+                                      subtitle: "Checking for updates…", progress: nil)
+
             case .updateAvailable(release: let release):
-                VStack(alignment: .leading) {
-                    Text("Update available")
-                        .font(.headline)
-                    Text("\(checker.currentAppName()) v.\(release.version) can be download and installed.")
-                        .font(.callout)
-                }
+                StatusView(title: "Update available",
+                           subtitle: "\(checker.currentAppName()) v.\(release.version) can be download and installed.")
+
             case .error(errorDesc: let errorDesc):
-                VStack(alignment: .leading) {
-                    Text("An error occured")
-                        .font(.headline)
-                    Text(errorDesc)
-                        .font(.callout)
-                }
+                StatusView(title: "An error occured",
+                           subtitle: errorDesc)
+
             case .downloading(progress: let progress):
-                VStack(alignment: .leading) {
-                    Text("Downloading update")
-                        .font(.headline)
-                    ProgressView(progress)
-                }
+                ProgressiveStatusView(title: "Downloading update",
+                                      subtitle: "",
+                                      progress: progress)
+
             case .installing:
-                VStack(alignment: .leading) {
-                    Text("Installing update")
-                        .font(.headline)
-                    ProgressView()
-                }
+                ProgressiveStatusView(title: "Installing update…",
+                                      subtitle: "",
+                                      progress: nil)
             case .updateInstalled:
-                VStack(alignment: .leading) {
-                    Text("Update installed")
-                        .font(.headline)
-                    Text("Quit the app. The new version will automatically be launched.")
-                        .font(.callout)
-                }
+                StatusView(title: "Update installed.",
+                           subtitle: "Quit the app. The new version will automatically be launched.")
             }
             Spacer()
             HStack {
