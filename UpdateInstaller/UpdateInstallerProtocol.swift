@@ -9,7 +9,7 @@ import Foundation
 // The protocol that this service will vend as its API. This header file will also need to be visible to the process hosting the service.
 
 @objc public protocol UpdateInstallerProtocol {
-    func installUpdate(archiveURL: URL, binaryToReplace: URL, reply: @escaping (String) -> Void)
+    func installUpdate(archiveURL: URL, binaryToReplaceURL: URL, reply: @escaping (String) -> Void)
 }
 
 enum UpdateInstallerError: String, Error {
@@ -17,4 +17,5 @@ enum UpdateInstallerError: String, Error {
     case unzippedContentNotFound
     case archiveContentNotCoherent
     case failedToUnquarantine
+    case signatureFailed
 }

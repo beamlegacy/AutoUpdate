@@ -11,12 +11,13 @@ class UpdateInstaller: UpdateInstallerProtocol {
 
     let fileManager = FileManager.default
 
-    func installUpdate(archiveURL: URL, binaryToReplace: URL, reply: @escaping (String) -> Void) {
+    func installUpdate(archiveURL: URL, binaryToReplaceURL: URL, reply: @escaping (String) -> Void) {
 
         do {
             let appURL = try unarchiveZip(at: archiveURL)
             print(appURL)
             try unquarantineApp(at: appURL)
+            guard areAppSignatureIdentical(currentApp: binaryToReplaceURL, update: appURL) else { throw UpdateInstallerError.signatureFailed }
         } catch {
             reply((error as! UpdateInstallerError).rawValue)
             return
@@ -77,6 +78,60 @@ class UpdateInstaller: UpdateInstallerProtocol {
 
         let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
         guard errorData.isEmpty else { throw UpdateInstallerError.failedToUnquarantine}
+    }
+
+    private func areAppSignatureIdentical(currentApp: URL, update: URL) -> Bool {
+        do {
+            let currentSignature = try codesign(for: currentApp)
+            let updateSignature = try codesign(for: update)
+
+            guard let currentTeam = extractTeamIdentifier(from: currentSignature),
+                  let updateTeam = extractTeamIdentifier(from: updateSignature) else {
+                return false
+            }
+
+            return currentTeam == updateTeam
+        } catch {
+            return false
+        }
+    }
+
+    private func extractTeamIdentifier(from signature: String) -> String? {
+        let patternToFind = "TeamIdentifier="
+        let splitted = signature.split(separator: "\n")
+        let filtered = splitted.filter( {$0.hasPrefix(patternToFind)} )
+
+        guard var teamID = filtered.first else { return nil }
+        teamID.removeFirst(patternToFind.count)
+
+        return String(teamID)
+    }
+
+    private func codesign(for appURL: URL) throws -> String {
+        let codesignURL = URL(fileURLWithPath: "/usr/bin/codesign")
+
+        let codesignTask = Process()
+        codesignTask.executableURL = codesignURL
+        codesignTask.arguments = ["--display", "--verbose=2", appURL.path]
+
+        //We use standError because this is where codesign prints out the verbose output
+        let errorPipe = Pipe()
+        codesignTask.standardError = errorPipe
+
+        do {
+            try codesignTask.run()
+            codesignTask.waitUntilExit()
+        } catch {
+            throw UpdateInstallerError.signatureFailed
+        }
+
+        let errorOutput = errorPipe.fileHandleForReading.readDataToEndOfFile()
+        guard !errorOutput.isEmpty else { throw UpdateInstallerError.signatureFailed }
+
+        let standardErrorString = String(data: errorOutput, encoding: .utf8)
+        guard let signature = standardErrorString else { throw UpdateInstallerError.signatureFailed }
+
+        return signature
     }
 
 }
