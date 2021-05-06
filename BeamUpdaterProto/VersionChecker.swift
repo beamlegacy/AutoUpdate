@@ -109,7 +109,8 @@ class VersionChecker: ObservableObject {
             print("Received error:", error)
         } as? UpdateInstallerProtocol
 
-        service?.installUpdate(archiveURL: archiveURL, binaryToReplaceURL: Bundle.main.bundleURL, reply: { response in
+        let pid = ProcessInfo.processInfo.processIdentifier
+        service?.installUpdate(archiveURL: archiveURL, binaryToReplaceURL: Bundle.main.bundleURL, appPID: pid, reply: { response in
 
             let xpcError = UpdateInstallerError(rawValue: response)
             guard xpcError == nil else {

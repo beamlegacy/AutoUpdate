@@ -11,7 +11,7 @@ class UpdateInstaller: UpdateInstallerProtocol {
 
     let fileManager = FileManager.default
 
-    func installUpdate(archiveURL: URL, binaryToReplaceURL: URL, reply: @escaping (String) -> Void) {
+    func installUpdate(archiveURL: URL, binaryToReplaceURL: URL, appPID: Int32, reply: @escaping (String) -> Void) {
 
         do {
             let updatedAppURL = try unarchiveZip(at: archiveURL)
