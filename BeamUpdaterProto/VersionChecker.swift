@@ -110,6 +110,15 @@ class VersionChecker: ObservableObject {
         } as? UpdateInstallerProtocol
 
         service?.installUpdate(archiveURL: archiveURL, binaryToReplace: Bundle.main.bundleURL, reply: { response in
+
+            let xpcError = UpdateInstallerError(rawValue: response)
+            guard xpcError == nil else {
+                DispatchQueue.main.async {
+                    self.state = .error(errorDesc: xpcError!.rawValue)
+                }
+                return
+            }
+
             print(response)
         })
     }

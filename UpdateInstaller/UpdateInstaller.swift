@@ -18,8 +18,11 @@ class UpdateInstaller: UpdateInstallerProtocol {
             print(appURL)
             try unquarantineApp(at: appURL)
         } catch {
-            reply(error.localizedDescription)
+            reply((error as! UpdateInstallerError).rawValue)
+            return
         }
+
+        reply("success")
     }
 
     private func unarchiveZip(at archiveURL: URL) throws -> URL {
@@ -30,12 +33,18 @@ class UpdateInstaller: UpdateInstallerProtocol {
         unarchiveTask.executableURL = URL(fileURLWithPath: "/usr/bin/unzip")
         unarchiveTask.arguments = [archiveURL.path, "-d", enclosingFolderURL.path]
 
+        let errorPipe = Pipe()
+        unarchiveTask.standardError = errorPipe
+
         do {
             try unarchiveTask.run()
             unarchiveTask.waitUntilExit()
         } catch {
             throw UpdateInstallerError.genericUnzipError
         }
+
+        let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+        guard errorData.isEmpty else { throw UpdateInstallerError.genericUnzipError}
 
         var unzippepAppsPaths: [String]
         do {
@@ -56,12 +65,18 @@ class UpdateInstaller: UpdateInstallerProtocol {
         unquarantineTask.executableURL = URL(fileURLWithPath: "/usr/bin/xattr")
         unquarantineTask.arguments = ["-d", "-r", "com.apple.quarantine", url.path]
 
+        let errorPipe = Pipe()
+        unquarantineTask.standardError = errorPipe
+
         do {
             try unquarantineTask.run()
             unquarantineTask.waitUntilExit()
         } catch {
             throw UpdateInstallerError.failedToUnquarantine
         }
+
+        let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+        guard errorData.isEmpty else { throw UpdateInstallerError.failedToUnquarantine}
     }
 
 }
