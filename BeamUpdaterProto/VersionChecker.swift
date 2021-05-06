@@ -85,6 +85,7 @@ class VersionChecker: ObservableObject {
             try? fileManager.moveItem(at: fileURL, to: finalURL)
             DispatchQueue.main.async {
                 self.state = .installing
+                self.processInstallation()
             }
         }
 
@@ -98,6 +99,20 @@ class VersionChecker: ObservableObject {
             }
 
         self.state = .downloading(progress: downloadTask!.progress)
+    }
+
+    private func processInstallation() {
+        let connection = NSXPCConnection(serviceName: "com.tectec.UpdateInstaller")
+        connection.remoteObjectInterface = NSXPCInterface(with: UpdateInstallerProtocol.self)
+        connection.resume()
+
+        let service = connection.remoteObjectProxyWithErrorHandler { error in
+            print("Received error:", error)
+        } as? UpdateInstallerProtocol
+
+        service?.upperCaseString("hello XPC") { response in
+            print("Response from XPC service:", response)
+        }
     }
 
     private func checkRemoteUpdates(completion: @escaping (Result<AppRelease, VersionCheckerError>)->()) {
