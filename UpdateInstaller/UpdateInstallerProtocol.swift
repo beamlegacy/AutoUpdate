@@ -18,4 +18,5 @@ enum UpdateInstallerError: String, Error {
     case archiveContentNotCoherent
     case failedToUnquarantine
     case signatureFailed
+    case appReplacementFailed
 }

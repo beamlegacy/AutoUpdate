@@ -14,10 +14,11 @@ class UpdateInstaller: UpdateInstallerProtocol {
     func installUpdate(archiveURL: URL, binaryToReplaceURL: URL, reply: @escaping (String) -> Void) {
 
         do {
-            let appURL = try unarchiveZip(at: archiveURL)
-            print(appURL)
-            try unquarantineApp(at: appURL)
-            guard areAppSignatureIdentical(currentApp: binaryToReplaceURL, update: appURL) else { throw UpdateInstallerError.signatureFailed }
+            let updatedAppURL = try unarchiveZip(at: archiveURL)
+            print(updatedAppURL)
+            try unquarantineApp(at: updatedAppURL)
+            guard areAppSignatureIdentical(currentApp: binaryToReplaceURL, update: updatedAppURL) else { throw UpdateInstallerError.signatureFailed }
+            try install(update: updatedAppURL, replacedBinaryURL: binaryToReplaceURL)
         } catch {
             reply((error as! UpdateInstallerError).rawValue)
             return
@@ -132,6 +133,34 @@ class UpdateInstaller: UpdateInstallerProtocol {
         guard let signature = standardErrorString else { throw UpdateInstallerError.signatureFailed }
 
         return signature
+    }
+
+    private func install(update updateURL: URL, replacedBinaryURL: URL) throws {
+
+        let fileExtension = replacedBinaryURL.pathExtension
+        let appToReplaceNameWithoutExtension = replacedBinaryURL.deletingPathExtension()
+        let appName = appToReplaceNameWithoutExtension.lastPathComponent
+        let appToReplaceNewName = appName + " (Old version)" + "." + fileExtension
+
+        let enclosingFolder = replacedBinaryURL.deletingLastPathComponent()
+
+        //We rename old binary
+        let newNameURL = enclosingFolder.appendingPathComponent(appToReplaceNewName)
+        try fileManager.moveItem(at: replacedBinaryURL, to: newNameURL)
+
+        //We move the new in place
+        try fileManager.moveItem(at: updateURL, to: enclosingFolder.appendingPathComponent(updateURL.lastPathComponent))
+
+        //Cleanup
+        guard let trash = fileManager.urls(for: .trashDirectory, in: .userDomainMask).first else { throw UpdateInstallerError.appReplacementFailed }
+
+        do {
+            try fileManager.moveItem(at: newNameURL, to: trash.appendingPathComponent(appToReplaceNewName))
+        } catch {
+            print(error)
+        }
+
+        //Relaunch
     }
 
 }
