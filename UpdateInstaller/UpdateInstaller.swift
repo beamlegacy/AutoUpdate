@@ -18,7 +18,8 @@ class UpdateInstaller: UpdateInstallerProtocol {
             print(updatedAppURL)
             try unquarantineApp(at: updatedAppURL)
             guard areAppSignatureIdentical(currentApp: binaryToReplaceURL, update: updatedAppURL) else { throw UpdateInstallerError.signatureFailed }
-            try install(update: updatedAppURL, replacedBinaryURL: binaryToReplaceURL)
+            let installedAppURL = try install(updatedAppURL, replacedBinaryURL: binaryToReplaceURL, pid: appPID)
+            relaunch(pid: appPID, at: installedAppURL)
         } catch {
             reply((error as! UpdateInstallerError).rawValue)
             return
@@ -135,12 +136,12 @@ class UpdateInstaller: UpdateInstallerProtocol {
         return signature
     }
 
-    private func install(update updateURL: URL, replacedBinaryURL: URL) throws {
+    private func install(_ updateURL: URL, replacedBinaryURL: URL, pid: Int32) throws -> URL {
 
         let fileExtension = replacedBinaryURL.pathExtension
         let appToReplaceNameWithoutExtension = replacedBinaryURL.deletingPathExtension()
         let appName = appToReplaceNameWithoutExtension.lastPathComponent
-        let appToReplaceNewName = appName + " (Old version)" + "." + fileExtension
+        let appToReplaceNewName = appName + " (\(pid))" + "." + fileExtension
 
         let enclosingFolder = replacedBinaryURL.deletingLastPathComponent()
 
@@ -149,7 +150,8 @@ class UpdateInstaller: UpdateInstallerProtocol {
         try fileManager.moveItem(at: replacedBinaryURL, to: newNameURL)
 
         //We move the new in place
-        try fileManager.moveItem(at: updateURL, to: enclosingFolder.appendingPathComponent(updateURL.lastPathComponent))
+        let updateDestinationURL = enclosingFolder.appendingPathComponent(updateURL.lastPathComponent)
+        try fileManager.moveItem(at: updateURL, to: updateDestinationURL)
 
         //Cleanup
         guard let trash = fileManager.urls(for: .trashDirectory, in: .userDomainMask).first else { throw UpdateInstallerError.appReplacementFailed }
@@ -160,7 +162,19 @@ class UpdateInstaller: UpdateInstallerProtocol {
             print(error)
         }
 
-        //Relaunch
+        return updateDestinationURL
     }
 
+    private func relaunch(pid: Int32, at url: URL) {
+
+        let sh = URL(fileURLWithPath: "/bin/sh")
+
+        let waitForExitScript = "(while /bin/kill -0 \(pid) >&/dev/null; do /bin/sleep 0.1; done; /usr/bin/open \"\(url.path)\") &"
+
+        let waitForExitTask = Process()
+        waitForExitTask.executableURL = sh
+        waitForExitTask.arguments =  ["-c", waitForExitScript]
+
+        try? waitForExitTask.run()
+    }
 }
