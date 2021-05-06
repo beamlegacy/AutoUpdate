@@ -24,7 +24,7 @@ struct AppRelease: Codable {
         let v0_1_1 = AppRelease(versionName: "Version 0.1.1", version: "0.1.1", releaseNotes: "This is release notes from Beam 0.1.1", publicationDate: Calendar.current.date(from: v0_1_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.1.zip")!)
 
         let v1_1DateComponents = DateComponents(year: 2021, month: 5, day: 3, hour: 14, minute: 35, second: 00)
-        let v1_1 = AppRelease(versionName: "Version 1.1", version: "1.1", releaseNotes: "This is release notes from Beam 1.1", publicationDate: Calendar.current.date(from: v1_1DateComponents)!, downloadURL: URL(string: "https://devimages-cdn.apple.com/design/resources/download/SF-Symbols-2.1.dmg")!)
+        let v1_1 = AppRelease(versionName: "Version 1.1", version: "1.1", releaseNotes: "This is release notes from Beam 1.1", publicationDate: Calendar.current.date(from: v1_1DateComponents)!, downloadURL: URL(string: "https://github.com/eLud/update-proto/raw/main/BeamUpdaterProto_v1.1.zip")!)
 
         let versions = [v0_1, v0_1_1, v1_1]
 
