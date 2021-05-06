@@ -49,6 +49,8 @@ struct ContentView: View {
                         ProgressView()
                             .progressViewStyle(LinearProgressViewStyle())
                     }
+                case .updateInstalled:
+                    Text("App updated. Waiting for relaunch")
                 }
             }
             .font(.callout)

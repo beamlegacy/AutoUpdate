@@ -23,6 +23,7 @@ class VersionChecker: ObservableObject {
         case error(errorDesc: String)
         case downloading(progress: Progress)
         case installing
+        case updateInstalled
     }
 
     var mockData: Data?
@@ -112,15 +113,23 @@ class VersionChecker: ObservableObject {
         let pid = ProcessInfo.processInfo.processIdentifier
         service?.installUpdate(archiveURL: archiveURL, binaryToReplaceURL: Bundle.main.bundleURL, appPID: pid, reply: { response in
 
-            let xpcError = UpdateInstallerError(rawValue: response)
-            guard xpcError == nil else {
-                DispatchQueue.main.async {
+            DispatchQueue.main.async {
+                let xpcError = UpdateInstallerError(rawValue: response)
+                guard xpcError == nil else {
                     self.state = .error(errorDesc: xpcError!.rawValue)
+                    return
                 }
-                return
+
+                guard response == "success" else {
+                    self.state = .error(errorDesc: "Unknown error")
+                    return
+                }
+
+                self.state = .updateInstalled
+
+                connection.invalidate()
             }
 
-            print(response)
         })
     }
 
