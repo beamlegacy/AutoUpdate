@@ -17,9 +17,9 @@ class VersionChecker: ObservableObject {
     }
 
     enum State: Equatable {
-        case neverChecked
+        case noUpdate
         case checking
-        case checked(lastCheck: Date)
+        case updateAvailable(release: AppRelease)
         case error(errorDesc: String)
         case downloading(progress: Progress)
         case installing
@@ -31,15 +31,16 @@ class VersionChecker: ObservableObject {
 
     @Published var newRelease: AppRelease?
     @Published var state: State
+    @Published var lastCheck: Date?
 
     init(mockData: Data) {
         self.mockData = mockData
-        self.state = .neverChecked
+        self.state = .noUpdate
     }
 
     init(feedURL: URL) {
         self.feedURL = feedURL
-        self.state = .neverChecked
+        self.state = .noUpdate
     }
 
     func checkForUpdates() {
@@ -47,14 +48,16 @@ class VersionChecker: ObservableObject {
 
         checkRemoteUpdates { result in
             DispatchQueue.main.async {
+                self.lastCheck = Date()
+
                 switch result {
                 case .success(let latest):
                     self.newRelease = latest
-                    self.state = .checked(lastCheck: Date())
+                    self.state = .updateAvailable(release: latest)
                 case .failure(let error):
                     self.newRelease = nil
                     if error == .noUpdates {
-                        self.state = .checked(lastCheck: Date())
+                        self.state = .noUpdate
                     } else {
                         self.state = .error(errorDesc: "\(error)")
                     }

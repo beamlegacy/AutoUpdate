@@ -13,49 +13,65 @@ struct ContentView: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            Group {
-                if let release = checker.newRelease {
-                    Text("Your app version is \(checker.currentAppVersion()). New update available : \(release.version)")
+            switch checker.state {
+            case .noUpdate:
+                if let lastCheck = checker.lastCheck {
+                    VStack(alignment: .leading) {
+                        Text("You are using \(checker.currentAppName()) \(checker.currentAppVersion())")
+                            .font(.headline)
+                        Text("Last check \(lastCheck)")
+                            .font(.callout)
+                    }
                 } else {
-                    Text("Your app version is \(checker.currentAppVersion())")
+                    VStack(alignment: .leading) {
+                        Text("You are using \(checker.currentAppName()) \(checker.currentAppVersion())")
+                            .font(.headline)
+                        Text("Updates never checked")
+                            .font(.callout)
+                    }
+                }
+            case .checking:
+                VStack(alignment: .leading) {
+                    Text("You are using \(checker.currentAppName()) \(checker.currentAppVersion())")
+                        .font(.headline)
+                    Text("Checking for updates…")
+                        .font(.callout)
+                    ProgressView()
+                }
+            case .updateAvailable(release: let release):
+                VStack(alignment: .leading) {
+                    Text("Update available")
+                        .font(.headline)
+                    Text("\(checker.currentAppName()) v.\(release.version) can be download and installed.")
+                        .font(.callout)
+                }
+            case .error(errorDesc: let errorDesc):
+                VStack(alignment: .leading) {
+                    Text("An error occured")
+                        .font(.headline)
+                    Text(errorDesc)
+                        .font(.callout)
+                }
+            case .downloading(progress: let progress):
+                VStack(alignment: .leading) {
+                    Text("Downloading update")
+                        .font(.headline)
+                    ProgressView(progress)
+                }
+            case .installing:
+                VStack(alignment: .leading) {
+                    Text("Installing update")
+                        .font(.headline)
+                    ProgressView()
+                }
+            case .updateInstalled:
+                VStack(alignment: .leading) {
+                    Text("Update installed")
+                        .font(.headline)
+                    Text("Quit the app. The new version will automatically be launched.")
+                        .font(.callout)
                 }
             }
-            .font(.headline)
-            Group {
-                switch checker.state {
-                case .neverChecked:
-                    Text("You can check for updates")
-                case .checking:
-                    VStack(alignment: .leading) {
-                        Text("Checking for updates…")
-                        ProgressView()
-                            .progressViewStyle(LinearProgressViewStyle())
-                    }
-                case .checked(let date):
-                    HStack {
-                        Text("Checked : ")
-                        Text(date, style: .date)
-                    }
-                case .error(let error):
-                    Text(error)
-                case .downloading(let progress):
-                    VStack(alignment: .leading) {
-                        Text("Downloading updates…")
-                        ProgressView(progress)
-                    }
-                case .installing:
-                    VStack(alignment: .leading) {
-                        Text("Installing updates…")
-                        ProgressView()
-                            .progressViewStyle(LinearProgressViewStyle())
-                    }
-                case .updateInstalled:
-                    Text("App updated. Waiting for relaunch")
-                }
-            }
-            .font(.callout)
-            .foregroundColor(.gray)
-            .padding(.top, 4)
             Spacer()
             HStack {
                 Spacer()
@@ -71,7 +87,7 @@ struct ContentView: View {
             }
         }
         .padding()
-        .frame(minWidth: 200, idealWidth: 200, maxWidth: .infinity, minHeight: 100, idealHeight: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, maxHeight: .infinity, alignment: .center)
+        .frame(minWidth: 200, idealWidth: 200, maxWidth: .infinity, minHeight: 100, idealHeight: 100, maxHeight: .infinity, alignment: .center)
         .onChange(of: checker.state, perform: { value in
             print(value)
         })
