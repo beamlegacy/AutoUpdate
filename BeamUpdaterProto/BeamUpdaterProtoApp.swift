@@ -6,13 +6,12 @@
 //
 
 import SwiftUI
-import AutoUpdate
 
 @main
 struct BeamUpdaterProtoApp: App {
     var body: some Scene {
         WindowGroup {
-            UpdaterView()
+            BeamView()
         }
     }
 }
