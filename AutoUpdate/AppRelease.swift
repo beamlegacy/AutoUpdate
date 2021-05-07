@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct AppRelease: Codable {
+public struct AppRelease: Codable {
 
     let versionName: String
     let version: String
@@ -37,11 +37,11 @@ struct AppRelease: Codable {
 
 extension AppRelease: Comparable {
 
-    static func == (lhs: AppRelease, rhs: AppRelease) -> Bool {
+    public static func == (lhs: AppRelease, rhs: AppRelease) -> Bool {
         lhs.version.versionCompare(rhs.version) == .orderedSame
     }
 
-    static func < (lhs: AppRelease, rhs: AppRelease) -> Bool {
+    public static func < (lhs: AppRelease, rhs: AppRelease) -> Bool {
         lhs.version.versionCompare(rhs.version) == .orderedAscending
     }
 }
