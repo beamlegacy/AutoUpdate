@@ -200,15 +200,31 @@
 		331FCC7626456B4D00FD3FA7 /* AutoUpdate */ = {
 			isa = PBXGroup;
 			children = (
-				331E18AB2640351200C4593E /* UpdaterView.swift */,
-				33F7FFA726442363007E573B /* StatusView.swift */,
-				331FCC43264428F800FD3FA7 /* ProgressiveStatusView.swift */,
 				331E18BD26403F3E00C4593E /* VersionChecker.swift */,
-				331E18BB26403A7400C4593E /* AppRelease.swift */,
+				331FCC8A26457FA800FD3FA7 /* Views */,
+				331FCC8B26457FC200FD3FA7 /* Models */,
 				331FCC7726456B4D00FD3FA7 /* AutoUpdate.h */,
 				331FCC7826456B4D00FD3FA7 /* Info.plist */,
 			);
 			path = AutoUpdate;
+			sourceTree = "<group>";
+		};
+		331FCC8A26457FA800FD3FA7 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				331E18AB2640351200C4593E /* UpdaterView.swift */,
+				33F7FFA726442363007E573B /* StatusView.swift */,
+				331FCC43264428F800FD3FA7 /* ProgressiveStatusView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		331FCC8B26457FC200FD3FA7 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				331E18BB26403A7400C4593E /* AppRelease.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
