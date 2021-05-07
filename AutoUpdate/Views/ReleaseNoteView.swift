@@ -12,7 +12,7 @@ public struct ReleaseNoteView: View {
     let release: AppRelease
 
     public var body: some View {
-        VStack(alignment: .leading, spacing: 4.0) {
+        VStack(alignment: .leading) {
             HStack {
                 Text("Changelog")
                     .font(.headline)
@@ -22,19 +22,23 @@ public struct ReleaseNoteView: View {
                         .font(.headline)
                 })
                 .buttonStyle(BorderlessButtonStyle())
-
             }
+            .padding(.leading)
+            .padding(.trailing)
+            .padding(.top)
             Divider()
-                .padding(.vertical)
-            Text(release.publicationDate, style: .date)
-                .foregroundColor(.gray)
-            Text(release.versionName)
-                .font(.headline)
-            Text(release.releaseNotes)
-                .padding(.vertical)
-            Spacer()
+                .padding(.horizontal)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 4.0) {
+                    Text(release.publicationDate, style: .date)
+                        .foregroundColor(.gray)
+                    Text(release.versionName)
+                        .font(.headline)
+                    Text(release.releaseNotes)
+                        .padding(.vertical)
+                }.padding()
+            }
         }
-        .padding()
         .background(Color.white)
         .cornerRadius(6.0)
         .shadow(radius: 10)
