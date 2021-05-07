@@ -9,9 +9,11 @@ import SwiftUI
 
 public struct UpdaterView: View {
 
-    @StateObject var checker = VersionChecker(feedURL: URL(string: "https://raw.githubusercontent.com/eLud/update-proto/main/feed.json")!)
+    @ObservedObject var checker: VersionChecker
 
-    public init() {}
+    public init(checker: VersionChecker) {
+        self.checker = checker
+    }
 
     public var body: some View {
         VStack(alignment: .leading) {
@@ -86,7 +88,10 @@ public struct UpdaterView: View {
 }
 
 struct UpdaterView_Previews: PreviewProvider {
+
+    static var checker = VersionChecker(mockData: AppRelease.demoJSON())
+
     static var previews: some View {
-        UpdaterView()
+        UpdaterView(checker: checker)
     }
 }
