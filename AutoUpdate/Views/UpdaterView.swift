@@ -10,6 +10,7 @@ import SwiftUI
 public struct UpdaterView: View {
 
     @ObservedObject var checker: VersionChecker
+    @State var showsReleaseNotes = false
 
     public init(checker: VersionChecker) {
         self.checker = checker
@@ -31,8 +32,16 @@ public struct UpdaterView: View {
                                       subtitle: "Checking for updates…", progress: nil)
 
             case .updateAvailable(release: let release):
-                StatusView(title: "Update available",
-                           subtitle: "\(checker.currentAppName()) v.\(release.version) can be download and installed.")
+                VStack(alignment: .leading) {
+                    StatusView(title: "Update available",
+                               subtitle: "\(checker.currentAppName()) v.\(release.version) can be download and installed.")
+                    Button("Release notes") {
+                        showsReleaseNotes.toggle()
+                    }.sheet(isPresented: $showsReleaseNotes, content: {
+                        ReleaseNoteView(release: release)
+                            .frame(minWidth: 200, idealWidth: 340, maxWidth: 400, minHeight: 200, idealHeight: 370, maxHeight: 400)
+                    })
+                }
 
             case .error(errorDesc: let errorDesc):
                 StatusView(title: "An error occured",
