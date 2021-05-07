@@ -110,68 +110,81 @@ class VersionChecker: ObservableObject {
         connection.resume()
 
         let service = connection.remoteObjectProxyWithErrorHandler { error in
-            print("Received error:", error)
+            DispatchQueue.main.async {
+                self.state = .error(errorDesc: error.localizedDescription)
+            }
         } as? UpdateInstallerProtocol
 
         let pid = ProcessInfo.processInfo.processIdentifier
-        service?.installUpdate(archiveURL: archiveURL, binaryToReplaceURL: Bundle.main.bundleURL, appPID: pid, reply: { response in
+        service?.installUpdate(archiveURL: archiveURL, binaryToReplaceURL: Bundle.main.bundleURL, appPID: pid, reply: { success, error in
 
             DispatchQueue.main.async {
-                let xpcError = UpdateInstallerError(rawValue: response)
-                guard xpcError == nil else {
-                    self.state = .error(errorDesc: xpcError!.rawValue)
+                if !success, let xpcError = error, let updateError = UpdateInstallerError(rawValue: xpcError) {
+                    self.state = .error(errorDesc: updateError.rawValue)
                     return
+                } else if !success, let xpcError = error {
+                    self.state = .error(errorDesc: xpcError)
+                } else {
+                    self.state = .updateInstalled
                 }
-
-                guard response == "success" else {
-                    self.state = .error(errorDesc: "Unknown error")
-                    return
-                }
-
-                self.state = .updateInstalled
-
                 connection.invalidate()
             }
-
         })
     }
 
     private func checkRemoteUpdates(completion: @escaping (Result<AppRelease, VersionCheckerError>)->()) {
-        let decoder = JSONDecoder()
+
         if let mock = mockData {
-            DispatchQueue.global(qos: .userInitiated).async {
-                sleep(1)
-                // Get current app version
-                // Compare to the feed's highest version
-                var version = try? decoder.decode([AppRelease].self, from: mock)
-                version?.sort(by: >)
-                guard let highestVersion = version?.first else {
-                    completion(.failure(.noUpdates))
-                    return
-                }
-
-                let compareToCurrent = self.currentAppVersion().versionCompare(highestVersion.version)
-
-                if compareToCurrent == .orderedAscending {
-                    completion(.success(highestVersion))
-                    return
-                } else {
-                    completion(.failure(.noUpdates))
-                    return
-                }
+            if let release = findNewestRelease(data: mock) {
+                completion(.success(release))
+            } else {
+                completion(.failure(.noUpdates))
             }
+            return
         } else {
             //Get the real data from the real feed
             fetchServerData { data in
+                guard let serverData = data else {
+                    completion(.failure(.checkFailed))
+                    return
+                }
 
+                if let release = self.findNewestRelease(data: serverData) {
+                    completion(.success(release))
+                } else {
+                    completion(.failure(.noUpdates))
+                }
+                return
             }
-            
-            completion(.failure(.checkFailed))
         }
     }
 
-    private func fetchServerData(completion: @escaping (Data)->()) {
-        
+    private func findNewestRelease(data: Data) -> AppRelease? {
+
+        let decoder = JSONDecoder()
+        // Get current app version
+        // Compare to the feed's highest version
+        var version = try? decoder.decode([AppRelease].self, from: data)
+        version?.sort(by: >)
+        guard let highestVersion = version?.first else { return nil }
+
+        let compareToCurrent = self.currentAppVersion().versionCompare(highestVersion.version)
+
+        if compareToCurrent == .orderedAscending {
+            return highestVersion
+        } else {
+            return nil
+        }
+    }
+
+    private func fetchServerData(completion: @escaping (Data?)->()) {
+
+        guard let feedURL = feedURL else { fatalError("Trying to get feed data with no url provided" ) }
+        let task = URLSession.shared.dataTask(with: feedURL) { data, response, error in
+            completion(data)
+        }
+
+        task.resume()
     }
 
     func currentAppVersion() -> String {

@@ -17,7 +17,7 @@ import Foundation
     ///   - binaryToReplaceURL: Current binary URL (the one to be updated)
     ///   - appPID: Current binary UNIX PID, used to watch for the app relaunch
     ///   - reply: callback when te XPC service finished the update
-    func installUpdate(archiveURL: URL, binaryToReplaceURL: URL, appPID: Int32, reply: @escaping (String) -> Void)
+    func installUpdate(archiveURL: URL, binaryToReplaceURL: URL, appPID: Int32, reply: @escaping (Bool, String?) -> Void)
 }
 
 enum UpdateInstallerError: String, Error {

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
 
-    @StateObject var checker = VersionChecker(mockData: AppRelease.demoJSON()!)
+    @StateObject var checker = VersionChecker(feedURL: URL(string: "https://raw.githubusercontent.com/eLud/update-proto/main/feed.json")!)
 
     var body: some View {
         VStack(alignment: .leading) {

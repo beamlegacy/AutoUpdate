@@ -11,21 +11,24 @@ class UpdateInstaller: UpdateInstallerProtocol {
 
     let fileManager = FileManager.default
 
-    func installUpdate(archiveURL: URL, binaryToReplaceURL: URL, appPID: Int32, reply: @escaping (String) -> Void) {
+    func installUpdate(archiveURL: URL, binaryToReplaceURL: URL, appPID: Int32, reply: @escaping (Bool, String?) -> Void) {
 
         do {
             let updatedAppURL = try unarchiveZip(at: archiveURL)
-            print(updatedAppURL)
             try unquarantineApp(at: updatedAppURL)
             guard areAppSignatureIdentical(currentApp: binaryToReplaceURL, update: updatedAppURL) else { throw UpdateInstallerError.signatureFailed }
             let installedAppURL = try install(updatedAppURL, replacedBinaryURL: binaryToReplaceURL, pid: appPID)
             relaunch(pid: appPID, at: installedAppURL)
         } catch {
-            reply((error as! UpdateInstallerError).rawValue)
+            if error is UpdateInstallerError {
+                reply(false, (error as! UpdateInstallerError).rawValue)
+            } else {
+                reply(false, error.localizedDescription)
+            }
             return
         }
 
-        reply("success")
+        reply(true, nil)
     }
 
     private func unarchiveZip(at archiveURL: URL) throws -> URL {

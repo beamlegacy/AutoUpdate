@@ -15,7 +15,7 @@ struct AppRelease: Codable {
     let publicationDate: Date
     let downloadURL: URL
 
-    static func demoJSON() -> Data? {
+    static func demoJSON() -> Data {
 
         let v0_1DateComponents = DateComponents(year: 2020, month: 11, day: 20, hour: 17, minute: 45, second: 00)
         let v0_1 = AppRelease(versionName: "Version 0.1", version: "0.1", releaseNotes: "This is release notes from Beam 0.1", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.zip")!)
@@ -31,7 +31,7 @@ struct AppRelease: Codable {
         let jsonEncoder = JSONEncoder()
         let data = try? jsonEncoder.encode(versions)
 
-        return data
+        return data!
     }
 }
 
