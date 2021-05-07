@@ -25,6 +25,7 @@
 		331FCC8726456C0900FD3FA7 /* UpdaterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18AB2640351200C4593E /* UpdaterView.swift */; };
 		331FCC8826456C2C00FD3FA7 /* AppRelease.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18BB26403A7400C4593E /* AppRelease.swift */; };
 		331FCC8926456C5900FD3FA7 /* UpdateInstallerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18D326414DFC00C4593E /* UpdateInstallerProtocol.swift */; };
+		331FCC8D264581DA00FD3FA7 /* ReleaseNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331FCC8C264581DA00FD3FA7 /* ReleaseNoteView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -98,6 +99,7 @@
 		331FCC7526456B4D00FD3FA7 /* AutoUpdate.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AutoUpdate.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		331FCC7726456B4D00FD3FA7 /* AutoUpdate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AutoUpdate.h; sourceTree = "<group>"; };
 		331FCC7826456B4D00FD3FA7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		331FCC8C264581DA00FD3FA7 /* ReleaseNoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReleaseNoteView.swift; sourceTree = "<group>"; };
 		33F7FFA726442363007E573B /* StatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -215,6 +217,7 @@
 				331E18AB2640351200C4593E /* UpdaterView.swift */,
 				33F7FFA726442363007E573B /* StatusView.swift */,
 				331FCC43264428F800FD3FA7 /* ProgressiveStatusView.swift */,
+				331FCC8C264581DA00FD3FA7 /* ReleaseNoteView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -432,6 +435,7 @@
 				331FCC8926456C5900FD3FA7 /* UpdateInstallerProtocol.swift in Sources */,
 				331FCC8426456C0900FD3FA7 /* VersionChecker.swift in Sources */,
 				331FCC8626456C0900FD3FA7 /* StatusView.swift in Sources */,
+				331FCC8D264581DA00FD3FA7 /* ReleaseNoteView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
