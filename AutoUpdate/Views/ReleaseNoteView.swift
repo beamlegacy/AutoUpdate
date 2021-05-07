@@ -11,13 +11,19 @@ public struct ReleaseNoteView: View {
 
     let release: AppRelease
 
+    @Environment(\.presentationMode) var presentationMode
+
     public var body: some View {
         VStack(alignment: .leading) {
             HStack {
                 Text("Changelog")
                     .font(.headline)
                 Spacer()
-                Button(action: {}, label: {
+                Button(action: {
+                    withAnimation {
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                }, label: {
                     Image(systemName: "xmark")
                         .font(.headline)
                 })
@@ -68,7 +74,7 @@ struct ReleaseNoteView_Previews: PreviewProvider {
                                                 publicationDate: Date(),
                                                 downloadURL: URL(string: "http://")!))
                 .frame(width: 340.0, height: 370.0)
-            ReleaseNoteView(release: AppRelease(versionName: "Beam 2.0: Collaboarte on Cards",
+            ReleaseNoteView(release: AppRelease(versionName: "Beam 2.0: Collaborate on Cards",
                                                 version: "2.0",
                                                 releaseNotes: notes,
                                                 publicationDate: Date(),
