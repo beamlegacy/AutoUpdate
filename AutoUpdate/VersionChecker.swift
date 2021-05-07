@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-class VersionChecker: ObservableObject {
+public class VersionChecker: ObservableObject {
 
     enum VersionCheckerError: Error {
         case checkFailed
@@ -33,17 +33,17 @@ class VersionChecker: ObservableObject {
     @Published var state: State
     @Published var lastCheck: Date?
 
-    init(mockData: Data) {
+    public init(mockData: Data) {
         self.mockData = mockData
         self.state = .noUpdate
     }
 
-    init(feedURL: URL) {
+    public init(feedURL: URL) {
         self.feedURL = feedURL
         self.state = .noUpdate
     }
 
-    func checkForUpdates() {
+    public func checkForUpdates() {
         state = .checking
 
         checkRemoteUpdates { result in
@@ -66,7 +66,7 @@ class VersionChecker: ObservableObject {
         }
     }
 
-    func downloadNewestRelease() {
+    public func downloadNewestRelease() {
 
         guard let release = newRelease else { return }
 

@@ -7,11 +7,13 @@
 
 import SwiftUI
 
-struct ContentView: View {
+public struct UpdaterView: View {
 
     @StateObject var checker = VersionChecker(feedURL: URL(string: "https://raw.githubusercontent.com/eLud/update-proto/main/feed.json")!)
 
-    var body: some View {
+    public init() {}
+
+    public var body: some View {
         VStack(alignment: .leading) {
             switch checker.state {
             case .noUpdate:
@@ -83,8 +85,8 @@ struct ContentView: View {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
+struct UpdaterView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        UpdaterView()
     }
 }
