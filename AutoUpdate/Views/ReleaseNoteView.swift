@@ -9,9 +9,14 @@ import SwiftUI
 
 public struct ReleaseNoteView: View {
 
-    let release: AppRelease
-
+    private let release: AppRelease
+    private let checker: VersionChecker?
     @Environment(\.presentationMode) var presentationMode
+
+    public init(release: AppRelease, checker: VersionChecker? = nil) {
+        self.release = release
+        self.checker = checker
+    }
 
     public var body: some View {
         VStack(alignment: .leading) {
@@ -19,6 +24,11 @@ public struct ReleaseNoteView: View {
                 Text("Changelog")
                     .font(.headline)
                 Spacer()
+                if let checker = checker {
+                    Button("Update now") {
+                        checker.downloadNewestRelease()
+                    }
+                }
                 Button(action: {
                     withAnimation {
                         presentationMode.wrappedValue.dismiss()
@@ -48,6 +58,8 @@ public struct ReleaseNoteView: View {
         .background(Color.white)
         .cornerRadius(6.0)
         .shadow(radius: 10)
+        .frame(minWidth: 200, idealWidth: 340, maxWidth: 400, minHeight: 200, idealHeight: 370, maxHeight: 400)
+
     }
 }
 
