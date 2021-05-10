@@ -16,7 +16,7 @@ public class VersionChecker: ObservableObject {
         case cantCreateRequiredFolders
     }
 
-    enum State: Equatable {
+    public enum State: Equatable {
         case noUpdate
         case checking
         case updateAvailable(release: AppRelease)
@@ -29,9 +29,9 @@ public class VersionChecker: ObservableObject {
     var mockData: Data?
     var feedURL: URL?
 
-    @Published var newRelease: AppRelease?
-    @Published var state: State
-    @Published var lastCheck: Date?
+    @Published public var newRelease: AppRelease?
+    @Published public var state: State
+    @Published public var lastCheck: Date?
 
     public init(mockData: Data) {
         self.mockData = mockData

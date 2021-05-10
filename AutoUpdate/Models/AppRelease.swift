@@ -9,11 +9,11 @@ import Foundation
 
 public struct AppRelease: Codable {
 
-    let versionName: String
-    let version: String
-    let releaseNotes: String
-    let publicationDate: Date
-    let downloadURL: URL
+    public let versionName: String
+    public let version: String
+    public let releaseNotes: String
+    public let publicationDate: Date
+    public let downloadURL: URL
 
     static public func demoJSON() -> Data {
 
@@ -43,7 +43,7 @@ public struct AppRelease: Codable {
                                             version: "2.0",
                                             releaseNotes: notes,
                                             publicationDate: Date(),
-                                            downloadURL: URL(string: "http://")!)
+                                            downloadURL: URL(string: "https://github.com/eLud/update-proto/raw/main/BeamUpdaterProto_v1.1.zip")!)
 
         let versions = [v0_1, v0_1_1, v1_1, v2_0]
 

@@ -37,7 +37,8 @@ public struct UpdaterView: View {
                                subtitle: "\(checker.currentAppName()) v.\(release.version) can be download and installed.")
                     Button("Release notes") {
                         showsReleaseNotes.toggle()
-                    }.sheet(isPresented: $showsReleaseNotes, content: {
+                    }
+                    .sheet(isPresented: $showsReleaseNotes, content: {
                         ReleaseNoteView(release: release)
                             .frame(minWidth: 200, idealWidth: 340, maxWidth: 400, minHeight: 200, idealHeight: 370, maxHeight: 400)
                     })
