@@ -15,6 +15,45 @@ public struct AppRelease: Codable {
     public let releaseNotes: String
     public let publicationDate: Date
     public let downloadURL: URL
+}
+
+extension AppRelease {
+
+    static func updateJSON(at feedURL: URL, with release: AppRelease, completion: @escaping (Data?)->()) {
+        getReleases(at: feedURL) { feed in
+            guard var feed = feed else {
+                completion(nil)
+                return
+            }
+
+            feed.append(release)
+            let encoder = JSONEncoder()
+            do {
+                let updatedFeedJSON = try encoder.encode(feed)
+                completion(updatedFeedJSON)
+            } catch {
+                completion(nil)
+            }
+        }
+    }
+
+    static func getReleases(at feedURL: URL, completion: @escaping ([AppRelease]?) -> () ) {
+        let task = URLSession.shared.dataTask(with: feedURL) { data, response, error in
+            guard let data = data else {
+                completion(nil)
+                return
+            }
+
+            do {
+                let decoder = JSONDecoder()
+                let version = try decoder.decode([AppRelease].self, from: data)
+                completion(version)
+            } catch {
+                completion(nil)
+            }
+        }
+        task.resume()
+    }
 
     static public func demoJSON() -> Data {
 
