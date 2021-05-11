@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -27,6 +27,9 @@
 		331FCC8926456C5900FD3FA7 /* UpdateInstallerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18D326414DFC00C4593E /* UpdateInstallerProtocol.swift */; };
 		331FCC8D264581DA00FD3FA7 /* ReleaseNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331FCC8C264581DA00FD3FA7 /* ReleaseNoteView.swift */; };
 		3331E6C426458D5400003345 /* BeamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3331E6C326458D5400003345 /* BeamView.swift */; };
+		33EBA560264ABD3E00369730 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33EBA55F264ABD3E00369730 /* main.swift */; };
+		33EBA566264ABDB800369730 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 33EBA565264ABDB800369730 /* ArgumentParser */; };
+		33EBA567264AC17900369730 /* AppRelease.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18BB26403A7400C4593E /* AppRelease.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,6 +78,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		33EBA55B264ABD3E00369730 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -102,6 +114,8 @@
 		331FCC7826456B4D00FD3FA7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		331FCC8C264581DA00FD3FA7 /* ReleaseNoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReleaseNoteView.swift; sourceTree = "<group>"; };
 		3331E6C326458D5400003345 /* BeamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeamView.swift; sourceTree = "<group>"; };
+		33EBA55D264ABD3E00369730 /* AppFeedBuilder */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = AppFeedBuilder; sourceTree = BUILT_PRODUCTS_DIR; };
+		33EBA55F264ABD3E00369730 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		33F7FFA726442363007E573B /* StatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -135,6 +149,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		33EBA55A264ABD3E00369730 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				33EBA566264ABDB800369730 /* ArgumentParser in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -145,6 +167,7 @@
 				331E18C426404D3C00C4593E /* BeamUpdaterProtoTests */,
 				331E18D226414DFC00C4593E /* UpdateInstaller */,
 				331FCC7626456B4D00FD3FA7 /* AutoUpdate */,
+				33EBA55E264ABD3E00369730 /* AppFeedBuilder */,
 				331E18A72640351200C4593E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -156,6 +179,7 @@
 				331E18C326404D3C00C4593E /* BeamUpdaterProtoTests.xctest */,
 				331E18D126414DFC00C4593E /* UpdateInstaller.xpc */,
 				331FCC7526456B4D00FD3FA7 /* AutoUpdate.framework */,
+				33EBA55D264ABD3E00369730 /* AppFeedBuilder */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -231,6 +255,14 @@
 				331E18BB26403A7400C4593E /* AppRelease.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		33EBA55E264ABD3E00369730 /* AppFeedBuilder */ = {
+			isa = PBXGroup;
+			children = (
+				33EBA55F264ABD3E00369730 /* main.swift */,
+			);
+			path = AppFeedBuilder;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -321,6 +353,26 @@
 			productReference = 331FCC7526456B4D00FD3FA7 /* AutoUpdate.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		33EBA55C264ABD3E00369730 /* AppFeedBuilder */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 33EBA563264ABD3E00369730 /* Build configuration list for PBXNativeTarget "AppFeedBuilder" */;
+			buildPhases = (
+				33EBA559264ABD3E00369730 /* Sources */,
+				33EBA55A264ABD3E00369730 /* Frameworks */,
+				33EBA55B264ABD3E00369730 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AppFeedBuilder;
+			packageProductDependencies = (
+				33EBA565264ABDB800369730 /* ArgumentParser */,
+			);
+			productName = AppFeedBuilder;
+			productReference = 33EBA55D264ABD3E00369730 /* AppFeedBuilder */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -344,6 +396,9 @@
 					331FCC7426456B4D00FD3FA7 = {
 						CreatedOnToolsVersion = 12.5;
 					};
+					33EBA55C264ABD3E00369730 = {
+						CreatedOnToolsVersion = 12.5;
+					};
 				};
 			};
 			buildConfigurationList = 331E18A12640351200C4593E /* Build configuration list for PBXProject "BeamUpdaterProto" */;
@@ -355,6 +410,9 @@
 				Base,
 			);
 			mainGroup = 331E189D2640351200C4593E;
+			packageReferences = (
+				33EBA564264ABDB800369730 /* XCRemoteSwiftPackageReference "swift-argument-parser" */,
+			);
 			productRefGroup = 331E18A72640351200C4593E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -363,6 +421,7 @@
 				331E18C226404D3C00C4593E /* BeamUpdaterProtoTests */,
 				331E18D026414DFC00C4593E /* UpdateInstaller */,
 				331FCC7426456B4D00FD3FA7 /* AutoUpdate */,
+				33EBA55C264ABD3E00369730 /* AppFeedBuilder */,
 			);
 		};
 /* End PBXProject section */
@@ -440,6 +499,15 @@
 				331FCC8426456C0900FD3FA7 /* VersionChecker.swift in Sources */,
 				331FCC8626456C0900FD3FA7 /* StatusView.swift in Sources */,
 				331FCC8D264581DA00FD3FA7 /* ReleaseNoteView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		33EBA559264ABD3E00369730 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				33EBA560264ABD3E00369730 /* main.swift in Sources */,
+				33EBA567264AC17900369730 /* AppRelease.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -768,6 +836,28 @@
 			};
 			name = Release;
 		};
+		33EBA561264ABD3E00369730 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = A7SGM6JEMA;
+				ENABLE_HARDENED_RUNTIME = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		33EBA562264ABD3E00369730 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = A7SGM6JEMA;
+				ENABLE_HARDENED_RUNTIME = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -816,7 +906,35 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		33EBA563264ABD3E00369730 /* Build configuration list for PBXNativeTarget "AppFeedBuilder" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				33EBA561264ABD3E00369730 /* Debug */,
+				33EBA562264ABD3E00369730 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		33EBA564264ABDB800369730 /* XCRemoteSwiftPackageReference "swift-argument-parser" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-argument-parser";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.4.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		33EBA565264ABDB800369730 /* ArgumentParser */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 33EBA564264ABDB800369730 /* XCRemoteSwiftPackageReference "swift-argument-parser" */;
+			productName = ArgumentParser;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 331E189E2640351200C4593E /* Project object */;
 }
