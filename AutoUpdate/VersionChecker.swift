@@ -168,9 +168,14 @@ public class VersionChecker: ObservableObject {
         version?.sort(by: >)
         guard let highestVersion = version?.first else { return nil }
 
-        let compareToCurrent = self.currentAppVersion().versionCompare(highestVersion.version)
+        let currentRelease = AppRelease(versionName: self.currentAppName(),
+                                        version: self.currentAppVersion(),
+                                        buildNumber: self.currentAppBuild(),
+                                        releaseNotes: "",
+                                        publicationDate: Date(),
+                                        downloadURL: URL(string: "http://")!)
 
-        if compareToCurrent == .orderedAscending {
+        if highestVersion > currentRelease {
             return highestVersion
         } else {
             return nil
@@ -192,6 +197,14 @@ public class VersionChecker: ObservableObject {
               let version = infos["CFBundleShortVersionString"] as? String else { fatalError("Cant' get app's version from CFBundleShortVersionString key in Info.plist")
         }
         return version
+    }
+
+    func currentAppBuild() -> Int {
+        guard let infos = Bundle.main.infoDictionary,
+              let version = infos["CFBundleVersion"] as? String,
+              let intVersion = Int(version) else { fatalError("Cant' get app's build from CFBundleVersion key in Info.plist, or it's not an Int number. We only support comparing Int build number.")
+        }
+        return intVersion
     }
 
     func currentAppName() -> String {
