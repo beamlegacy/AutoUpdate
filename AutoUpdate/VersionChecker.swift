@@ -26,21 +26,35 @@ public class VersionChecker: ObservableObject {
         case updateInstalled
     }
 
-    var mockData: Data?
-    var feedURL: URL?
+    private var mockData: Data?
+    private var feedURL: URL?
+
+    private var autocheckTimer: AnyCancellable?
 
     @Published public var newRelease: AppRelease?
     @Published public var state: State
     @Published public var lastCheck: Date?
 
-    public init(mockData: Data) {
+    public init(mockData: Data, autocheckEnabled: Bool = false) {
         self.mockData = mockData
         self.state = .noUpdate
+        if autocheckEnabled {
+            autocheckTimer = Timer.publish(every: 3600, on: .main, in: .default).autoconnect().sink { [weak self] timer in
+                self?.checkForUpdates()
+            }
+            self.checkForUpdates()
+        }
     }
 
-    public init(feedURL: URL) {
+    public init(feedURL: URL, autocheckEnabled: Bool = false) {
         self.feedURL = feedURL
         self.state = .noUpdate
+        if autocheckEnabled {
+            autocheckTimer = Timer.publish(every: 3600, on: .main, in: .default).autoconnect().sink { [weak self] timer in
+                self?.checkForUpdates()
+            }
+            self.checkForUpdates()
+        }
     }
 
     public func checkForUpdates() {
