@@ -29,6 +29,12 @@ struct AppFeedBuilder: ParsableCommand {
     @Argument(help: "The new version download URL. Must be an https URL pointing to a .zip file")
     var downloadURL: String
 
+    @Flag(help: "")
+    var verbose = false
+
+    @Option(help: "Specifies the path to write the file", completion: CompletionKind.directory)
+    var outputPath: String?
+
     func validate() throws {
 
         guard let feedURL = URL(string: feedURL),
@@ -60,8 +66,24 @@ struct AppFeedBuilder: ParsableCommand {
         let semaphore = DispatchSemaphore(value: 0)
         AppRelease.updateJSON(at: feedURL, with: newRelease) { feedJSONData in
 
-            if let json = feedJSONData, let str = String(data: json, encoding: .utf8) {
-                print(str)
+            if let json = feedJSONData, let jsonString = String(data: json, encoding: .utf8) {
+                if verbose {
+                    print(jsonString)
+                }
+
+                let fileURL: URL
+                if let path = outputPath {
+                    fileURL = URL(fileURLWithPath: path)
+                } else {
+                    let currentURL = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+                    fileURL = currentURL.appendingPathComponent("AppFeed.json")
+                }
+                do {
+                    try jsonString.write(to: fileURL, atomically: true, encoding: .utf8)
+                    print("App feed written at \(fileURL.path)")
+                } catch {
+                    print("Error writing file at \(fileURL.path)")
+                }
             } else {
                 print("Error generating the feed")
             }
