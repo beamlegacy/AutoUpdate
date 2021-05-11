@@ -90,27 +90,35 @@ public class VersionChecker: ObservableObject {
 
             guard error == nil,
                   let fileURL = fileURL,
-                  let appSupportURL = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
+                  let appSupportURL = self.applicationSupportDirectoryURL else {
                 DispatchQueue.main.async {
                     self.state = .error(errorDesc: error?.localizedDescription ?? "An error occured")
                 }
                 return
             }
 
-            let appFolder = appSupportURL.appendingPathComponent(self.currentAppName())
+            let updateFolder = self.updateDirectory(in: appSupportURL)
 
             do {
-                try self.createAppFolderInAppSupportIfNeeded(appFolder)
+                try self.createAppFolderInAppSupportIfNeeded(updateFolder)
             } catch {
                 self.state = .error(errorDesc: error.localizedDescription)
                 return
             }
 
-            let finalURL = appFolder.appendingPathComponent("\(release.downloadURL.lastPathComponent)")
-            try? fileManager.moveItem(at: fileURL, to: finalURL)
-            DispatchQueue.main.async {
-                self.state = .installing
-                self.processInstallation(archiveURL: finalURL)
+            let finalURL = updateFolder.appendingPathComponent("\(release.downloadURL.lastPathComponent)")
+
+            do {
+                try fileManager.moveItem(at: fileURL, to: finalURL)
+                DispatchQueue.main.async {
+                    self.state = .installing
+                    self.processInstallation(archiveURL: finalURL)
+                }
+            } catch {
+                self.cleanup()
+                DispatchQueue.main.async {
+                    self.state = .error(errorDesc: error.localizedDescription)
+                }
             }
         }
 
@@ -126,6 +134,7 @@ public class VersionChecker: ObservableObject {
         let service = connection.remoteObjectProxyWithErrorHandler { error in
             DispatchQueue.main.async {
                 self.state = .error(errorDesc: error.localizedDescription)
+                self.cleanup()
             }
         } as? UpdateInstallerProtocol
 
@@ -143,6 +152,7 @@ public class VersionChecker: ObservableObject {
                 }
                 connection.invalidate()
             }
+            self.cleanup()
         })
     }
 
@@ -206,6 +216,12 @@ public class VersionChecker: ObservableObject {
         task.resume()
     }
 
+    private func cleanup() {
+        guard let appSupport = applicationSupportDirectoryURL else { return }
+        let fileManager = FileManager.default
+        try? fileManager.removeItem(at: updateDirectory(in: appSupport))
+    }
+
     func currentAppVersion() -> String {
         guard let infos = Bundle.main.infoDictionary,
               let version = infos["CFBundleShortVersionString"] as? String else { fatalError("Cant' get app's version from CFBundleShortVersionString key in Info.plist")
@@ -237,6 +253,22 @@ public class VersionChecker: ObservableObject {
         } catch {
             throw VersionCheckerError.cantCreateRequiredFolders
         }
+    }
+
+    private var applicationSupportDirectoryURL: URL? {
+        let fileManager = FileManager.default
+        return fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
+    }
+
+    private func applicationDirectory(in applicationSupportURL: URL) -> URL {
+        let appDirectory = applicationSupportURL.appendingPathComponent(self.currentAppName())
+        return appDirectory
+    }
+
+    private func updateDirectory(in applicationSupportURL: URL) -> URL {
+        let appDirectory = applicationDirectory(in: applicationSupportURL)
+        let updateDirectory = appDirectory.appendingPathComponent("Updates")
+        return updateDirectory
     }
 
 }
