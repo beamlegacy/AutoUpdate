@@ -57,6 +57,8 @@ public class VersionChecker: ObservableObject {
         }
     }
 
+
+    /// Checks if update is available from the feed or the mock data and updates the state accordingly
     public func checkForUpdates() {
         state = .checking
 
@@ -80,6 +82,8 @@ public class VersionChecker: ObservableObject {
         }
     }
 
+
+    /// Download the newest release and process installation using the XPC service
     public func downloadNewestRelease() {
 
         guard let release = newRelease else { return }
@@ -126,6 +130,9 @@ public class VersionChecker: ObservableObject {
         self.state = .downloading(progress: downloadTask.progress)
     }
 
+
+    /// Pass the archive URL to the XPC service to extract it, and replace the existing binary
+    /// - Parameter archiveURL: The URL of the zip archive
     private func processInstallation(archiveURL: URL) {
         let connection = NSXPCConnection(serviceName: "com.tectec.UpdateInstaller")
         connection.remoteObjectInterface = NSXPCInterface(with: UpdateInstallerProtocol.self)
@@ -207,7 +214,6 @@ public class VersionChecker: ObservableObject {
     }
 
     private func fetchServerData(completion: @escaping (Data?)->()) {
-
         guard let feedURL = feedURL else { fatalError("Trying to get feed data with no url provided" ) }
         let task = URLSession.shared.dataTask(with: feedURL) { data, response, error in
             completion(data)
@@ -216,11 +222,30 @@ public class VersionChecker: ObservableObject {
         task.resume()
     }
 
+    /// Checks if the folder at the provided URL is existing, and create it if not.
+    /// - Parameter folderURL: The URL of the folder to check and create
+    /// - Throws: If we can't create the folder, this function throws VersionCheckerError.cantCreateRequiredFolders
+    private func createAppFolderInAppSupportIfNeeded(_ folderURL: URL) throws {
+        let fileManager = FileManager.default
+        guard !fileManager.fileExists(atPath: folderURL.path) else { return }
+
+        do {
+            try fileManager.createDirectory(at: folderURL, withIntermediateDirectories: true, attributes: nil)
+        } catch {
+            throw VersionCheckerError.cantCreateRequiredFolders
+        }
+    }
+
+    /// Removes the update directory to let the filesystem clean after success or failure
     private func cleanup() {
         guard let appSupport = applicationSupportDirectoryURL else { return }
         let fileManager = FileManager.default
         try? fileManager.removeItem(at: updateDirectory(in: appSupport))
     }
+}
+
+//MARK: - Helper functions
+extension VersionChecker {
 
     func currentAppVersion() -> String {
         guard let infos = Bundle.main.infoDictionary,
@@ -244,17 +269,6 @@ public class VersionChecker: ObservableObject {
         return name
     }
 
-    private func createAppFolderInAppSupportIfNeeded(_ folderURL: URL) throws {
-        let fileManager = FileManager.default
-        guard !fileManager.fileExists(atPath: folderURL.path) else { return }
-
-        do {
-            try fileManager.createDirectory(at: folderURL, withIntermediateDirectories: true, attributes: nil)
-        } catch {
-            throw VersionCheckerError.cantCreateRequiredFolders
-        }
-    }
-
     private var applicationSupportDirectoryURL: URL? {
         let fileManager = FileManager.default
         return fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
@@ -270,5 +284,4 @@ public class VersionChecker: ObservableObject {
         let updateDirectory = appDirectory.appendingPathComponent("Updates")
         return updateDirectory
     }
-
 }
