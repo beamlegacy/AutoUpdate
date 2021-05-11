@@ -13,6 +13,8 @@ public struct ReleaseNoteView: View {
     private let checker: VersionChecker?
     @Environment(\.presentationMode) var presentationMode
 
+    @State private var showsVersionAndBuild = false
+
     public init(release: AppRelease, checker: VersionChecker? = nil) {
         self.release = release
         self.checker = checker
@@ -23,6 +25,16 @@ public struct ReleaseNoteView: View {
             HStack {
                 Text("Changelog")
                     .font(.headline)
+                    .onTapGesture {
+                        withAnimation {
+                            showsVersionAndBuild.toggle()
+                        }
+                    }
+                if showsVersionAndBuild {
+                    Text("(v.\(release.version), build \(release.buildNumber))")
+                        .font(.subheadline)
+                        .foregroundColor(Color(.secondaryLabelColor))
+                }
                 Spacer()
                 if let checker = checker {
                     Button("Update now") {
