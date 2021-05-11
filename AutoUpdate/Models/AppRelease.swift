@@ -11,6 +11,7 @@ public struct AppRelease: Codable {
 
     public let versionName: String
     public let version: String
+    public let buildNumber: Int
     public let releaseNotes: String
     public let publicationDate: Date
     public let downloadURL: URL
@@ -18,13 +19,13 @@ public struct AppRelease: Codable {
     static public func demoJSON() -> Data {
 
         let v0_1DateComponents = DateComponents(year: 2020, month: 11, day: 20, hour: 17, minute: 45, second: 00)
-        let v0_1 = AppRelease(versionName: "Version 0.1", version: "0.1", releaseNotes: "This is release notes from Beam 0.1", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.zip")!)
+        let v0_1 = AppRelease(versionName: "Version 0.1", version: "0.1", buildNumber: 1, releaseNotes: "This is release notes from Beam 0.1", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.zip")!)
 
         let v0_1_1DateComponents = DateComponents(year: 2020, month: 11, day: 20, hour: 17, minute: 45, second: 00)
-        let v0_1_1 = AppRelease(versionName: "Version 0.1.1", version: "0.1.1", releaseNotes: "This is release notes from Beam 0.1.1", publicationDate: Calendar.current.date(from: v0_1_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.1.zip")!)
+        let v0_1_1 = AppRelease(versionName: "Version 0.1.1", version: "0.1.1", buildNumber: 2, releaseNotes: "This is release notes from Beam 0.1.1", publicationDate: Calendar.current.date(from: v0_1_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.1.zip")!)
 
         let v1_1DateComponents = DateComponents(year: 2021, month: 5, day: 3, hour: 14, minute: 35, second: 00)
-        let v1_1 = AppRelease(versionName: "Version 1.1", version: "1.1", releaseNotes: "This is release notes from Beam 1.1", publicationDate: Calendar.current.date(from: v1_1DateComponents)!, downloadURL: URL(string: "https://github.com/eLud/update-proto/raw/main/BeamUpdaterProto_v1.1.zip")!)
+        let v1_1 = AppRelease(versionName: "Version 1.1", version: "1.1", buildNumber: 5, releaseNotes: "This is release notes from Beam 1.1", publicationDate: Calendar.current.date(from: v1_1DateComponents)!, downloadURL: URL(string: "https://github.com/eLud/update-proto/raw/main/BeamUpdaterProto_v1.1.zip")!)
 
         let notes = """
             • Pharetra, malesuada tellus amet orci iaculis et. In nunc, augue in orci netus maecenas. In eget arcu a augue. Dui pulvinar pellentesque.
@@ -40,7 +41,7 @@ public struct AppRelease: Codable {
             • At amet nibh nibh nibh elementum. In sagittis consectetur ut massa pulvinar.
             """
         let v2_0 = AppRelease(versionName: "Beam 2.0: Collaborate on Cards",
-                                            version: "2.0",
+                              version: "2.0", buildNumber: 50,
                                             releaseNotes: notes,
                                             publicationDate: Date(),
                                             downloadURL: URL(string: "https://github.com/eLud/update-proto/raw/main/BeamUpdaterProto_v1.1.zip")!)
@@ -57,11 +58,11 @@ public struct AppRelease: Codable {
 extension AppRelease: Comparable {
 
     public static func == (lhs: AppRelease, rhs: AppRelease) -> Bool {
-        lhs.version.versionCompare(rhs.version) == .orderedSame
+        lhs.version.versionCompare(rhs.version) == .orderedSame && lhs.buildNumber == rhs.buildNumber
     }
 
     public static func < (lhs: AppRelease, rhs: AppRelease) -> Bool {
-        lhs.version.versionCompare(rhs.version) == .orderedAscending
+        lhs.version.versionCompare(rhs.version) == .orderedAscending || (lhs.version.versionCompare(rhs.version) == .orderedSame && lhs.buildNumber < rhs.buildNumber)
     }
 }
 

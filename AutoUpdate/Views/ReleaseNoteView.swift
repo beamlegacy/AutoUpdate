@@ -82,12 +82,14 @@ struct ReleaseNoteView_Previews: PreviewProvider {
         Group {
             ReleaseNoteView(release: AppRelease(versionName: "Beam 2.0: Collaborate on Cards",
                                                 version: "2.0",
+                                                buildNumber: 50,
                                                 releaseNotes: notes,
                                                 publicationDate: Date(),
                                                 downloadURL: URL(string: "http://")!))
                 .frame(width: 340.0, height: 370.0)
             ReleaseNoteView(release: AppRelease(versionName: "Beam 2.0: Collaborate on Cards",
                                                 version: "2.0",
+                                                buildNumber: 50,
                                                 releaseNotes: notes,
                                                 publicationDate: Date(),
                                                 downloadURL: URL(string: "http://")!))
