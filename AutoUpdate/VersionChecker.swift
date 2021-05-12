@@ -28,21 +28,20 @@ public class VersionChecker: ObservableObject {
 
     private var mockData: Data?
     private var feedURL: URL?
-
     private var autocheckTimer: AnyCancellable?
 
     @Published public var newRelease: AppRelease?
     @Published public var state: State
     @Published public var lastCheck: Date?
 
+    ///Allows AutoUpdater to process to install automatically when an update is available.
+    public var allowAutoInstall = false
+
     public init(mockData: Data, autocheckEnabled: Bool = false) {
         self.mockData = mockData
         self.state = .noUpdate
         if autocheckEnabled {
-            autocheckTimer = Timer.publish(every: 3600, on: .main, in: .default).autoconnect().sink { [weak self] timer in
-                self?.checkForUpdates()
-            }
-            self.checkForUpdates()
+            enableAutocheck()
         }
     }
 
@@ -50,16 +49,16 @@ public class VersionChecker: ObservableObject {
         self.feedURL = feedURL
         self.state = .noUpdate
         if autocheckEnabled {
-            autocheckTimer = Timer.publish(every: 3600, on: .main, in: .default).autoconnect().sink { [weak self] timer in
-                self?.checkForUpdates()
-            }
-            self.checkForUpdates()
+            enableAutocheck()
         }
     }
 
 
     /// Checks if update is available from the feed or the mock data and updates the state accordingly
     public func checkForUpdates() {
+
+        guard state == .noUpdate else { return }
+
         state = .checking
 
         checkRemoteUpdates { result in
@@ -70,6 +69,10 @@ public class VersionChecker: ObservableObject {
                 case .success(let latest):
                     self.newRelease = latest
                     self.state = .updateAvailable(release: latest)
+
+                    if self.allowAutoInstall {
+                        self.downloadNewestRelease()
+                    }
                 case .failure(let error):
                     self.newRelease = nil
                     if error == .noUpdates {
@@ -161,6 +164,13 @@ public class VersionChecker: ObservableObject {
             }
             self.cleanup()
         })
+    }
+
+    private func enableAutocheck() {
+        autocheckTimer = Timer.publish(every: 60, on: .main, in: .default).autoconnect().sink { [weak self] timer in
+            self?.checkForUpdates()
+        }
+        self.checkForUpdates()
     }
 
     private func checkRemoteUpdates(completion: @escaping (Result<AppRelease, VersionCheckerError>)->()) {
