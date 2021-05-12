@@ -9,6 +9,13 @@ import SwiftUI
 
 public struct ReleaseNoteView: View {
 
+    static let dateFormatter: DateFormatter = {
+        let df = DateFormatter()
+        df.dateStyle = .medium
+
+        return df
+    }()
+
     private let release: AppRelease
     private let checker: VersionChecker?
     @Environment(\.presentationMode) var presentationMode
@@ -46,8 +53,7 @@ public struct ReleaseNoteView: View {
                         presentationMode.wrappedValue.dismiss()
                     }
                 }, label: {
-                    Image(systemName: "xmark")
-                        .font(.headline)
+                    Image("close", bundle: Bundle(for: VersionChecker.self))
                 })
                 .buttonStyle(BorderlessButtonStyle())
             }
@@ -58,7 +64,7 @@ public struct ReleaseNoteView: View {
                 .padding(.horizontal)
             ScrollView {
                 VStack(alignment: .leading, spacing: 4.0) {
-                    Text(release.publicationDate, style: .date)
+                    dateText
                         .foregroundColor(.gray)
                     Text(release.versionName)
                         .font(.headline)
@@ -71,7 +77,12 @@ public struct ReleaseNoteView: View {
         .cornerRadius(6.0)
         .shadow(radius: 10)
         .frame(minWidth: 200, idealWidth: 340, maxWidth: 400, minHeight: 200, idealHeight: 370, maxHeight: 400)
+    }
 
+    private var dateText: Text {
+        let formattedDate = Self.dateFormatter.string(from: release.publicationDate)
+        return Text(formattedDate)
+            .foregroundColor(.gray)
     }
 }
 

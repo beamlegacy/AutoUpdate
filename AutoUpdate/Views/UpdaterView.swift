@@ -82,9 +82,6 @@ public struct UpdaterView: View {
         }
         .padding()
         .frame(minWidth: 200, idealWidth: 200, maxWidth: .infinity, minHeight: 100, idealHeight: 100, maxHeight: .infinity, alignment: .center)
-        .onChange(of: checker.state, perform: { value in
-            print(value)
-        })
     }
 
     private func downloadButtonDisabled() -> Bool {

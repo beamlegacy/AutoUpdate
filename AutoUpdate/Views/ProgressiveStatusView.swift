@@ -16,12 +16,14 @@ struct ProgressiveStatusView: View {
     var body: some View {
         VStack(alignment: .leading) {
             StatusView(title: title, subtitle: subtitle)
-            if let progress = progress {
-                ProgressView(progress)
-                    .progressViewStyle(LinearProgressViewStyle())
-            } else {
-                ProgressView()
-                    .progressViewStyle(LinearProgressViewStyle())
+            if #available(macOS 11, *) {
+                if let progress = progress {
+                    ProgressView(progress)
+                        .progressViewStyle(LinearProgressViewStyle())
+                } else {
+                    ProgressView()
+                        .progressViewStyle(LinearProgressViewStyle())
+                }
             }
         }
     }

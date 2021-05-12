@@ -27,6 +27,7 @@
 		331FCC8926456C5900FD3FA7 /* UpdateInstallerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18D326414DFC00C4593E /* UpdateInstallerProtocol.swift */; };
 		331FCC8D264581DA00FD3FA7 /* ReleaseNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331FCC8C264581DA00FD3FA7 /* ReleaseNoteView.swift */; };
 		3331E6C426458D5400003345 /* BeamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3331E6C326458D5400003345 /* BeamView.swift */; };
+		33B27425264BFE1B00A318CD /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 33B27424264BFE1B00A318CD /* Media.xcassets */; };
 		33EBA560264ABD3E00369730 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33EBA55F264ABD3E00369730 /* main.swift */; };
 		33EBA566264ABDB800369730 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 33EBA565264ABDB800369730 /* ArgumentParser */; };
 		33EBA567264AC17900369730 /* AppRelease.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18BB26403A7400C4593E /* AppRelease.swift */; };
@@ -114,6 +115,7 @@
 		331FCC7826456B4D00FD3FA7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		331FCC8C264581DA00FD3FA7 /* ReleaseNoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReleaseNoteView.swift; sourceTree = "<group>"; };
 		3331E6C326458D5400003345 /* BeamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeamView.swift; sourceTree = "<group>"; };
+		33B27424264BFE1B00A318CD /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		33EBA55D264ABD3E00369730 /* AppFeedBuilder */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = AppFeedBuilder; sourceTree = BUILT_PRODUCTS_DIR; };
 		33EBA55F264ABD3E00369730 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		33F7FFA726442363007E573B /* StatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusView.swift; sourceTree = "<group>"; };
@@ -234,6 +236,7 @@
 				331FCC8B26457FC200FD3FA7 /* Models */,
 				331FCC7726456B4D00FD3FA7 /* AutoUpdate.h */,
 				331FCC7826456B4D00FD3FA7 /* Info.plist */,
+				33B27424264BFE1B00A318CD /* Media.xcassets */,
 			);
 			path = AutoUpdate;
 			sourceTree = "<group>";
@@ -454,6 +457,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				33B27425264BFE1B00A318CD /* Media.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -751,6 +755,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tectec.UpdateInstaller;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -773,6 +778,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tectec.UpdateInstaller;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -798,7 +804,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tectec.AutoUpdate;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -826,7 +832,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tectec.AutoUpdate;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -842,6 +848,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = A7SGM6JEMA;
 				ENABLE_HARDENED_RUNTIME = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
@@ -853,6 +860,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = A7SGM6JEMA;
 				ENABLE_HARDENED_RUNTIME = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
