@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		331E18AA2640351200C4593E /* BeamUpdaterProtoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18A92640351200C4593E /* BeamUpdaterProtoApp.swift */; };
+		331E18AA2640351200C4593E /* AutoUpdateDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18A92640351200C4593E /* AutoUpdateDemoApp.swift */; };
 		331E18AE2640351600C4593E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 331E18AD2640351600C4593E /* Assets.xcassets */; };
 		331E18B12640351600C4593E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 331E18B02640351600C4593E /* Preview Assets.xcassets */; };
 		331E18C626404D3C00C4593E /* AutoUpdateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18C526404D3C00C4593E /* AutoUpdateTests.swift */; };
@@ -26,7 +26,7 @@
 		331FCC8826456C2C00FD3FA7 /* AppRelease.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18BB26403A7400C4593E /* AppRelease.swift */; };
 		331FCC8926456C5900FD3FA7 /* UpdateInstallerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18D326414DFC00C4593E /* UpdateInstallerProtocol.swift */; };
 		331FCC8D264581DA00FD3FA7 /* ReleaseNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331FCC8C264581DA00FD3FA7 /* ReleaseNoteView.swift */; };
-		3331E6C426458D5400003345 /* BeamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3331E6C326458D5400003345 /* BeamView.swift */; };
+		3331E6C426458D5400003345 /* AppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3331E6C326458D5400003345 /* AppView.swift */; };
 		33B27425264BFE1B00A318CD /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 33B27424264BFE1B00A318CD /* Media.xcassets */; };
 		33EBA560264ABD3E00369730 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33EBA55F264ABD3E00369730 /* main.swift */; };
 		33EBA566264ABDB800369730 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 33EBA565264ABDB800369730 /* ArgumentParser */; };
@@ -92,7 +92,7 @@
 
 /* Begin PBXFileReference section */
 		331E18A62640351200C4593E /* AutoUpdateDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AutoUpdateDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		331E18A92640351200C4593E /* BeamUpdaterProtoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeamUpdaterProtoApp.swift; sourceTree = "<group>"; };
+		331E18A92640351200C4593E /* AutoUpdateDemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoUpdateDemoApp.swift; sourceTree = "<group>"; };
 		331E18AB2640351200C4593E /* UpdaterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdaterView.swift; sourceTree = "<group>"; };
 		331E18AD2640351600C4593E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		331E18B02640351600C4593E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -114,7 +114,7 @@
 		331FCC7726456B4D00FD3FA7 /* AutoUpdate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AutoUpdate.h; sourceTree = "<group>"; };
 		331FCC7826456B4D00FD3FA7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		331FCC8C264581DA00FD3FA7 /* ReleaseNoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReleaseNoteView.swift; sourceTree = "<group>"; };
-		3331E6C326458D5400003345 /* BeamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeamView.swift; sourceTree = "<group>"; };
+		3331E6C326458D5400003345 /* AppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppView.swift; sourceTree = "<group>"; };
 		33B27424264BFE1B00A318CD /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		33EBA55D264ABD3E00369730 /* AppFeedBuilder */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = AppFeedBuilder; sourceTree = BUILT_PRODUCTS_DIR; };
 		33EBA55F264ABD3E00369730 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
@@ -189,8 +189,8 @@
 		331E18A82640351200C4593E /* AutoUpdateDemo */ = {
 			isa = PBXGroup;
 			children = (
-				331E18A92640351200C4593E /* BeamUpdaterProtoApp.swift */,
-				3331E6C326458D5400003345 /* BeamView.swift */,
+				331E18A92640351200C4593E /* AutoUpdateDemoApp.swift */,
+				3331E6C326458D5400003345 /* AppView.swift */,
 				331E18AD2640351600C4593E /* Assets.xcassets */,
 				331E18B22640351600C4593E /* Info.plist */,
 				331E18B32640351600C4593E /* AutoUpdateDemo.entitlements */,
@@ -468,8 +468,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				331E18AA2640351200C4593E /* BeamUpdaterProtoApp.swift in Sources */,
-				3331E6C426458D5400003345 /* BeamView.swift in Sources */,
+				331E18AA2640351200C4593E /* AutoUpdateDemoApp.swift in Sources */,
+				3331E6C426458D5400003345 /* AppView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -670,7 +670,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.tectec.BeamUpdaterProto;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tectec.AutoUpdateDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
@@ -695,7 +695,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.tectec.BeamUpdaterProto;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tectec.AutoUpdateDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
@@ -714,7 +714,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.tectec.BeamUpdaterProtoTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tectec.AutoUpdateTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AutoUpdateDemo.app/Contents/MacOS/AutoUpdateDemo";
@@ -734,7 +734,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.tectec.BeamUpdaterProtoTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tectec.AutoUpdateTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AutoUpdateDemo.app/Contents/MacOS/AutoUpdateDemo";
