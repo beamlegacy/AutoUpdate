@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "331E18A52640351200C4593E"
-               BuildableName = "BeamUpdaterProto.app"
-               BlueprintName = "BeamUpdaterProto"
-               ReferencedContainer = "container:BeamUpdaterProto.xcodeproj">
+               BuildableName = "AutoUpdateDemo.app"
+               BlueprintName = "AutoUpdateDemo"
+               ReferencedContainer = "container:AutoUpdate.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "331E18C226404D3C00C4593E"
-               BuildableName = "BeamUpdaterProtoTests.xctest"
-               BlueprintName = "BeamUpdaterProtoTests"
-               ReferencedContainer = "container:BeamUpdaterProto.xcodeproj">
+               BuildableName = "AutoUpdateTests.xctest"
+               BlueprintName = "AutoUpdateTests"
+               ReferencedContainer = "container:AutoUpdate.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "331E18A52640351200C4593E"
-            BuildableName = "BeamUpdaterProto.app"
-            BlueprintName = "BeamUpdaterProto"
-            ReferencedContainer = "container:BeamUpdaterProto.xcodeproj">
+            BuildableName = "AutoUpdateDemo.app"
+            BlueprintName = "AutoUpdateDemo"
+            ReferencedContainer = "container:AutoUpdate.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "331E18A52640351200C4593E"
-            BuildableName = "BeamUpdaterProto.app"
-            BlueprintName = "BeamUpdaterProto"
-            ReferencedContainer = "container:BeamUpdaterProto.xcodeproj">
+            BuildableName = "AutoUpdateDemo.app"
+            BlueprintName = "AutoUpdateDemo"
+            ReferencedContainer = "container:AutoUpdate.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

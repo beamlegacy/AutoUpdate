@@ -83,7 +83,7 @@ extension AppRelease {
                               version: "2.0", buildNumber: 50,
                                             releaseNotes: notes,
                                             publicationDate: Date(),
-                                            downloadURL: URL(string: "https://github.com/eLud/update-proto/raw/main/BeamUpdaterProto_v1.1.zip")!)
+                                            downloadURL: URL(string: "http://www.mamadouce.fr/download/Beam_v2.0_50.zip")!)
 
         let versions = [v0_1, v0_1_1, v1_1, v2_0]
 

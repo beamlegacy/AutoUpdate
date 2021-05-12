@@ -10,7 +10,7 @@
 		331E18AA2640351200C4593E /* BeamUpdaterProtoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18A92640351200C4593E /* BeamUpdaterProtoApp.swift */; };
 		331E18AE2640351600C4593E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 331E18AD2640351600C4593E /* Assets.xcassets */; };
 		331E18B12640351600C4593E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 331E18B02640351600C4593E /* Preview Assets.xcassets */; };
-		331E18C626404D3C00C4593E /* BeamUpdaterProtoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18C526404D3C00C4593E /* BeamUpdaterProtoTests.swift */; };
+		331E18C626404D3C00C4593E /* AutoUpdateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18C526404D3C00C4593E /* AutoUpdateTests.swift */; };
 		331E18E22641504C00C4593E /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18E12641504C00C4593E /* main.swift */; };
 		331E18E42641507300C4593E /* UpdateInstallerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18E32641507300C4593E /* UpdateInstallerDelegate.swift */; };
 		331E18E6264150D000C4593E /* UpdateInstallerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18D326414DFC00C4593E /* UpdateInstallerProtocol.swift */; };
@@ -91,17 +91,17 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		331E18A62640351200C4593E /* BeamUpdaterProto.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BeamUpdaterProto.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		331E18A62640351200C4593E /* AutoUpdateDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AutoUpdateDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		331E18A92640351200C4593E /* BeamUpdaterProtoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeamUpdaterProtoApp.swift; sourceTree = "<group>"; };
 		331E18AB2640351200C4593E /* UpdaterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdaterView.swift; sourceTree = "<group>"; };
 		331E18AD2640351600C4593E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		331E18B02640351600C4593E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		331E18B22640351600C4593E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		331E18B32640351600C4593E /* BeamUpdaterProto.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BeamUpdaterProto.entitlements; sourceTree = "<group>"; };
+		331E18B32640351600C4593E /* AutoUpdateDemo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AutoUpdateDemo.entitlements; sourceTree = "<group>"; };
 		331E18BB26403A7400C4593E /* AppRelease.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRelease.swift; sourceTree = "<group>"; };
 		331E18BD26403F3E00C4593E /* VersionChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionChecker.swift; sourceTree = "<group>"; };
-		331E18C326404D3C00C4593E /* BeamUpdaterProtoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BeamUpdaterProtoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		331E18C526404D3C00C4593E /* BeamUpdaterProtoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeamUpdaterProtoTests.swift; sourceTree = "<group>"; };
+		331E18C326404D3C00C4593E /* AutoUpdateTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AutoUpdateTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		331E18C526404D3C00C4593E /* AutoUpdateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoUpdateTests.swift; sourceTree = "<group>"; };
 		331E18C726404D3C00C4593E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		331E18D126414DFC00C4593E /* UpdateInstaller.xpc */ = {isa = PBXFileReference; explicitFileType = "wrapper.xpc-service"; includeInIndex = 0; path = UpdateInstaller.xpc; sourceTree = BUILT_PRODUCTS_DIR; };
 		331E18D326414DFC00C4593E /* UpdateInstallerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateInstallerProtocol.swift; sourceTree = "<group>"; };
@@ -165,8 +165,8 @@
 		331E189D2640351200C4593E = {
 			isa = PBXGroup;
 			children = (
-				331E18A82640351200C4593E /* BeamUpdaterProto */,
-				331E18C426404D3C00C4593E /* BeamUpdaterProtoTests */,
+				331E18A82640351200C4593E /* AutoUpdateDemo */,
+				331E18C426404D3C00C4593E /* AutoUpdateTests */,
 				331E18D226414DFC00C4593E /* UpdateInstaller */,
 				331FCC7626456B4D00FD3FA7 /* AutoUpdate */,
 				33EBA55E264ABD3E00369730 /* AppFeedBuilder */,
@@ -177,8 +177,8 @@
 		331E18A72640351200C4593E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				331E18A62640351200C4593E /* BeamUpdaterProto.app */,
-				331E18C326404D3C00C4593E /* BeamUpdaterProtoTests.xctest */,
+				331E18A62640351200C4593E /* AutoUpdateDemo.app */,
+				331E18C326404D3C00C4593E /* AutoUpdateTests.xctest */,
 				331E18D126414DFC00C4593E /* UpdateInstaller.xpc */,
 				331FCC7526456B4D00FD3FA7 /* AutoUpdate.framework */,
 				33EBA55D264ABD3E00369730 /* AppFeedBuilder */,
@@ -186,17 +186,17 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		331E18A82640351200C4593E /* BeamUpdaterProto */ = {
+		331E18A82640351200C4593E /* AutoUpdateDemo */ = {
 			isa = PBXGroup;
 			children = (
 				331E18A92640351200C4593E /* BeamUpdaterProtoApp.swift */,
 				3331E6C326458D5400003345 /* BeamView.swift */,
 				331E18AD2640351600C4593E /* Assets.xcassets */,
 				331E18B22640351600C4593E /* Info.plist */,
-				331E18B32640351600C4593E /* BeamUpdaterProto.entitlements */,
+				331E18B32640351600C4593E /* AutoUpdateDemo.entitlements */,
 				331E18AF2640351600C4593E /* Preview Content */,
 			);
-			path = BeamUpdaterProto;
+			path = AutoUpdateDemo;
 			sourceTree = "<group>";
 		};
 		331E18AF2640351600C4593E /* Preview Content */ = {
@@ -207,13 +207,13 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		331E18C426404D3C00C4593E /* BeamUpdaterProtoTests */ = {
+		331E18C426404D3C00C4593E /* AutoUpdateTests */ = {
 			isa = PBXGroup;
 			children = (
-				331E18C526404D3C00C4593E /* BeamUpdaterProtoTests.swift */,
+				331E18C526404D3C00C4593E /* AutoUpdateTests.swift */,
 				331E18C726404D3C00C4593E /* Info.plist */,
 			);
-			path = BeamUpdaterProtoTests;
+			path = AutoUpdateTests;
 			sourceTree = "<group>";
 		};
 		331E18D226414DFC00C4593E /* UpdateInstaller */ = {
@@ -282,9 +282,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		331E18A52640351200C4593E /* BeamUpdaterProto */ = {
+		331E18A52640351200C4593E /* AutoUpdateDemo */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 331E18B62640351600C4593E /* Build configuration list for PBXNativeTarget "BeamUpdaterProto" */;
+			buildConfigurationList = 331E18B62640351600C4593E /* Build configuration list for PBXNativeTarget "AutoUpdateDemo" */;
 			buildPhases = (
 				331E18A22640351200C4593E /* Sources */,
 				331E18A32640351200C4593E /* Frameworks */,
@@ -297,14 +297,14 @@
 				331E18DB26414DFC00C4593E /* PBXTargetDependency */,
 				331FCC7B26456B4D00FD3FA7 /* PBXTargetDependency */,
 			);
-			name = BeamUpdaterProto;
+			name = AutoUpdateDemo;
 			productName = BeamUpdaterProto;
-			productReference = 331E18A62640351200C4593E /* BeamUpdaterProto.app */;
+			productReference = 331E18A62640351200C4593E /* AutoUpdateDemo.app */;
 			productType = "com.apple.product-type.application";
 		};
-		331E18C226404D3C00C4593E /* BeamUpdaterProtoTests */ = {
+		331E18C226404D3C00C4593E /* AutoUpdateTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 331E18CA26404D3C00C4593E /* Build configuration list for PBXNativeTarget "BeamUpdaterProtoTests" */;
+			buildConfigurationList = 331E18CA26404D3C00C4593E /* Build configuration list for PBXNativeTarget "AutoUpdateTests" */;
 			buildPhases = (
 				331E18BF26404D3C00C4593E /* Sources */,
 				331E18C026404D3C00C4593E /* Frameworks */,
@@ -315,9 +315,9 @@
 			dependencies = (
 				331E18C926404D3C00C4593E /* PBXTargetDependency */,
 			);
-			name = BeamUpdaterProtoTests;
+			name = AutoUpdateTests;
 			productName = BeamUpdaterProtoTests;
-			productReference = 331E18C326404D3C00C4593E /* BeamUpdaterProtoTests.xctest */;
+			productReference = 331E18C326404D3C00C4593E /* AutoUpdateTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		331E18D026414DFC00C4593E /* UpdateInstaller */ = {
@@ -404,7 +404,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 331E18A12640351200C4593E /* Build configuration list for PBXProject "BeamUpdaterProto" */;
+			buildConfigurationList = 331E18A12640351200C4593E /* Build configuration list for PBXProject "AutoUpdate" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -420,8 +420,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				331E18A52640351200C4593E /* BeamUpdaterProto */,
-				331E18C226404D3C00C4593E /* BeamUpdaterProtoTests */,
+				331E18A52640351200C4593E /* AutoUpdateDemo */,
+				331E18C226404D3C00C4593E /* AutoUpdateTests */,
 				331E18D026414DFC00C4593E /* UpdateInstaller */,
 				331FCC7426456B4D00FD3FA7 /* AutoUpdate */,
 				33EBA55C264ABD3E00369730 /* AppFeedBuilder */,
@@ -477,7 +477,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				331E18C626404D3C00C4593E /* BeamUpdaterProtoTests.swift in Sources */,
+				331E18C626404D3C00C4593E /* AutoUpdateTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -520,7 +520,7 @@
 /* Begin PBXTargetDependency section */
 		331E18C926404D3C00C4593E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 331E18A52640351200C4593E /* BeamUpdaterProto */;
+			target = 331E18A52640351200C4593E /* AutoUpdateDemo */;
 			targetProxy = 331E18C826404D3C00C4593E /* PBXContainerItemProxy */;
 		};
 		331E18DB26414DFC00C4593E /* PBXTargetDependency */ = {
@@ -657,14 +657,14 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = BeamUpdaterProto/BeamUpdaterProto.entitlements;
+				CODE_SIGN_ENTITLEMENTS = AutoUpdateDemo/AutoUpdateDemo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_ASSET_PATHS = "\"BeamUpdaterProto/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"AutoUpdateDemo/Preview Content\"";
 				DEVELOPMENT_TEAM = A7SGM6JEMA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = BeamUpdaterProto/Info.plist;
+				INFOPLIST_FILE = AutoUpdateDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -682,14 +682,14 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = BeamUpdaterProto/BeamUpdaterProto.entitlements;
+				CODE_SIGN_ENTITLEMENTS = AutoUpdateDemo/AutoUpdateDemo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_ASSET_PATHS = "\"BeamUpdaterProto/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"AutoUpdateDemo/Preview Content\"";
 				DEVELOPMENT_TEAM = A7SGM6JEMA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = BeamUpdaterProto/Info.plist;
+				INFOPLIST_FILE = AutoUpdateDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -708,7 +708,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = A7SGM6JEMA;
-				INFOPLIST_FILE = BeamUpdaterProtoTests/Info.plist;
+				INFOPLIST_FILE = AutoUpdateTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -717,7 +717,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.tectec.BeamUpdaterProtoTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BeamUpdaterProto.app/Contents/MacOS/BeamUpdaterProto";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AutoUpdateDemo.app/Contents/MacOS/AutoUpdateDemo";
 			};
 			name = Debug;
 		};
@@ -728,7 +728,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = A7SGM6JEMA;
-				INFOPLIST_FILE = BeamUpdaterProtoTests/Info.plist;
+				INFOPLIST_FILE = AutoUpdateTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -737,7 +737,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.tectec.BeamUpdaterProtoTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BeamUpdaterProto.app/Contents/MacOS/BeamUpdaterProto";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AutoUpdateDemo.app/Contents/MacOS/AutoUpdateDemo";
 			};
 			name = Release;
 		};
@@ -869,7 +869,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		331E18A12640351200C4593E /* Build configuration list for PBXProject "BeamUpdaterProto" */ = {
+		331E18A12640351200C4593E /* Build configuration list for PBXProject "AutoUpdate" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				331E18B42640351600C4593E /* Debug */,
@@ -878,7 +878,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		331E18B62640351600C4593E /* Build configuration list for PBXNativeTarget "BeamUpdaterProto" */ = {
+		331E18B62640351600C4593E /* Build configuration list for PBXNativeTarget "AutoUpdateDemo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				331E18B72640351600C4593E /* Debug */,
@@ -887,7 +887,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		331E18CA26404D3C00C4593E /* Build configuration list for PBXNativeTarget "BeamUpdaterProtoTests" */ = {
+		331E18CA26404D3C00C4593E /* Build configuration list for PBXNativeTarget "AutoUpdateTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				331E18CB26404D3C00C4593E /* Debug */,
