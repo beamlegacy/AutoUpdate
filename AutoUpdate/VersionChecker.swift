@@ -31,6 +31,7 @@ public class VersionChecker: ObservableObject {
     private var autocheckTimer: AnyCancellable?
 
     @Published public var newRelease: AppRelease?
+    @Published public var currentRelease: AppRelease?
     @Published public var state: State
     @Published public var lastCheck: Date?
 
@@ -205,16 +206,24 @@ public class VersionChecker: ObservableObject {
         let decoder = JSONDecoder()
         // Get current app version
         // Compare to the feed's highest version
-        var version = try? decoder.decode([AppRelease].self, from: data)
-        version?.sort(by: >)
-        guard let highestVersion = version?.first else { return nil }
+        var versions = try? decoder.decode([AppRelease].self, from: data)
+        versions?.sort(by: >)
+        guard let highestVersion = versions?.first else { return nil }
 
-        let currentRelease = AppRelease(versionName: self.currentAppName(),
-                                        version: self.currentAppVersion(),
-                                        buildNumber: self.currentAppBuild(),
-                                        releaseNotes: "",
-                                        publicationDate: Date(),
+        let currentVersion = self.currentAppVersion()
+        let currentBuild = self.currentAppBuild()
+
+        let currentFromFeed = versions?.filter({ release in
+            release.buildNumber == currentBuild && release.version == currentVersion
+        }).first
+
+        let currentRelease = AppRelease(versionName: currentFromFeed?.versionName ?? self.currentAppName(),
+                                        version: currentVersion,
+                                        buildNumber: currentBuild,
+                                        releaseNotes: currentFromFeed?.releaseNotes ?? "",
+                                        publicationDate: currentFromFeed?.publicationDate ?? Date(),
                                         downloadURL: URL(string: "http://")!)
+        self.currentRelease = currentRelease
 
         if highestVersion > currentRelease {
             return highestVersion
