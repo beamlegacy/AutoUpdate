@@ -27,6 +27,7 @@
 		331FCC8926456C5900FD3FA7 /* UpdateInstallerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18D326414DFC00C4593E /* UpdateInstallerProtocol.swift */; };
 		331FCC8D264581DA00FD3FA7 /* ReleaseNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331FCC8C264581DA00FD3FA7 /* ReleaseNoteView.swift */; };
 		3331E6C426458D5400003345 /* AppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3331E6C326458D5400003345 /* AppView.swift */; };
+		333A8DC12653FF7500EEA7FB /* Package.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333A8DC02653FF7500EEA7FB /* Package.swift */; };
 		33B27425264BFE1B00A318CD /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 33B27424264BFE1B00A318CD /* Media.xcassets */; };
 		33EBA560264ABD3E00369730 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33EBA55F264ABD3E00369730 /* main.swift */; };
 		33EBA566264ABDB800369730 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 33EBA565264ABDB800369730 /* ArgumentParser */; };
@@ -115,6 +116,7 @@
 		331FCC7826456B4D00FD3FA7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		331FCC8C264581DA00FD3FA7 /* ReleaseNoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReleaseNoteView.swift; sourceTree = "<group>"; };
 		3331E6C326458D5400003345 /* AppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppView.swift; sourceTree = "<group>"; };
+		333A8DC02653FF7500EEA7FB /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		33B27424264BFE1B00A318CD /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		33EBA55D264ABD3E00369730 /* AppFeedBuilder */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = AppFeedBuilder; sourceTree = BUILT_PRODUCTS_DIR; };
 		33EBA55F264ABD3E00369730 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
@@ -260,10 +262,27 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		33EBA55E264ABD3E00369730 /* AppFeedBuilder */ = {
+		333A8DC22654001900EEA7FB /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				333A8DC3265401CA00EEA7FB /* AppFeedBuilder */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		333A8DC3265401CA00EEA7FB /* AppFeedBuilder */ = {
 			isa = PBXGroup;
 			children = (
 				33EBA55F264ABD3E00369730 /* main.swift */,
+			);
+			path = AppFeedBuilder;
+			sourceTree = "<group>";
+		};
+		33EBA55E264ABD3E00369730 /* AppFeedBuilder */ = {
+			isa = PBXGroup;
+			children = (
+				333A8DC22654001900EEA7FB /* Sources */,
+				333A8DC02653FF7500EEA7FB /* Package.swift */,
 			);
 			path = AppFeedBuilder;
 			sourceTree = "<group>";
@@ -510,6 +529,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				333A8DC12653FF7500EEA7FB /* Package.swift in Sources */,
 				33EBA560264ABD3E00369730 /* main.swift in Sources */,
 				33EBA567264AC17900369730 /* AppRelease.swift in Sources */,
 			);
