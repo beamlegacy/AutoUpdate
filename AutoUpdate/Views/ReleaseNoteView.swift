@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import MarkdownUI
+import Parma
 
 public struct ReleaseNoteView: View {
 
@@ -66,18 +66,7 @@ public struct ReleaseNoteView: View {
             Text(release.versionName)
                 .font(.headline)
             ScrollView {
-                if #available(macOS 11.0, *) {
-                    Markdown(Document(release.mardownReleaseNotes))
-                        .markdownStyle(
-                            DefaultMarkdownStyle(
-                                font: .system(.body, design: .serif),
-                                codeFontName: "Menlo",
-                                codeFontSizeMultiple: 0.88
-                            )
-                        )
-                } else {
-                    Text(release.mardownReleaseNotes)
-                }
+                Parma(release.mardownReleaseNotes)
             }
         }
         .padding(.leading)

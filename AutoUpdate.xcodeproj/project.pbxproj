@@ -28,7 +28,7 @@
 		3331E6C426458D5400003345 /* AppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3331E6C326458D5400003345 /* AppView.swift */; };
 		333A8DC426552FD600EEA7FB /* AppRelease.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18BB26403A7400C4593E /* AppRelease.swift */; };
 		333A8DC82655422400EEA7FB /* SimpleWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333A8DC72655422400EEA7FB /* SimpleWebView.swift */; };
-		333A8DCB26555F6200EEA7FB /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = 333A8DCA26555F6200EEA7FB /* MarkdownUI */; };
+		333A8DCE26556FB100EEA7FB /* Parma in Frameworks */ = {isa = PBXBuildFile; productRef = 333A8DCD26556FB100EEA7FB /* Parma */; };
 		33B27425264BFE1B00A318CD /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 33B27424264BFE1B00A318CD /* Media.xcassets */; };
 		33EBA560264ABD3E00369730 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33EBA55F264ABD3E00369730 /* main.swift */; };
 		33EBA566264ABDB800369730 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 33EBA565264ABDB800369730 /* ArgumentParser */; };
@@ -152,7 +152,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				333A8DCB26555F6200EEA7FB /* MarkdownUI in Frameworks */,
+				333A8DCE26556FB100EEA7FB /* Parma in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -376,7 +376,7 @@
 			);
 			name = AutoUpdate;
 			packageProductDependencies = (
-				333A8DCA26555F6200EEA7FB /* MarkdownUI */,
+				333A8DCD26556FB100EEA7FB /* Parma */,
 			);
 			productName = AutoUpdate;
 			productReference = 331FCC7526456B4D00FD3FA7 /* AutoUpdate.framework */;
@@ -441,7 +441,7 @@
 			mainGroup = 331E189D2640351200C4593E;
 			packageReferences = (
 				33EBA564264ABDB800369730 /* XCRemoteSwiftPackageReference "swift-argument-parser" */,
-				333A8DC926555F6200EEA7FB /* XCRemoteSwiftPackageReference "MarkdownUI" */,
+				333A8DCC26556FB100EEA7FB /* XCRemoteSwiftPackageReference "Parma" */,
 			);
 			productRefGroup = 331E18A72640351200C4593E /* Products */;
 			projectDirPath = "";
@@ -1127,12 +1127,12 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		333A8DC926555F6200EEA7FB /* XCRemoteSwiftPackageReference "MarkdownUI" */ = {
+		333A8DCC26556FB100EEA7FB /* XCRemoteSwiftPackageReference "Parma" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/gonzalezreal/MarkdownUI";
+			repositoryURL = "https://github.com/dasautoooo/Parma";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.5.1;
+				minimumVersion = 0.3.0;
 			};
 		};
 		33EBA564264ABDB800369730 /* XCRemoteSwiftPackageReference "swift-argument-parser" */ = {
@@ -1146,10 +1146,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		333A8DCA26555F6200EEA7FB /* MarkdownUI */ = {
+		333A8DCD26556FB100EEA7FB /* Parma */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 333A8DC926555F6200EEA7FB /* XCRemoteSwiftPackageReference "MarkdownUI" */;
-			productName = MarkdownUI;
+			package = 333A8DCC26556FB100EEA7FB /* XCRemoteSwiftPackageReference "Parma" */;
+			productName = Parma;
 		};
 		33EBA565264ABDB800369730 /* ArgumentParser */ = {
 			isa = XCSwiftPackageProductDependency;
