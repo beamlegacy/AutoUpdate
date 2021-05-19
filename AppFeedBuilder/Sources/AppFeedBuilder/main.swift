@@ -94,7 +94,7 @@ struct AppFeedBuilder: ParsableCommand {
                     try jsonString.write(to: fileURL, atomically: true, encoding: .utf8)
                     print("App feed written at \(fileURL.path)")
                 } catch {
-                    print("Error writing file at \(fileURL.path)")
+                    print("Error writing file at \(fileURL.path) : \(error.localizedDescription)")
                 }
             } else {
                 print("Error generating the feed")
