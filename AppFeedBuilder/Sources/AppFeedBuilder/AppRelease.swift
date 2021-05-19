@@ -12,7 +12,7 @@ public struct AppRelease: Codable {
     public let versionName: String
     public let version: String
     public let buildNumber: Int
-    public let htmlReleaseNotesURL: URL
+    public let mardownReleaseNotes: String
     public let publicationDate: Date
     public let downloadURL: URL
 }
@@ -55,18 +55,29 @@ extension AppRelease {
 
     static public func demoJSON() -> Data {
 
+        let releaseNotes = """
+        # Beam 2.0 : Collaborate on Cards
+
+        - Pharetra, malesuada tellus amet orci iaculis et. In nunc, augue in orci netus maecenas. In eget arcu a augue. Dui pulvinar pellentesque.
+        - Tempor sit erat amet parturient pretium nunc.
+        - Urna arcu libero, neque, placerat risus porta commodo, nulla. Diam ac aliquam velit ipsum.
+        - Et nulla sed justo facilisi. Lobortis ligula a nisl.
+        - Nunc, morbi praesent non suscipit. In massa purus quis molestie. Nam lectus massa mattis fringilla quam. Vel tortor quis a sit tellus lorem amet placerat tellus. Semper dui massa phasellus nisl.
+        - At amet nibh nibh nibh elementum. In sagittis consectetur ut massa pulvinar.
+        """
+
         let v0_1DateComponents = DateComponents(year: 2020, month: 11, day: 20, hour: 17, minute: 45, second: 00)
-        let v0_1 = AppRelease(versionName: "Version 0.1", version: "0.1", buildNumber: 1, htmlReleaseNotesURL: URL(string: "https://github.com/eLud/update-proto/raw/main/release_notes_0_1.html")!, publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.zip")!)
+        let v0_1 = AppRelease(versionName: "Version 0.1", version: "0.1", buildNumber: 1, mardownReleaseNotes: "", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.zip")!)
 
         let v0_1_1DateComponents = DateComponents(year: 2020, month: 11, day: 20, hour: 17, minute: 45, second: 00)
-        let v0_1_1 = AppRelease(versionName: "Version 0.1.1", version: "0.1.1", buildNumber: 2, htmlReleaseNotesURL: URL(string: "https://github.com/eLud/update-proto/raw/main/release_notes_0_1_1.html")!, publicationDate: Calendar.current.date(from: v0_1_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.1.zip")!)
+        let v0_1_1 = AppRelease(versionName: "Version 0.1.1", version: "0.1.1", buildNumber: 2, mardownReleaseNotes: "", publicationDate: Calendar.current.date(from: v0_1_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.1.zip")!)
 
         let v1_1DateComponents = DateComponents(year: 2021, month: 5, day: 3, hour: 14, minute: 35, second: 00)
-        let v1_1 = AppRelease(versionName: "Version 1.1", version: "1.1", buildNumber: 5, htmlReleaseNotesURL: URL(string: "https://github.com/eLud/update-proto/raw/main/release_notes_1_1.html")!, publicationDate: Calendar.current.date(from: v1_1DateComponents)!, downloadURL: URL(string: "https://github.com/eLud/update-proto/raw/main/BeamUpdaterProto_v1.1.zip")!)
+        let v1_1 = AppRelease(versionName: "Version 1.1", version: "1.1", buildNumber: 5, mardownReleaseNotes: "", publicationDate: Calendar.current.date(from: v1_1DateComponents)!, downloadURL: URL(string: "https://github.com/eLud/update-proto/raw/main/BeamUpdaterProto_v1.1.zip")!)
 
         let v2_0 = AppRelease(versionName: "Beam 2.0: Collaborate on Cards",
                               version: "2.0", buildNumber: 50,
-                              htmlReleaseNotesURL: URL(string: "https://s3.eu-west-3.amazonaws.com/downloads.dev.beamapp.co/ludo/BE-568-auto-update/release_notes.html")!,
+                              mardownReleaseNotes: releaseNotes,
                                             publicationDate: Date(),
                                             downloadURL: URL(string: "http://www.mamadouce.fr/download/Beam_v2.0_50.zip")!)
 
