@@ -23,11 +23,11 @@
 		331FCC8526456C0900FD3FA7 /* ProgressiveStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331FCC43264428F800FD3FA7 /* ProgressiveStatusView.swift */; };
 		331FCC8626456C0900FD3FA7 /* StatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F7FFA726442363007E573B /* StatusView.swift */; };
 		331FCC8726456C0900FD3FA7 /* UpdaterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18AB2640351200C4593E /* UpdaterView.swift */; };
-		331FCC8826456C2C00FD3FA7 /* AppRelease.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18BB26403A7400C4593E /* AppRelease.swift */; };
 		331FCC8926456C5900FD3FA7 /* UpdateInstallerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18D326414DFC00C4593E /* UpdateInstallerProtocol.swift */; };
 		331FCC8D264581DA00FD3FA7 /* ReleaseNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331FCC8C264581DA00FD3FA7 /* ReleaseNoteView.swift */; };
 		3331E6C426458D5400003345 /* AppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3331E6C326458D5400003345 /* AppView.swift */; };
 		333A8DC12653FF7500EEA7FB /* Package.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333A8DC02653FF7500EEA7FB /* Package.swift */; };
+		333A8DC426552FD600EEA7FB /* AppRelease.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18BB26403A7400C4593E /* AppRelease.swift */; };
 		33B27425264BFE1B00A318CD /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 33B27424264BFE1B00A318CD /* Media.xcassets */; };
 		33EBA560264ABD3E00369730 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33EBA55F264ABD3E00369730 /* main.swift */; };
 		33EBA566264ABDB800369730 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 33EBA565264ABDB800369730 /* ArgumentParser */; };
@@ -257,7 +257,6 @@
 		331FCC8B26457FC200FD3FA7 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				331E18BB26403A7400C4593E /* AppRelease.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -273,6 +272,7 @@
 		333A8DC3265401CA00EEA7FB /* AppFeedBuilder */ = {
 			isa = PBXGroup;
 			children = (
+				331E18BB26403A7400C4593E /* AppRelease.swift */,
 				33EBA55F264ABD3E00369730 /* main.swift */,
 			);
 			path = AppFeedBuilder;
@@ -515,8 +515,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				333A8DC426552FD600EEA7FB /* AppRelease.swift in Sources */,
 				331FCC8726456C0900FD3FA7 /* UpdaterView.swift in Sources */,
-				331FCC8826456C2C00FD3FA7 /* AppRelease.swift in Sources */,
 				331FCC8526456C0900FD3FA7 /* ProgressiveStatusView.swift in Sources */,
 				331FCC8926456C5900FD3FA7 /* UpdateInstallerProtocol.swift in Sources */,
 				331FCC8426456C0900FD3FA7 /* VersionChecker.swift in Sources */,
