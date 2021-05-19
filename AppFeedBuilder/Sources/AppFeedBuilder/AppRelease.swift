@@ -21,15 +21,13 @@ extension AppRelease {
 
     static func updateJSON(at feedURL: URL, with release: AppRelease, completion: @escaping (Data?)->()) {
         getReleases(at: feedURL) { feed in
-            guard var feed = feed else {
-                completion(nil)
-                return
-            }
 
-            feed.append(release)
+            var initialFeed = feed ?? []
+
+            initialFeed.append(release)
             let encoder = JSONEncoder()
             do {
-                let updatedFeedJSON = try encoder.encode(feed)
+                let updatedFeedJSON = try encoder.encode(initialFeed)
                 completion(updatedFeedJSON)
             } catch {
                 completion(nil)
