@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import WebKit
 
 public struct ReleaseNoteView: View {
 
@@ -18,6 +19,8 @@ public struct ReleaseNoteView: View {
 
     private let release: AppRelease
     private let checker: VersionChecker?
+    private let webView = WKWebView()
+
     @Environment(\.presentationMode) var presentationMode
 
     @State private var showsVersionAndBuild = false
@@ -57,22 +60,21 @@ public struct ReleaseNoteView: View {
                 })
                 .buttonStyle(BorderlessButtonStyle())
             }
-            .padding(.leading)
-            .padding(.trailing)
-            .padding(.top)
             Divider()
                 .padding(.horizontal)
-            ScrollView {
-                VStack(alignment: .leading, spacing: 4.0) {
-                    dateText
-                        .foregroundColor(.gray)
-                    Text(release.versionName)
-                        .font(.headline)
-                    Text(release.htmlReleaseNotesURL.path)
-                        .padding(.vertical)
-                }.padding()
-            }
+            dateText
+                .foregroundColor(.gray)
+            Text(release.versionName)
+                .font(.headline)
+
+            WebView(webView: webView)
+                .onAppear(perform: {
+                    webView.load(URLRequest(url: release.htmlReleaseNotesURL))
+                })
         }
+        .padding(.leading)
+        .padding(.trailing)
+        .padding(.top)
         .background(Color.white)
         .cornerRadius(6.0)
         .shadow(radius: 10)

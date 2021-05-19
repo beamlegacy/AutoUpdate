@@ -64,11 +64,11 @@ extension AppRelease {
         let v0_1_1 = AppRelease(versionName: "Version 0.1.1", version: "0.1.1", buildNumber: 2, htmlReleaseNotesURL: URL(string: "https://github.com/eLud/update-proto/raw/main/release_notes_0_1_1.html")!, publicationDate: Calendar.current.date(from: v0_1_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.1.zip")!)
 
         let v1_1DateComponents = DateComponents(year: 2021, month: 5, day: 3, hour: 14, minute: 35, second: 00)
-        let v1_1 = AppRelease(versionName: "Version 1.1", version: "1.1", buildNumber: 5, htmlReleaseNotesURL: URL(string: "https://github.com/eLud/update-proto/raw/main/release_notes.html_1_1")!, publicationDate: Calendar.current.date(from: v1_1DateComponents)!, downloadURL: URL(string: "https://github.com/eLud/update-proto/raw/main/BeamUpdaterProto_v1.1.zip")!)
+        let v1_1 = AppRelease(versionName: "Version 1.1", version: "1.1", buildNumber: 5, htmlReleaseNotesURL: URL(string: "https://github.com/eLud/update-proto/raw/main/release_notes_1_1.html")!, publicationDate: Calendar.current.date(from: v1_1DateComponents)!, downloadURL: URL(string: "https://github.com/eLud/update-proto/raw/main/BeamUpdaterProto_v1.1.zip")!)
 
         let v2_0 = AppRelease(versionName: "Beam 2.0: Collaborate on Cards",
                               version: "2.0", buildNumber: 50,
-                              htmlReleaseNotesURL: URL(string: "https://github.com/eLud/update-proto/raw/main/release_notes.html_2_0")!,
+                              htmlReleaseNotesURL: URL(string: "https://s3.eu-west-3.amazonaws.com/downloads.dev.beamapp.co/ludo/BE-568-auto-update/release_notes.html")!,
                                             publicationDate: Date(),
                                             downloadURL: URL(string: "http://www.mamadouce.fr/download/Beam_v2.0_50.zip")!)
 
