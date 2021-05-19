@@ -220,7 +220,7 @@ public class VersionChecker: ObservableObject {
         let currentRelease = AppRelease(versionName: currentFromFeed?.versionName ?? self.currentAppName(),
                                         version: currentVersion,
                                         buildNumber: currentBuild,
-                                        releaseNotes: currentFromFeed?.releaseNotes ?? "",
+                                        htmlReleaseNotesURL: currentFromFeed?.htmlReleaseNotesURL ?? URL(string: "http://")!,
                                         publicationDate: currentFromFeed?.publicationDate ?? Date(),
                                         downloadURL: URL(string: "http://")!)
         self.currentRelease = currentRelease

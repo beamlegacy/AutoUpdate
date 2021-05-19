@@ -68,7 +68,7 @@ public struct ReleaseNoteView: View {
                         .foregroundColor(.gray)
                     Text(release.versionName)
                         .font(.headline)
-                    Text(release.releaseNotes)
+                    Text(release.htmlReleaseNotesURL.path)
                         .padding(.vertical)
                 }.padding()
             }
@@ -88,32 +88,19 @@ public struct ReleaseNoteView: View {
 
 struct ReleaseNoteView_Previews: PreviewProvider {
 
-    static let notes = """
-        • Pharetra, malesuada tellus amet orci iaculis et. In nunc, augue in orci netus maecenas. In eget arcu a augue. Dui pulvinar pellentesque.
-
-        • Tempor sit erat amet parturient pretium nunc.
-
-        • Urna arcu libero, neque, placerat risus porta commodo, nulla. Diam ac aliquam velit ipsum.
-
-        • Et nulla sed justo facilisi. Lobortis ligula a nisl.
-
-        • Nunc, morbi praesent non suscipit. In massa purus quis molestie. Nam lectus massa mattis fringilla quam. Vel tortor quis a sit tellus lorem amet placerat tellus. Semper dui massa phasellus nisl.
-
-        • At amet nibh nibh nibh elementum. In sagittis consectetur ut massa pulvinar.
-        """
     static var previews: some View {
         Group {
             ReleaseNoteView(release: AppRelease(versionName: "Beam 2.0: Collaborate on Cards",
                                                 version: "2.0",
                                                 buildNumber: 50,
-                                                releaseNotes: notes,
+                                                htmlReleaseNotesURL: URL(string: "https://github.com/eLud/update-proto/raw/main/release_notes_2_0.html")!,
                                                 publicationDate: Date(),
                                                 downloadURL: URL(string: "http://")!))
                 .frame(width: 340.0, height: 370.0)
             ReleaseNoteView(release: AppRelease(versionName: "Beam 2.0: Collaborate on Cards",
                                                 version: "2.0",
                                                 buildNumber: 50,
-                                                releaseNotes: notes,
+                                                htmlReleaseNotesURL: URL(string: "https://github.com/eLud/update-proto/raw/main/release_notes_2_0.html")!,
                                                 publicationDate: Date(),
                                                 downloadURL: URL(string: "http://")!))
         }
