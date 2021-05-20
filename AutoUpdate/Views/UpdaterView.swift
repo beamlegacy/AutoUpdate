@@ -96,7 +96,7 @@ public struct UpdaterView: View {
 
 struct UpdaterView_Previews: PreviewProvider {
 
-    static var checker = VersionChecker(mockData: AppRelease.demoJSON())
+    static var checker = VersionChecker(mockedReleases: AppRelease.mockedReleases())
 
     static var previews: some View {
         UpdaterView(checker: checker)

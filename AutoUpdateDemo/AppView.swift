@@ -10,7 +10,7 @@ import AutoUpdate
 
 struct AppView: View {
 
-    @StateObject var checker = VersionChecker(mockData: AppRelease.demoJSON(), autocheckEnabled: true)
+    @StateObject var checker = VersionChecker(mockedReleases: AppRelease.mockedReleases(), autocheckEnabled: true)
 
     var body: some View {
         UpdaterView(checker: checker)

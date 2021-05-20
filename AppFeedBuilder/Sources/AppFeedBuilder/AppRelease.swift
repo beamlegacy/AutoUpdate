@@ -53,10 +53,10 @@ extension AppRelease {
         task.resume()
     }
 
-    static public func demoJSON() -> Data {
+    static public func mockedReleases() -> [AppRelease] {
 
         let releaseNotes = """
-        # Beam 2.0 : Collaborate on Cards
+        ## Collaboration, collaboration, collaboration
 
         - Pharetra, malesuada tellus amet orci iaculis et. In nunc, augue in orci netus maecenas. In eget arcu a augue. Dui pulvinar pellentesque.
         - Tempor sit erat amet parturient pretium nunc.
@@ -82,11 +82,7 @@ extension AppRelease {
                                             downloadURL: URL(string: "http://www.mamadouce.fr/download/Beam_v2.0_50.zip")!)
 
         let versions = [v0_1, v0_1_1, v1_1, v2_0]
-
-        let jsonEncoder = JSONEncoder()
-        let data = try? jsonEncoder.encode(versions)
-
-        return data!
+        return versions
     }
 }
 

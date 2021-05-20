@@ -40,8 +40,9 @@ public class VersionChecker: ObservableObject {
     ///Allows AutoUpdater to process to install automatically when an update is available.
     public var allowAutoInstall = false
 
-    public init(mockData: Data, autocheckEnabled: Bool = false) {
-        self.mockData = mockData
+    public init(mockedReleases: [AppRelease], autocheckEnabled: Bool = false) {
+        let encoder = JSONEncoder()
+        self.mockData = try? encoder.encode(mockedReleases)
         self.state = .noUpdate
         if autocheckEnabled {
             enableAutocheck()
@@ -266,11 +267,10 @@ public class VersionChecker: ObservableObject {
         try? fileManager.removeItem(at: updateDirectory(in: appSupport))
     }
 
-    public func missedReleases() -> [AppRelease] {
+    public func releases(after release: AppRelease) -> [AppRelease] {
 
         guard let history = self.releaseHistory,
-              let currentRelease = currentRelease,
-              let currentVersionIndex = history.firstIndex(of: currentRelease) else { return [] }
+              let currentVersionIndex = history.firstIndex(of: release) else { return [] }
 
         let allMissed = history[currentVersionIndex...]
         return Array(allMissed)
