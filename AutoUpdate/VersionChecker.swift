@@ -35,6 +35,8 @@ public class VersionChecker: ObservableObject {
     @Published public var state: State
     @Published public var lastCheck: Date?
 
+    private var releaseHistory: [AppRelease]?
+
     ///Allows AutoUpdater to process to install automatically when an update is available.
     public var allowAutoInstall = false
 
@@ -210,6 +212,8 @@ public class VersionChecker: ObservableObject {
         versions?.sort(by: >)
         guard let highestVersion = versions?.first else { return nil }
 
+        self.releaseHistory = versions
+
         let currentVersion = self.currentAppVersion()
         let currentBuild = self.currentAppBuild()
 
@@ -260,6 +264,16 @@ public class VersionChecker: ObservableObject {
         guard let appSupport = applicationSupportDirectoryURL else { return }
         let fileManager = FileManager.default
         try? fileManager.removeItem(at: updateDirectory(in: appSupport))
+    }
+
+    public func missedReleases() -> [AppRelease] {
+
+        guard let history = self.releaseHistory,
+              let currentRelease = currentRelease,
+              let currentVersionIndex = history.firstIndex(of: currentRelease) else { return [] }
+
+        let allMissed = history[currentVersionIndex...]
+        return Array(allMissed)
     }
 }
 
