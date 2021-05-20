@@ -30,20 +30,27 @@ public class VersionChecker: ObservableObject {
     private var feedURL: URL?
     private var autocheckTimer: AnyCancellable?
 
+    private var releaseHistory: [AppRelease]?
+    private var fakeAppVersion: String?
+    private var fakeAppBuild: Int?
+
     @Published public var newRelease: AppRelease?
     @Published public var currentRelease: AppRelease?
     @Published public var state: State
     @Published public var lastCheck: Date?
 
-    private var releaseHistory: [AppRelease]?
 
     ///Allows AutoUpdater to process to install automatically when an update is available.
     public var allowAutoInstall = false
 
-    public init(mockedReleases: [AppRelease], autocheckEnabled: Bool = false) {
+    public init(mockedReleases: [AppRelease], autocheckEnabled: Bool = false, fakeAppVersion: String? = nil, fakeAppBuild: Int? = nil) {
         let encoder = JSONEncoder()
         self.mockData = try? encoder.encode(mockedReleases)
         self.state = .noUpdate
+
+        self.fakeAppBuild = fakeAppBuild
+        self.fakeAppVersion = fakeAppVersion
+
         if autocheckEnabled {
             enableAutocheck()
         }
@@ -269,11 +276,13 @@ public class VersionChecker: ObservableObject {
 
     public func releases(after release: AppRelease) -> [AppRelease] {
 
-        guard let history = self.releaseHistory,
-              let currentVersionIndex = history.firstIndex(of: release) else { return [] }
+        guard let history = self.releaseHistory else { return [] }
 
-        let allMissed = history[currentVersionIndex...]
-        return Array(allMissed)
+        let older = history.filter {
+            $0 > release
+        }
+
+        return older
     }
 }
 
@@ -281,6 +290,11 @@ public class VersionChecker: ObservableObject {
 extension VersionChecker {
 
     func currentAppVersion() -> String {
+
+        if let fake = fakeAppVersion {
+            return fake
+        }
+
         guard let infos = Bundle.main.infoDictionary,
               let version = infos["CFBundleShortVersionString"] as? String else { fatalError("Cant' get app's version from CFBundleShortVersionString key in Info.plist")
         }
@@ -288,6 +302,11 @@ extension VersionChecker {
     }
 
     func currentAppBuild() -> Int {
+
+        if let fake = fakeAppBuild {
+            return fake
+        }
+
         guard let infos = Bundle.main.infoDictionary,
               let version = infos["CFBundleVersion"] as? String,
               let intVersion = Int(version) else { fatalError("Cant' get app's build from CFBundleVersion key in Info.plist, or it's not an Int number. We only support comparing Int build number.")
