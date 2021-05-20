@@ -59,18 +59,21 @@ public struct ReleaseNoteView: View {
                 })
                 .buttonStyle(BorderlessButtonStyle())
             }
+            .padding(.leading)
+            .padding(.trailing)
             Divider()
                 .padding(.horizontal)
-            dateText
-                .foregroundColor(.gray)
-            Text(release.versionName)
-                .font(.headline)
             ScrollView {
-                Parma(release.mardownReleaseNotes)
+                VStack(alignment: .leading) {
+                    dateText
+                        .foregroundColor(.gray)
+                    Text(release.versionName)
+                        .font(.headline)
+                    Parma(release.mardownReleaseNotes)
+                }.padding(.leading)
+                .padding(.trailing)
             }
         }
-        .padding(.leading)
-        .padding(.trailing)
         .padding(.top)
         .background(Color.white)
         .cornerRadius(6.0)
