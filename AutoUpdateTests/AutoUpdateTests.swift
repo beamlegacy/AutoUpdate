@@ -20,11 +20,11 @@ class AutoUpdateTests: XCTestCase {
 
     func testVersionEqualitySameFormat() {
         let v0_1DateComponents = DateComponents(year: 2020, month: 11, day: 20, hour: 17, minute: 45, second: 00)
-        let v0_1 = AppRelease(versionName: "Version 0.1", version: "0.1", buildNumber: 1, releaseNotes: "This is release notes from Beam 0.1", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.zip")!)
+        let v0_1 = AppRelease(versionName: "Version 0.1", version: "0.1", buildNumber: 1, mardownReleaseNotes: "This is release notes from Beam 0.1", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.zip")!)
 
-        let v0_1bis = AppRelease(versionName: "Version 0.1", version: "0.1", buildNumber: 1, releaseNotes: "This is release notes from Beam 0.1", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.zip")!)
+        let v0_1bis = AppRelease(versionName: "Version 0.1", version: "0.1", buildNumber: 1, mardownReleaseNotes: "This is release notes from Beam 0.1", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.zip")!)
 
-        let v0_2 = AppRelease(versionName: "Version 0.2", version: "0.2", buildNumber: 1, releaseNotes: "This is release notes from Beam 0.2", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.2.zip")!)
+        let v0_2 = AppRelease(versionName: "Version 0.2", version: "0.2", buildNumber: 1, mardownReleaseNotes: "This is release notes from Beam 0.2", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.2.zip")!)
 
         XCTAssertEqual(v0_1, v0_1bis)
         XCTAssertNotEqual(v0_1, v0_2)
@@ -32,18 +32,18 @@ class AutoUpdateTests: XCTestCase {
 
     func testVersionEqualityDifferentFormat() {
         let v0_1DateComponents = DateComponents(year: 2020, month: 11, day: 20, hour: 17, minute: 45, second: 00)
-        let v0_1 = AppRelease(versionName: "Version 0.1", version: "0.1.0", buildNumber: 1, releaseNotes: "This is release notes from Beam 0.1", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.zip")!)
+        let v0_1 = AppRelease(versionName: "Version 0.1", version: "0.1.0", buildNumber: 1, mardownReleaseNotes: "This is release notes from Beam 0.1", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.zip")!)
 
-        let v0_1bis = AppRelease(versionName: "Version 0.1", version: "0.1", buildNumber: 1, releaseNotes: "This is release notes from Beam 0.1", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.zip")!)
+        let v0_1bis = AppRelease(versionName: "Version 0.1", version: "0.1", buildNumber: 1, mardownReleaseNotes: "This is release notes from Beam 0.1", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.zip")!)
 
         XCTAssertEqual(v0_1, v0_1bis)
     }
 
     func testVersionComparisonSameFormat() {
         let v0_1DateComponents = DateComponents(year: 2020, month: 11, day: 20, hour: 17, minute: 45, second: 00)
-        let v0_1 = AppRelease(versionName: "Version 0.1", version: "0.1", buildNumber: 1, releaseNotes: "This is release notes from Beam 0.1", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.zip")!)
+        let v0_1 = AppRelease(versionName: "Version 0.1", version: "0.1", buildNumber: 1, mardownReleaseNotes: "This is release notes from Beam 0.1", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.zip")!)
 
-        let v0_2 = AppRelease(versionName: "Version 0.2", version: "0.2", buildNumber: 1, releaseNotes: "This is release notes from Beam 0.2", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.2.zip")!)
+        let v0_2 = AppRelease(versionName: "Version 0.2", version: "0.2", buildNumber: 1, mardownReleaseNotes: "This is release notes from Beam 0.2", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.2.zip")!)
 
         XCTAssertTrue(v0_2 > v0_1, "")
         XCTAssertTrue(v0_1 < v0_2, "")
@@ -51,9 +51,9 @@ class AutoUpdateTests: XCTestCase {
 
     func testVersionComparisonDifferentFormat() {
         let v0_1DateComponents = DateComponents(year: 2020, month: 11, day: 20, hour: 17, minute: 45, second: 00)
-        let v0_1 = AppRelease(versionName: "Version 0.1", version: "0.1.0", buildNumber: 1, releaseNotes: "This is release notes from Beam 0.1", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.zip")!)
+        let v0_1 = AppRelease(versionName: "Version 0.1", version: "0.1.0", buildNumber: 1, mardownReleaseNotes: "This is release notes from Beam 0.1", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.zip")!)
 
-        let v0_2 = AppRelease(versionName: "Version 0.2", version: "0.2", buildNumber: 1, releaseNotes: "This is release notes from Beam 0.2", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.2.zip")!)
+        let v0_2 = AppRelease(versionName: "Version 0.2", version: "0.2", buildNumber: 1, mardownReleaseNotes: "This is release notes from Beam 0.2", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.2.zip")!)
 
         XCTAssertTrue(v0_2 > v0_1, "")
         XCTAssertTrue(v0_1 < v0_2, "")
@@ -61,9 +61,9 @@ class AutoUpdateTests: XCTestCase {
 
     func testVersionComparisonBuildDifferentDifferentFormat() {
         let v0_1DateComponents = DateComponents(year: 2020, month: 11, day: 20, hour: 17, minute: 45, second: 00)
-        let v0_1 = AppRelease(versionName: "Version 0.1", version: "0.1.0", buildNumber: 1, releaseNotes: "This is release notes from Beam 0.1", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.zip")!)
+        let v0_1 = AppRelease(versionName: "Version 0.1", version: "0.1.0", buildNumber: 1, mardownReleaseNotes: "This is release notes from Beam 0.1", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.zip")!)
 
-        let v0_1b = AppRelease(versionName: "Version 0.1", version: "0.1", buildNumber: 2, releaseNotes: "This is release notes from Beam 0.1", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.2.zip")!)
+        let v0_1b = AppRelease(versionName: "Version 0.1", version: "0.1", buildNumber: 2, mardownReleaseNotes: "This is release notes from Beam 0.1", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.2.zip")!)
 
         XCTAssertTrue(v0_1b > v0_1, "")
         XCTAssertTrue(v0_1 < v0_1b, "")
@@ -71,14 +71,15 @@ class AutoUpdateTests: XCTestCase {
 
     func testVersionEqualBuildDifferentDifferentFormat() {
         let v0_1DateComponents = DateComponents(year: 2020, month: 11, day: 20, hour: 17, minute: 45, second: 00)
-        let v0_1 = AppRelease(versionName: "Version 0.1", version: "0.1.0", buildNumber: 1, releaseNotes: "This is release notes from Beam 0.1", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.zip")!)
+        let v0_1 = AppRelease(versionName: "Version 0.1", version: "0.1.0", buildNumber: 1, mardownReleaseNotes: "This is release notes from Beam 0.1", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.zip")!)
 
-        let v0_1bis = AppRelease(versionName: "Version 0.1", version: "0.1", buildNumber: 2, releaseNotes: "This is release notes from Beam 0.1", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.zip")!)
+        let v0_1bis = AppRelease(versionName: "Version 0.1", version: "0.1", buildNumber: 2, mardownReleaseNotes: "This is release notes from Beam 0.1", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.zip")!)
 
-        let v0_1ter = AppRelease(versionName: "Version 0.1", version: "0.1", buildNumber: 2, releaseNotes: "This is release notes from Beam 0.1", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.zip")!)
+        let v0_1ter = AppRelease(versionName: "Version 0.1", version: "0.1", buildNumber: 2, mardownReleaseNotes: "This is release notes from Beam 0.1", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.zip")!)
 
         XCTAssertNotEqual(v0_1, v0_1bis)
         XCTAssertEqual(v0_1ter, v0_1bis)
     }
+
 
 }
