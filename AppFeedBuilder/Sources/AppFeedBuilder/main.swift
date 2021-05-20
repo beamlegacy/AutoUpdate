@@ -83,13 +83,13 @@ struct AppFeedBuilder: ParsableCommand {
                     print(jsonString)
                 }
 
-                let fileURL: URL
+                var fileURL: URL
                 if let path = outputPath {
                     fileURL = URL(fileURLWithPath: path)
                 } else {
-                    let currentURL = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
-                    fileURL = currentURL.appendingPathComponent("AppFeed.json")
+                    fileURL = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
                 }
+                fileURL = fileURL.appendingPathComponent("AppFeed.json")
                 do {
                     try jsonString.write(to: fileURL, atomically: true, encoding: .utf8)
                     print("App feed written at \(fileURL.path)")
