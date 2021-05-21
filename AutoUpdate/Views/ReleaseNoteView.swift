@@ -10,23 +10,18 @@ import Parma
 
 public struct ReleaseNoteView: View {
 
-    static let dateFormatter: DateFormatter = {
-        let df = DateFormatter()
-        df.dateStyle = .medium
-
-        return df
-    }()
-
     private let release: AppRelease
+    private let history: [AppRelease]?
     private let checker: VersionChecker?
 
     @Environment(\.presentationMode) var presentationMode
 
     @State private var showsVersionAndBuild = false
 
-    public init(release: AppRelease, checker: VersionChecker? = nil) {
+    public init(release: AppRelease, history: [AppRelease]? = nil, checker: VersionChecker? = nil) {
         self.release = release
         self.checker = checker
+        self.history = history
     }
 
     public var body: some View {
@@ -64,14 +59,7 @@ public struct ReleaseNoteView: View {
             Divider()
                 .padding(.horizontal)
             ScrollView {
-                VStack(alignment: .leading) {
-                    dateText
-                        .foregroundColor(.gray)
-                    Text(release.versionName)
-                        .font(.headline)
-                    Parma(release.mardownReleaseNotes)
-                }.padding(.leading)
-                .padding(.trailing)
+                NoteView(releases: history ?? [release])
             }
         }
         .padding(.top)
@@ -79,12 +67,6 @@ public struct ReleaseNoteView: View {
         .cornerRadius(6.0)
         .shadow(radius: 10)
         .frame(minWidth: 200, idealWidth: 340, maxWidth: 400, minHeight: 200, idealHeight: 370, maxHeight: 400)
-    }
-
-    private var dateText: Text {
-        let formattedDate = Self.dateFormatter.string(from: release.publicationDate)
-        return Text(formattedDate)
-            .foregroundColor(.gray)
     }
 }
 
@@ -117,5 +99,39 @@ struct ReleaseNoteView_Previews: PreviewProvider {
                                                 publicationDate: Date(),
                                                 downloadURL: URL(string: "http://")!))
         }
+    }
+}
+
+struct NoteView: View {
+
+    static let dateFormatter: DateFormatter = {
+        let df = DateFormatter()
+        df.dateStyle = .medium
+
+        return df
+    }()
+
+    let releases: [AppRelease]
+
+    var body: some View {
+        VStack(alignment: .leading) {
+            ForEach(releases) { release in
+                VStack(alignment: .leading) {
+                    dateText(for: release.publicationDate)
+                        .foregroundColor(.gray)
+                    Text(release.versionName)
+                        .font(.headline)
+                        .multilineTextAlignment(.leading)
+                    Parma(release.mardownReleaseNotes)
+                        .padding(.top, 5)
+                }.padding(.leading)
+                .padding(.trailing)
+            }
+        }
+    }
+
+    func dateText(for date: Date) -> Text {
+        let formattedDate = Self.dateFormatter.string(from: date)
+        return Text(formattedDate)
     }
 }

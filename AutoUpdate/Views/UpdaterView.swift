@@ -39,7 +39,7 @@ public struct UpdaterView: View {
                         showsReleaseNotes.toggle()
                     }
                     .sheet(isPresented: $showsReleaseNotes, content: {
-                        ReleaseNoteView(release: release)
+                        ReleaseNoteView(release: release, history: checker.missedReleases)
                             .frame(minWidth: 200, idealWidth: 340, maxWidth: 400, minHeight: 200, idealHeight: 370, maxHeight: 400)
                     })
                 }

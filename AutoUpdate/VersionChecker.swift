@@ -39,9 +39,14 @@ public class VersionChecker: ObservableObject {
     @Published public var state: State
     @Published public var lastCheck: Date?
 
-
     ///Allows AutoUpdater to process to install automatically when an update is available.
     public var allowAutoInstall = false
+
+    public var missedReleases: [AppRelease]? {
+        guard let current = currentRelease else { return nil }
+        let missedVersions = releases(after: current)
+        return missedVersions
+    }
 
     public init(mockedReleases: [AppRelease], autocheckEnabled: Bool = false, fakeAppVersion: String? = nil, fakeAppBuild: Int? = nil) {
         let encoder = JSONEncoder()
@@ -63,7 +68,6 @@ public class VersionChecker: ObservableObject {
             enableAutocheck()
         }
     }
-
 
     /// Checks if update is available from the feed or the mock data and updates the state accordingly
     public func checkForUpdates() {
@@ -274,15 +278,17 @@ public class VersionChecker: ObservableObject {
         try? fileManager.removeItem(at: updateDirectory(in: appSupport))
     }
 
-    public func releases(after release: AppRelease) -> [AppRelease] {
-
+    func releases(after release: AppRelease) -> [AppRelease] {
         guard let history = self.releaseHistory else { return [] }
-
         let older = history.filter {
             $0 > release
         }
 
         return older
+    }
+
+    static func combinedReleaseNotes(for releases: [AppRelease]) -> [String] {
+        releases.map({$0.mardownReleaseNotes})
     }
 }
 
