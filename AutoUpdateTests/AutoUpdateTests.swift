@@ -123,6 +123,18 @@ class AutoUpdateTests: XCTestCase {
         }
 
         waitForExpectations(timeout: 5, handler: nil)
+    }
 
+    func testCombineReleaseNotes() {
+        let v0_1DateComponents = DateComponents(year: 2020, month: 11, day: 20, hour: 17, minute: 45, second: 00)
+        let v0_1 = AppRelease(versionName: "Version 0.1", version: "0.1", buildNumber: 1, mardownReleaseNotes: "This is release notes from Beam 0.1", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.zip")!)
+        let v0_2 = AppRelease(versionName: "Version 0.2", version: "0.2", buildNumber: 1, mardownReleaseNotes: "This is release notes from Beam 0.2", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.2.zip")!)
+        let v0_3 = AppRelease(versionName: "Version 0.3", version: "0.3", buildNumber: 1, mardownReleaseNotes: "This is release notes from Beam 0.3", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.2.zip")!)
+        let v0_4 = AppRelease(versionName: "Version 0.4", version: "0.4", buildNumber: 1, mardownReleaseNotes: "This is release notes from Beam 0.4", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.2.zip")!)
+
+        let feed = [v0_1, v0_2, v0_3, v0_4]
+
+        let result = VersionChecker.combinedReleaseNotes(for: feed)
+        XCTAssert(result.count == feed.count)
     }
 }
