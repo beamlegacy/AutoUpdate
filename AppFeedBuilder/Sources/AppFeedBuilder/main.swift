@@ -23,8 +23,8 @@ struct AppFeedBuilder: ParsableCommand {
     @Argument(help: "The new version build number (should be an Int)")
     var buildNumber: Int
 
-    @Argument(help: "The release notes URL")
-    var releaseNotesURL: String
+    @Argument(help: "The release notes string in Markdown")
+    var mardownReleaseNotes: String
 
     @Argument(help: "The new version download URL. Must be an https URL pointing to a .zip file")
     var downloadURL: String
@@ -47,12 +47,6 @@ struct AppFeedBuilder: ParsableCommand {
               downloadURL.scheme == "https" else {
             throw ValidationError("Download URL is not a valid URL for a zip file")
         }
-
-        guard let notes = URL(string: releaseNotesURL),
-              notes.pathExtension == "html",
-              notes.scheme == "https" else {
-            throw ValidationError("Release notes URL is not a valid URL for a html file")
-        }
     }
 
     func run() throws {
@@ -67,13 +61,7 @@ struct AppFeedBuilder: ParsableCommand {
             throw ValidationError("Download URL is not a valid URL for a zip file")
         }
 
-        guard let notes = URL(string: releaseNotesURL),
-              notes.pathExtension == "html",
-              notes.scheme == "https" else {
-            throw ValidationError("Release notes URL is not a valid URL for a html file")
-        }
-
-        let newRelease = AppRelease(versionName: versionName, version: version, buildNumber: buildNumber, htmlReleaseNotesURL: notes, publicationDate: Date(), downloadURL: downloadURL)
+        let newRelease = AppRelease(versionName: versionName, version: version, buildNumber: buildNumber, mardownReleaseNotes: mardownReleaseNotes, publicationDate: Date(), downloadURL: downloadURL)
 
         let semaphore = DispatchSemaphore(value: 0)
         AppRelease.updateJSON(at: feedURL, with: newRelease) { feedJSONData in
