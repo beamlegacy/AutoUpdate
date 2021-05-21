@@ -27,17 +27,25 @@ public struct ReleaseNoteView: View {
     public var body: some View {
         VStack(alignment: .leading) {
             HStack {
-                Text("Changelog")
-                    .font(.headline)
-                    .onTapGesture {
-                        withAnimation {
-                            showsVersionAndBuild.toggle()
+                VStack(alignment: .leading) {
+                    HStack(alignment: .firstTextBaseline) {
+                        Text("Changelog")
+                            .font(.headline)
+                            .onTapGesture {
+                                withAnimation {
+                                    showsVersionAndBuild.toggle()
+                                }
+                        }
+                        if showsVersionAndBuild {
+                            Text("(v.\(release.version), build \(release.buildNumber))")
+                                .font(.subheadline)
+                                .foregroundColor(Color(.secondaryLabelColor))
                         }
                     }
-                if showsVersionAndBuild {
-                    Text("(v.\(release.version), build \(release.buildNumber))")
-                        .font(.subheadline)
-                        .foregroundColor(Color(.secondaryLabelColor))
+                    if let history = history, history.count > 1 {
+                        Text("\(history.count) updates since you last updated")
+                            .foregroundColor(Color(.secondaryLabelColor))
+                    }
                 }
                 Spacer()
                 if let checker = checker {
@@ -72,6 +80,20 @@ public struct ReleaseNoteView: View {
 
 struct ReleaseNoteView_Previews: PreviewProvider {
 
+    static let v2 = AppRelease(versionName: "Beam 2.0: Collaborate on Cards",
+                               version: "2.0",
+                               buildNumber: 50,
+                               mardownReleaseNotes: releaseNotes,
+                               publicationDate: Date(),
+                               downloadURL: URL(string: "http://")!)
+
+    static let v1_5 = AppRelease(versionName: "Beam 1.5: Collaborate on Cards",
+                               version: "1.5",
+                               buildNumber: 30,
+                               mardownReleaseNotes: "This is Beam 1.5. \nMany improvements.",
+                               publicationDate: Date(),
+                               downloadURL: URL(string: "http://")!)
+
     static let releaseNotes = """
     # Beam 2.0 : Collaborate on Cards
 
@@ -85,19 +107,10 @@ struct ReleaseNoteView_Previews: PreviewProvider {
 
     static var previews: some View {
         Group {
-            ReleaseNoteView(release: AppRelease(versionName: "Beam 2.0: Collaborate on Cards",
-                                                version: "2.0",
-                                                buildNumber: 50,
-                                                mardownReleaseNotes: releaseNotes,
-                                                publicationDate: Date(),
-                                                downloadURL: URL(string: "http://")!))
+            ReleaseNoteView(release: v2, history: [v2, v1_5])
+            ReleaseNoteView(release: v2)
                 .frame(width: 340.0, height: 370.0)
-            ReleaseNoteView(release: AppRelease(versionName: "Beam 2.0: Collaborate on Cards",
-                                                version: "2.0",
-                                                buildNumber: 50,
-                                                mardownReleaseNotes: releaseNotes,
-                                                publicationDate: Date(),
-                                                downloadURL: URL(string: "http://")!))
+            ReleaseNoteView(release: v2)
         }
     }
 }
