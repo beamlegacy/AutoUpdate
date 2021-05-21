@@ -23,8 +23,8 @@ struct AppFeedBuilder: ParsableCommand {
     @Argument(help: "The new version build number (should be an Int)")
     var buildNumber: Int
 
-    @Argument(help: "The release notes string in Markdown")
-    var mardownReleaseNotes: String
+    @Argument(help: "The release notes file URL for a text file in Markdown")
+    var mardownReleaseNotesURL: String
 
     @Argument(help: "The new version download URL. Must be an https URL pointing to a .zip file")
     var downloadURL: String
@@ -61,7 +61,11 @@ struct AppFeedBuilder: ParsableCommand {
             throw ValidationError("Download URL is not a valid URL for a zip file")
         }
 
-        let newRelease = AppRelease(versionName: versionName, version: version, buildNumber: buildNumber, mardownReleaseNotes: mardownReleaseNotes, publicationDate: Date(), downloadURL: downloadURL)
+        let noteURL = URL(fileURLWithPath: mardownReleaseNotesURL)
+        guard let notesData = try? Data(contentsOf: noteURL),
+              let releaseNotes = String(data: notesData, encoding: .utf8) else { throw ValidationError("Release note URL is not correct, or the content is not a text") }
+
+        let newRelease = AppRelease(versionName: versionName, version: version, buildNumber: buildNumber, mardownReleaseNotes: releaseNotes, publicationDate: Date(), downloadURL: downloadURL)
 
         let semaphore = DispatchSemaphore(value: 0)
         AppRelease.updateJSON(at: feedURL, with: newRelease) { feedJSONData in
