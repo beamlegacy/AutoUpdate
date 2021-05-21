@@ -30,6 +30,10 @@ public class VersionChecker: ObservableObject {
     private var feedURL: URL?
     private var autocheckTimer: AnyCancellable?
 
+    private var releaseHistory: [AppRelease]?
+    private var fakeAppVersion: String?
+    private var fakeAppBuild: Int?
+
     @Published public var newRelease: AppRelease?
     @Published public var currentRelease: AppRelease?
     @Published public var state: State
@@ -38,9 +42,20 @@ public class VersionChecker: ObservableObject {
     ///Allows AutoUpdater to process to install automatically when an update is available.
     public var allowAutoInstall = false
 
-    public init(mockData: Data, autocheckEnabled: Bool = false) {
-        self.mockData = mockData
+    public var missedReleases: [AppRelease]? {
+        guard let current = currentRelease else { return nil }
+        let missedVersions = releases(after: current)
+        return missedVersions
+    }
+
+    public init(mockedReleases: [AppRelease], autocheckEnabled: Bool = false, fakeAppVersion: String? = nil, fakeAppBuild: Int? = nil) {
+        let encoder = JSONEncoder()
+        self.mockData = try? encoder.encode(mockedReleases)
         self.state = .noUpdate
+
+        self.fakeAppBuild = fakeAppBuild
+        self.fakeAppVersion = fakeAppVersion
+
         if autocheckEnabled {
             enableAutocheck()
         }
@@ -53,7 +68,6 @@ public class VersionChecker: ObservableObject {
             enableAutocheck()
         }
     }
-
 
     /// Checks if update is available from the feed or the mock data and updates the state accordingly
     public func checkForUpdates() {
@@ -210,6 +224,8 @@ public class VersionChecker: ObservableObject {
         versions?.sort(by: >)
         guard let highestVersion = versions?.first else { return nil }
 
+        self.releaseHistory = versions
+
         let currentVersion = self.currentAppVersion()
         let currentBuild = self.currentAppBuild()
 
@@ -220,7 +236,7 @@ public class VersionChecker: ObservableObject {
         let currentRelease = AppRelease(versionName: currentFromFeed?.versionName ?? self.currentAppName(),
                                         version: currentVersion,
                                         buildNumber: currentBuild,
-                                        htmlReleaseNotesURL: currentFromFeed?.htmlReleaseNotesURL ?? URL(string: "http://")!,
+                                        mardownReleaseNotes: currentFromFeed?.mardownReleaseNotes ?? "",
                                         publicationDate: currentFromFeed?.publicationDate ?? Date(),
                                         downloadURL: URL(string: "http://")!)
         self.currentRelease = currentRelease
@@ -261,12 +277,30 @@ public class VersionChecker: ObservableObject {
         let fileManager = FileManager.default
         try? fileManager.removeItem(at: updateDirectory(in: appSupport))
     }
+
+    func releases(after release: AppRelease) -> [AppRelease] {
+        guard let history = self.releaseHistory else { return [] }
+        let older = history.filter {
+            $0 > release
+        }
+
+        return older
+    }
+
+    static func combinedReleaseNotes(for releases: [AppRelease]) -> [String] {
+        releases.map({$0.mardownReleaseNotes})
+    }
 }
 
 //MARK: - Helper functions
 extension VersionChecker {
 
     func currentAppVersion() -> String {
+
+        if let fake = fakeAppVersion {
+            return fake
+        }
+
         guard let infos = Bundle.main.infoDictionary,
               let version = infos["CFBundleShortVersionString"] as? String else { fatalError("Cant' get app's version from CFBundleShortVersionString key in Info.plist")
         }
@@ -274,6 +308,11 @@ extension VersionChecker {
     }
 
     func currentAppBuild() -> Int {
+
+        if let fake = fakeAppBuild {
+            return fake
+        }
+
         guard let infos = Bundle.main.infoDictionary,
               let version = infos["CFBundleVersion"] as? String,
               let intVersion = Int(version) else { fatalError("Cant' get app's build from CFBundleVersion key in Info.plist, or it's not an Int number. We only support comparing Int build number.")
