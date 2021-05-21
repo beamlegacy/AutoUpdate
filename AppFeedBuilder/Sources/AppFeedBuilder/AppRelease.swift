@@ -73,7 +73,7 @@ extension AppRelease {
         let v0_1_1 = AppRelease(versionName: "Version 0.1.1", version: "0.1.1", buildNumber: 2, mardownReleaseNotes: "", publicationDate: Calendar.current.date(from: v0_1_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.1.zip")!)
 
         let v1_1DateComponents = DateComponents(year: 2021, month: 5, day: 3, hour: 14, minute: 35, second: 00)
-        let v1_1 = AppRelease(versionName: "Version 1.1", version: "1.1", buildNumber: 5, mardownReleaseNotes: "", publicationDate: Calendar.current.date(from: v1_1DateComponents)!, downloadURL: URL(string: "https://github.com/eLud/update-proto/raw/main/BeamUpdaterProto_v1.1.zip")!)
+        let v1_1 = AppRelease(versionName: "Version 1.1", version: "1.1", buildNumber: 5, mardownReleaseNotes: "This is the version 1.1! \n*Lots of new stuff*", publicationDate: Calendar.current.date(from: v1_1DateComponents)!, downloadURL: URL(string: "https://github.com/eLud/update-proto/raw/main/BeamUpdaterProto_v1.1.zip")!)
 
         let v2_0 = AppRelease(versionName: "Beam 2.0: Collaborate on Cards",
                               version: "2.0", buildNumber: 50,
@@ -94,6 +94,12 @@ extension AppRelease: Comparable {
 
     public static func < (lhs: AppRelease, rhs: AppRelease) -> Bool {
         lhs.version.versionCompare(rhs.version) == .orderedAscending || (lhs.version.versionCompare(rhs.version) == .orderedSame && lhs.buildNumber < rhs.buildNumber)
+    }
+}
+
+extension AppRelease: Identifiable {
+    public var id: String {
+        "\(version)_\(buildNumber)"
     }
 }
 
