@@ -59,6 +59,7 @@ public struct ReleaseNoteView: View {
                     }
                 }, label: {
                     Image("close", bundle: Bundle(for: VersionChecker.self))
+                        .renderingMode(.template)
                 })
                 .buttonStyle(BorderlessButtonStyle())
             }
@@ -71,7 +72,7 @@ public struct ReleaseNoteView: View {
             }
         }
         .padding(.top)
-        .background(Color.white)
+        .background(Color(.windowBackgroundColor))
         .cornerRadius(6.0)
         .shadow(radius: 10)
         .frame(minWidth: 200, idealWidth: 340, maxWidth: 400, minHeight: 200, idealHeight: 370, maxHeight: 400)
