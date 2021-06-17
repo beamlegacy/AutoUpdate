@@ -24,6 +24,16 @@ public class VersionChecker: ObservableObject {
         case downloading(progress: Progress)
         case installing
         case updateInstalled
+
+        var canPerformCheck: Bool {
+            switch self {
+            case .noUpdate, .updateAvailable(_), .error(_):
+                return true
+            default:
+            return false
+            }
+
+        }
     }
 
     private var mockData: Data?
@@ -41,6 +51,7 @@ public class VersionChecker: ObservableObject {
 
     ///Allows AutoUpdater to process to install automatically when an update is available.
     public var allowAutoInstall = false
+    public var autocheckTimeInterval: TimeInterval = 60
 
     public var missedReleases: [AppRelease]? {
         guard let current = currentRelease else { return nil }
@@ -72,7 +83,7 @@ public class VersionChecker: ObservableObject {
     /// Checks if update is available from the feed or the mock data and updates the state accordingly
     public func checkForUpdates() {
 
-        guard state == .noUpdate else { return }
+        guard state.canPerformCheck else { return }
 
         state = .checking
 
@@ -148,7 +159,6 @@ public class VersionChecker: ObservableObject {
         self.state = .downloading(progress: downloadTask.progress)
     }
 
-
     /// Pass the archive URL to the XPC service to extract it, and replace the existing binary
     /// - Parameter archiveURL: The URL of the zip archive
     private func processInstallation(archiveURL: URL) {
@@ -182,7 +192,7 @@ public class VersionChecker: ObservableObject {
     }
 
     private func enableAutocheck() {
-        autocheckTimer = Timer.publish(every: 60, on: .main, in: .default).autoconnect().sink { [weak self] timer in
+        autocheckTimer = Timer.publish(every: self.autocheckTimeInterval, on: .main, in: .default).autoconnect().sink { [weak self] timer in
             self?.checkForUpdates()
         }
         self.checkForUpdates()
