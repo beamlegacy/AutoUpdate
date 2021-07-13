@@ -7,9 +7,13 @@ build_project:
   script:
     - xcodebuild clean -project AutoUpdate.xcodeproj -scheme AutoUpdate | xcpretty
     - xcodebuild build -project AutoUpdate.xcodeproj -scheme AutoUpdate | xcpretty -s
+  tags:
+  - macos
 
 test_project:
   stage: test
   script:
     - xcodebuild clean -project AutoUpdate.xcodeproj -scheme AutoUpdate | xcpretty
     - xcodebuild test -project AutoUpdate.xcodeproj -scheme AutoUpdate | xcpretty -s
+  tags:
+  - macos
