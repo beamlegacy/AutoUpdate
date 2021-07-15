@@ -4,6 +4,7 @@ default:
   - date
   - pwd
   - unset cd
+  - eval "$(rbenv init -)"
   - bundle install
 
 stages:
