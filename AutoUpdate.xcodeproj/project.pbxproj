@@ -103,8 +103,6 @@
 		331E18B32640351600C4593E /* AutoUpdateDemo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AutoUpdateDemo.entitlements; sourceTree = "<group>"; };
 		331E18BB26403A7400C4593E /* AppRelease.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRelease.swift; sourceTree = "<group>"; };
 		331E18BD26403F3E00C4593E /* VersionChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionChecker.swift; sourceTree = "<group>"; };
-		331E18C526404D3C00C4593E /* AutoUpdateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoUpdateTests.swift; sourceTree = "<group>"; };
-		331E18C726404D3C00C4593E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		331E18D126414DFC00C4593E /* UpdateInstaller.xpc */ = {isa = PBXFileReference; explicitFileType = "wrapper.xpc-service"; includeInIndex = 0; path = UpdateInstaller.xpc; sourceTree = BUILT_PRODUCTS_DIR; };
 		331E18D326414DFC00C4593E /* UpdateInstallerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateInstallerProtocol.swift; sourceTree = "<group>"; };
 		331E18D926414DFC00C4593E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -175,7 +173,6 @@
 			isa = PBXGroup;
 			children = (
 				331E18A82640351200C4593E /* AutoUpdateDemo */,
-				331E18C426404D3C00C4593E /* AutoUpdateTests */,
 				331E18D226414DFC00C4593E /* UpdateInstaller */,
 				331FCC7626456B4D00FD3FA7 /* AutoUpdate */,
 				33EBA55E264ABD3E00369730 /* AppFeedBuilder */,
@@ -215,15 +212,6 @@
 				331E18B02640351600C4593E /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
-			sourceTree = "<group>";
-		};
-		331E18C426404D3C00C4593E /* AutoUpdateTests */ = {
-			isa = PBXGroup;
-			children = (
-				331E18C526404D3C00C4593E /* AutoUpdateTests.swift */,
-				331E18C726404D3C00C4593E /* Info.plist */,
-			);
-			path = AutoUpdateTests;
 			sourceTree = "<group>";
 		};
 		331E18D226414DFC00C4593E /* UpdateInstaller */ = {
@@ -520,7 +508,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif which swiftlint >/dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif which swiftlint >/dev/null; then\n  swiftlint lint --strict --config .swiftlint.yml\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
