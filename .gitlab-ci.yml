@@ -41,7 +41,7 @@ test_project:
     reports:
       cobertura: cobertura.xml
       junit: test_output/tests.xml
-    coverage: '/Test Coverage\: \d+(?:\.\d*)?\%/'
+  coverage: '/Test Coverage\: \d+(?:\.\d*)?\%/'
   only:
     - merge_requests
     - master
