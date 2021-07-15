@@ -20,8 +20,8 @@ class UpdateInstaller: UpdateInstallerProtocol {
             let installedAppURL = try install(updatedAppURL, replacedBinaryURL: binaryToReplaceURL, pid: appPID)
             relaunch(pid: appPID, at: installedAppURL)
         } catch {
-            if error is UpdateInstallerError {
-                reply(false, (error as! UpdateInstallerError).rawValue)
+            if let error = error as? UpdateInstallerError {
+                reply(false, error.rawValue)
             } else {
                 reply(false, error.localizedDescription)
             }
@@ -55,7 +55,7 @@ class UpdateInstaller: UpdateInstallerProtocol {
         var unzippepAppsPaths: [String]
         do {
             let contentOfZipPaths = try fileManager.contentsOfDirectory(atPath: enclosingFolderURL.path)
-            unzippepAppsPaths = contentOfZipPaths.filter( {$0.hasSuffix(".app") })
+            unzippepAppsPaths = contentOfZipPaths.filter({ $0.hasSuffix(".app") })
         } catch {
             throw UpdateInstallerError.unzippedContentNotFound
         }
@@ -106,7 +106,7 @@ class UpdateInstaller: UpdateInstallerProtocol {
     private func extractTeamIdentifier(from signature: String) -> String? {
         let patternToFind = "TeamIdentifier="
         let splitted = signature.split(separator: "\n")
-        let filtered = splitted.filter( {$0.hasPrefix(patternToFind)} )
+        let filtered = splitted.filter({ $0.hasPrefix(patternToFind) })
 
         guard var teamID = filtered.first else { return nil }
         teamID.removeFirst(patternToFind.count)

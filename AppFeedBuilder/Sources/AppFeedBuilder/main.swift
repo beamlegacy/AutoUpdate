@@ -8,7 +8,6 @@
 import Foundation
 import ArgumentParser
 
-
 struct AppFeedBuilder: ParsableCommand {
 
     @Argument(help: "The feed URL")

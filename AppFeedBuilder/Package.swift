@@ -12,6 +12,6 @@ let package = Package(
     ],
     targets: [
         .target(name: "AppFeedBuilder",
-                dependencies: [.product(name: "ArgumentParser", package: "swift-argument-parser")]),
+                dependencies: [.product(name: "ArgumentParser", package: "swift-argument-parser")])
     ]
 )

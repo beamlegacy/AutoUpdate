@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "331E18A52640351200C4593E"
-               BuildableName = "AutoUpdateDemo.app"
-               BlueprintName = "AutoUpdateDemo"
+               BlueprintIdentifier = "331E18D026414DFC00C4593E"
+               BuildableName = "UpdateInstaller.xpc"
+               BlueprintName = "UpdateInstaller"
                ReferencedContainer = "container:AutoUpdate.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -26,19 +26,8 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES"
-      codeCoverageEnabled = "YES">
+      shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "331E18C226404D3C00C4593E"
-               BuildableName = "AutoUpdateTests.xctest"
-               BlueprintName = "AutoUpdateTests"
-               ReferencedContainer = "container:AutoUpdate.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
@@ -51,16 +40,6 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "331E18A52640351200C4593E"
-            BuildableName = "AutoUpdateDemo.app"
-            BlueprintName = "AutoUpdateDemo"
-            ReferencedContainer = "container:AutoUpdate.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -68,16 +47,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "331E18A52640351200C4593E"
-            BuildableName = "AutoUpdateDemo.app"
-            BlueprintName = "AutoUpdateDemo"
+            BlueprintIdentifier = "331E18D026414DFC00C4593E"
+            BuildableName = "UpdateInstaller.xpc"
+            BlueprintName = "UpdateInstaller"
             ReferencedContainer = "container:AutoUpdate.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
