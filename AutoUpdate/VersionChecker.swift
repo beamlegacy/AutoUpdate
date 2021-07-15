@@ -111,14 +111,13 @@ public class VersionChecker: ObservableObject {
         }
     }
 
-
     /// Download the newest release and process installation using the XPC service
     public func downloadNewestRelease() {
 
         guard let release = newRelease else { return }
 
         let session = URLSession.shared
-        let downloadTask = session.downloadTask(with: release.downloadURL) { fileURL, response, error in
+        let downloadTask = session.downloadTask(with: release.downloadURL) { fileURL, _, error in
             let fileManager = FileManager.default
 
             guard error == nil,
@@ -192,13 +191,13 @@ public class VersionChecker: ObservableObject {
     }
 
     private func enableAutocheck() {
-        autocheckTimer = Timer.publish(every: self.autocheckTimeInterval, on: .main, in: .default).autoconnect().sink { [weak self] timer in
+        autocheckTimer = Timer.publish(every: self.autocheckTimeInterval, on: .main, in: .default).autoconnect().sink { [weak self] _ in
             self?.checkForUpdates()
         }
         self.checkForUpdates()
     }
 
-    private func checkRemoteUpdates(completion: @escaping (Result<AppRelease, VersionCheckerError>)->()) {
+    private func checkRemoteUpdates(completion: @escaping (Result<AppRelease, VersionCheckerError>) -> Void) {
 
         if let mock = mockData {
             if let release = findNewestRelease(data: mock) {
@@ -258,9 +257,9 @@ public class VersionChecker: ObservableObject {
         }
     }
 
-    private func fetchServerData(completion: @escaping (Data?)->()) {
+    private func fetchServerData(completion: @escaping (Data?) -> Void) {
         guard let feedURL = feedURL else { fatalError("Trying to get feed data with no url provided" ) }
-        let task = URLSession.shared.dataTask(with: feedURL) { data, response, error in
+        let task = URLSession.shared.dataTask(with: feedURL) { data, _, _ in
             completion(data)
         }
 
@@ -302,7 +301,7 @@ public class VersionChecker: ObservableObject {
     }
 }
 
-//MARK: - Helper functions
+// MARK: - Helper functions
 extension VersionChecker {
 
     func currentAppVersion() -> String {

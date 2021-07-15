@@ -19,7 +19,7 @@ public struct AppRelease: Codable {
 
 extension AppRelease {
 
-    static func updateJSON(at feedURL: URL, with release: AppRelease, completion: @escaping (Data?)->()) {
+    static func updateJSON(at feedURL: URL, with release: AppRelease, completion: @escaping (Data?) -> Void) {
         getReleases(at: feedURL) { feed in
 
             var initialFeed = feed ?? []
@@ -35,8 +35,8 @@ extension AppRelease {
         }
     }
 
-    static func getReleases(at feedURL: URL, completion: @escaping ([AppRelease]?) -> () ) {
-        let task = URLSession.shared.dataTask(with: feedURL) { data, response, error in
+    static func getReleases(at feedURL: URL, completion: @escaping ([AppRelease]?) -> Void ) {
+        let task = URLSession.shared.dataTask(with: feedURL) { data, _, _ in
             guard let data = data else {
                 completion(nil)
                 return

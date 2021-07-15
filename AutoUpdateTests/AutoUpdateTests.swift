@@ -115,7 +115,6 @@ class AutoUpdateTests: XCTestCase {
                 XCTAssertTrue(after0_4.isEmpty)
 
                 e.fulfill()
-                break
             default:
                 break
             }

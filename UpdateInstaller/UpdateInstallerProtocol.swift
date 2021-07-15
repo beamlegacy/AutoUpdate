@@ -10,7 +10,6 @@ import Foundation
 
 @objc public protocol UpdateInstallerProtocol {
 
-
     /// Gives information to the XPC service to handle unarchiving and installation of the update from outside the sandbox
     /// - Parameters:
     ///   - archiveURL: Archive URL on the file system
