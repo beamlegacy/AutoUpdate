@@ -40,8 +40,8 @@ test_project:
       - logs
     reports:
       cobertura: cobertura.xml
-      junit: fastlane/test_output/tests.xml
-    coverage: '/Test Coverage\: \d+(?:\.\d*)?\%/'
+      junit: test_output/tests.xml
+  coverage: '/Test Coverage\: \d+(?:\.\d*)?\%/'
   only:
     - merge_requests
     - master
