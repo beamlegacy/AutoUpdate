@@ -12,9 +12,9 @@ swift lint:
   artifacts:
     when: always
     paths:
-      - codequality_report.json
+      - fastlane/codequality_report.json
     reports:
-      codequality: codequality_report.json
+      codequality: fastlane/codequality_report.json
   script:
     - bundle exec fastlane lint
   rules:
