@@ -27,4 +27,29 @@ platform :mac do
       output_file: "fastlane/codequality_report.json"
     )
   end
+
+desc "Run tests"
+  lane :tests do
+    run_tests(
+      scheme: "AutoUpdate",
+      output_types: "junit",
+      output_files: "tests.xml",
+    )
+    # For Gitlab artifacts
+    slather(
+      cobertura_xml: true,
+      proj: "AutoUpdate.xcodeproj",
+      scheme: "AutoUpdate",
+      source_directory: "./AutoUpdate",
+      output_directory: "./"
+    )
+    # For automatic code coverage check
+    slather(
+      simple_output: true,
+      proj: "AutoUpdate.xcodeproj",
+      scheme: "AutoUpdate",
+      source_directory: "./AutoUpdate",
+      output_directory: "./"
+    )
+  end
 end
