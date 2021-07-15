@@ -36,11 +36,11 @@ test_project:
     when: always
     paths:
       - cobertura.xml
-      - test_output/tests.xml
+      - fastlane/test_output/tests.xml
       - logs
     reports:
       cobertura: cobertura.xml
-      junit: test_output/tests.xml
+      junit: fastlane/test_output/tests.xml
     coverage: '/Test Coverage\: \d+(?:\.\d*)?\%/'
   only:
     - merge_requests
