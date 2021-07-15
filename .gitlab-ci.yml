@@ -1,3 +1,11 @@
+default:
+  before_script:
+  - echo "${PATH}"
+  - date
+  - pwd
+  - unset cd
+  - bundle install
+
 stages:
   - test
 
