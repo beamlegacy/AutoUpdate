@@ -27,7 +27,7 @@ public class VersionChecker: ObservableObject {
 
         var canPerformCheck: Bool {
             switch self {
-            case .noUpdate, .updateAvailable(_), .error(_):
+            case .noUpdate, .updateAvailable, .error:
                 return true
             default:
             return false

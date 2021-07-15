@@ -103,8 +103,7 @@ class AutoUpdateFrameworkTests: XCTestCase {
         checker.checkForUpdates()
         cancellable = checker.$state.sink { state in
             switch state {
-            case .updateAvailable(_):
-
+            case .updateAvailable:
                 let after0_2 = checker.releases(after: v0_2)
                 XCTAssertTrue(after0_2.count == 2)
 
