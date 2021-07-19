@@ -5,7 +5,7 @@
 //  Created by Ludovic Ollagnier on 03/05/2021.
 //
 
-import Foundation
+import AppKit
 import Combine
 
 public class VersionChecker: ObservableObject {
@@ -22,12 +22,13 @@ public class VersionChecker: ObservableObject {
         case updateAvailable(release: AppRelease)
         case error(errorDesc: String)
         case downloading(progress: Progress)
+        case downloaded(release: AppRelease, archiveURL: URL)
         case installing
         case updateInstalled
 
         var canPerformCheck: Bool {
             switch self {
-            case .noUpdate, .updateAvailable, .error:
+            case .noUpdate, .updateAvailable, .error, .downloaded:
                 return true
             default:
             return false
@@ -44,13 +45,15 @@ public class VersionChecker: ObservableObject {
     private var fakeAppVersion: String?
     private var fakeAppBuild: Int?
 
-    @Published public var newRelease: AppRelease?
-    @Published public var currentRelease: AppRelease?
-    @Published public var state: State
-    @Published public var lastCheck: Date?
+    @Published public private(set) var newRelease: AppRelease?
+    @Published public private(set) var currentRelease: AppRelease?
+    @Published public private(set) var state: State
+    @Published public private(set) var lastCheck: Date?
 
     ///Allows AutoUpdater to process to install automatically when an update is available.
-    public var allowAutoInstall = false
+    @Published public var allowAutoInstall = false
+    @Published public var allowAutoDownload = true
+
     public var autocheckTimeInterval: TimeInterval = 60
 
     public var missedReleases: [AppRelease]? {
@@ -85,6 +88,11 @@ public class VersionChecker: ObservableObject {
 
         guard state.canPerformCheck else { return }
 
+        var pendingInstallation: (release: AppRelease, archiveURL: URL)?
+        if case State.downloaded(let release, let archiveURL) = state {
+            pendingInstallation = (release, archiveURL)
+        }
+
         state = .checking
 
         checkRemoteUpdates { result in
@@ -93,17 +101,37 @@ public class VersionChecker: ObservableObject {
 
                 switch result {
                 case .success(let latest):
+
+                    //If we have a newer version, make sure it's newer than the previously downloaded one
+                    //If a new update was found, clean what was previously downloaded before downloading the new archive
+                    if let pendingInstallation = pendingInstallation {
+                        guard latest > pendingInstallation.release else {
+                            self.state = .downloaded(release: pendingInstallation.release, archiveURL: pendingInstallation.archiveURL)
+                            return
+                        }
+                        try? FileManager.default.removeItem(at: pendingInstallation.archiveURL)
+                    }
+
                     self.newRelease = latest
                     self.state = .updateAvailable(release: latest)
 
-                    if self.allowAutoInstall {
+                    if self.allowAutoDownload {
                         self.downloadNewestRelease()
                     }
+
                 case .failure(let error):
                     self.newRelease = nil
-                    if error == .noUpdates {
+
+                    if let pendingInstallation = pendingInstallation {
+                        self.state = .downloaded(release: pendingInstallation.release, archiveURL: pendingInstallation.archiveURL)
+                    }
+
+                    if error == .noUpdates, let pendingInstallation = pendingInstallation {
+                        self.state = .downloaded(release: pendingInstallation.release, archiveURL: pendingInstallation.archiveURL)
+                    } else if error == .noUpdates {
                         self.state = .noUpdate
                     } else {
+                        self.cleanup()
                         self.state = .error(errorDesc: "\(error)")
                     }
                 }
@@ -143,8 +171,11 @@ public class VersionChecker: ObservableObject {
             do {
                 try fileManager.moveItem(at: fileURL, to: finalURL)
                 DispatchQueue.main.async {
-                    self.state = .installing
-                    self.processInstallation(archiveURL: finalURL)
+                    if self.allowAutoInstall {
+                        self.processInstallation(archiveURL: finalURL, autorelaunch: false)
+                    } else {
+                        self.state = .downloaded(release: release, archiveURL: finalURL)
+                    }
                 }
             } catch {
                 self.cleanup()
@@ -160,7 +191,10 @@ public class VersionChecker: ObservableObject {
 
     /// Pass the archive URL to the XPC service to extract it, and replace the existing binary
     /// - Parameter archiveURL: The URL of the zip archive
-    private func processInstallation(archiveURL: URL) {
+    func processInstallation(archiveURL: URL, autorelaunch: Bool) {
+
+        self.state = .installing
+
         let connection = NSXPCConnection(serviceName: "com.tectec.UpdateInstaller")
         connection.remoteObjectInterface = NSXPCInterface(with: UpdateInstallerProtocol.self)
         connection.resume()
@@ -175,6 +209,8 @@ public class VersionChecker: ObservableObject {
         let pid = ProcessInfo.processInfo.processIdentifier
         service?.installUpdate(archiveURL: archiveURL, binaryToReplaceURL: Bundle.main.bundleURL, appPID: pid, reply: { success, error in
 
+            self.cleanup()
+
             DispatchQueue.main.async {
                 if !success, let xpcError = error, let updateError = UpdateInstallerError(rawValue: xpcError) {
                     self.state = .error(errorDesc: updateError.rawValue)
@@ -183,10 +219,12 @@ public class VersionChecker: ObservableObject {
                     self.state = .error(errorDesc: xpcError)
                 } else {
                     self.state = .updateInstalled
+                    if autorelaunch {
+                        NSApp.terminate(self)
+                    }
                 }
                 connection.invalidate()
             }
-            self.cleanup()
         })
     }
 

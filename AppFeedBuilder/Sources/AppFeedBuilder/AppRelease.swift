@@ -79,7 +79,7 @@ extension AppRelease {
                               version: "2.0", buildNumber: 50,
                               mardownReleaseNotes: releaseNotes,
                                             publicationDate: Date(),
-                                            downloadURL: URL(string: "http://www.mamadouce.fr/download/Beam_v2.0_50.zip")!)
+                                            downloadURL: URL(string: "https://s3.eu-west-3.amazonaws.com/downloads.dev.beamapp.co/develop/0.1.0/1429794257/Beam.zip")!)
 
         let versions = [v0_1, v0_1_1, v1_1, v2_0]
         return versions
