@@ -231,7 +231,6 @@
 			children = (
 				331E18BD26403F3E00C4593E /* VersionChecker.swift */,
 				331FCC8A26457FA800FD3FA7 /* Views */,
-				331FCC8B26457FC200FD3FA7 /* Models */,
 				331FCC7726456B4D00FD3FA7 /* AutoUpdate.h */,
 				331FCC7826456B4D00FD3FA7 /* Info.plist */,
 				33B27424264BFE1B00A318CD /* Media.xcassets */,
@@ -249,13 +248,6 @@
 				333A8DC72655422400EEA7FB /* SimpleWebView.swift */,
 			);
 			path = Views;
-			sourceTree = "<group>";
-		};
-		331FCC8B26457FC200FD3FA7 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Models;
 			sourceTree = "<group>";
 		};
 		333A8DC22654001900EEA7FB /* Sources */ = {

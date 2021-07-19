@@ -43,6 +43,18 @@ public struct UpdaterView: View {
                             .frame(minWidth: 200, idealWidth: 340, maxWidth: 400, minHeight: 200, idealHeight: 370, maxHeight: 400)
                     })
                 }
+            case .downloaded(let release, _):
+                VStack(alignment: .leading) {
+                    StatusView(title: "Update downloaded",
+                               subtitle: "\(checker.currentAppName()) v.\(release.version) have been downloaded and is ready for install.")
+                    Button("Release notes") {
+                        showsReleaseNotes.toggle()
+                    }
+                    .sheet(isPresented: $showsReleaseNotes, content: {
+                        ReleaseNoteView(release: release, history: checker.missedReleases)
+                            .frame(minWidth: 200, idealWidth: 340, maxWidth: 400, minHeight: 200, idealHeight: 370, maxHeight: 400)
+                    })
+                }
 
             case .error(errorDesc: let errorDesc):
                 StatusView(title: "An error occured",
@@ -69,6 +81,10 @@ public struct UpdaterView: View {
                     Button("Update to \(release.version)") {
                         checker.downloadNewestRelease()
                     }.disabled(downloadButtonDisabled())
+                case .downloaded(_, let url):
+                    Button("Install and relauch") {
+                        checker.processInstallation(archiveURL: url, autorelaunch: true)
+                    }
                 case .updateInstalled:
                     Button("Relaunch") {
                         NSApp.terminate(self)

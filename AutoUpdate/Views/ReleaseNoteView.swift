@@ -49,8 +49,17 @@ public struct ReleaseNoteView: View {
                 }
                 Spacer()
                 if let checker = checker {
-                    Button("Update now") {
-                        checker.downloadNewestRelease()
+                    switch checker.state {
+                    case .updateAvailable:
+                        Button("Update now") {
+                            checker.downloadNewestRelease()
+                        }
+                    case .downloaded(_, let url):
+                        Button("Relaunch now") {
+                            checker.processInstallation(archiveURL: url, autorelaunch: true)
+                        }
+                    default:
+                        EmptyView()
                     }
                 }
                 Button(action: {

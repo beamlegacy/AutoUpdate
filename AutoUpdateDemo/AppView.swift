@@ -10,10 +10,21 @@ import AutoUpdate
 
 struct AppView: View {
 
-    @StateObject var checker = VersionChecker(mockedReleases: AppRelease.mockedReleases(), autocheckEnabled: true)
+    @StateObject var checker = VersionChecker(mockedReleases: AppRelease.mockedReleases(), autocheckEnabled: false)
 
     var body: some View {
-        UpdaterView(checker: checker)
+        VStack {
+            HStack {
+                Toggle(isOn: $checker.allowAutoDownload, label: {
+                    Text("Auto Download")
+                })
+                Toggle(isOn: $checker.allowAutoInstall, label: {
+                    Text("Auto Install")
+                })
+            }
+            UpdaterView(checker: checker)
+        }.onAppear(perform: {
+        })
     }
 }
 
