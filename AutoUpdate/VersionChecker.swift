@@ -50,8 +50,12 @@ public class VersionChecker: ObservableObject {
     @Published public private(set) var state: State
     @Published public private(set) var lastCheck: Date?
 
-    ///Allows AutoUpdater to process to install automatically when an update is available.
+    ///Allows AutoUpdater to process to install automatically after an update was downloaded.
+    ///false by default
     @Published public var allowAutoInstall = false
+
+    ///Allow AutoUpdate to download to update in background.
+    ///true by default
     @Published public var allowAutoDownload = true
 
     public var autocheckTimeInterval: TimeInterval = 60
@@ -166,7 +170,10 @@ public class VersionChecker: ObservableObject {
                 return
             }
 
-            let finalURL = updateFolder.appendingPathComponent("\(release.downloadURL.lastPathComponent)")
+            let fileExtension = release.downloadURL.pathExtension
+            let fileName = release.downloadURL.deletingPathExtension().lastPathComponent
+
+            let finalURL = updateFolder.appendingPathComponent("\(fileName)_\(release.version).\(release.buildNumber)").appendingPathExtension(fileExtension)
 
             do {
                 try fileManager.moveItem(at: fileURL, to: finalURL)

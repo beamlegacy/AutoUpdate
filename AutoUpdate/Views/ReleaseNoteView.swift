@@ -10,18 +10,58 @@ import Parma
 
 public struct ReleaseNoteView: View {
 
+    public struct ReleaseNoteViewStyle {
+
+        public init(titleFont: Font = .headline, titleColor: Color = Color(.labelColor), buttonFont: Font = .headline, buttonColor: Color = Color(.secondaryLabelColor), buttonHoverColor: Color = Color(.labelColor), closeButtonColor: Color = Color(.secondaryLabelColor), closeButtonHoverColor: Color = Color(.labelColor), dateFont: Font = .body, dateColor: Color = Color(.secondaryLabelColor), versionNameFont: Font = .headline, versionNameColor: Color = Color(.labelColor), parmaRenderer: ParmaRenderable? = nil, backgroundColor: Color = Color(.windowBackgroundColor)) {
+            self.titleFont = titleFont
+            self.titleColor = titleColor
+            self.buttonFont = buttonFont
+            self.actionButtonColor = buttonColor
+            self.actionButtonHoverColor = buttonHoverColor
+            self.closeButtonColor = closeButtonColor
+            self.closeButtonHoverColor = closeButtonHoverColor
+            self.dateFont = dateFont
+            self.dateColor = dateColor
+            self.versionNameFont = versionNameFont
+            self.versionNameColor = versionNameColor
+            self.parmaRenderer = parmaRenderer
+            self.backgroundColor = backgroundColor
+        }
+
+        public var titleFont: Font
+        public var titleColor: Color
+        public var buttonFont: Font
+        public var actionButtonColor: Color
+        public var actionButtonHoverColor: Color
+        public var closeButtonColor: Color
+        public var closeButtonHoverColor: Color
+        public var dateFont: Font
+        public var dateColor: Color
+        public var versionNameFont: Font
+        public var versionNameColor: Color
+        public var parmaRenderer: ParmaRenderable?
+        public var backgroundColor: Color
+
+        var noteViewStyle: NoteView.NoteViewStyle {
+            return .init(dateFont: dateFont, dateColor: dateColor, versionNameFont: versionNameFont, versionNameColor: versionNameColor, parmaRenderer: parmaRenderer)
+        }
+    }
+
     private let release: AppRelease
     private let history: [AppRelease]?
     private let checker: VersionChecker?
+    private let style: ReleaseNoteViewStyle
 
     @Environment(\.presentationMode) var presentationMode
-
     @State private var showsVersionAndBuild = false
+    @State private var onHoverCloseButton = false
+    @State private var onHoverActionButton = false
 
-    public init(release: AppRelease, history: [AppRelease]? = nil, checker: VersionChecker? = nil) {
+    public init(release: AppRelease, history: [AppRelease]? = nil, checker: VersionChecker? = nil, style: ReleaseNoteViewStyle = ReleaseNoteViewStyle()) {
         self.release = release
         self.checker = checker
         self.history = history
+        self.style = style
     }
 
     public var body: some View {
@@ -30,7 +70,7 @@ public struct ReleaseNoteView: View {
                 VStack(alignment: .leading) {
                     HStack(alignment: .firstTextBaseline) {
                         Text("Changelog")
-                            .font(.headline)
+                            .font(style.titleFont)
                             .onTapGesture {
                                 withAnimation {
                                     showsVersionAndBuild.toggle()
@@ -51,12 +91,28 @@ public struct ReleaseNoteView: View {
                 if let checker = checker {
                     switch checker.state {
                     case .updateAvailable:
-                        Button("Update now") {
+                        Button(action: {
                             checker.downloadNewestRelease()
+                        }, label: {
+                            Text("Update now")
+                                .underline()
+                        })
+                        .foregroundColor(onHoverActionButton ? style.actionButtonHoverColor : style.actionButtonColor)
+                        .buttonStyle(BorderlessButtonStyle())
+                        .onHover { h in
+                            onHoverActionButton = h
                         }
                     case .downloaded(_, let url):
-                        Button("Relaunch now") {
+                        Button(action: {
                             checker.processInstallation(archiveURL: url, autorelaunch: true)
+                        }, label: {
+                            Text("Relaunch now")
+                                .underline()
+                        })
+                        .foregroundColor(onHoverActionButton ? style.actionButtonHoverColor : style.actionButtonColor)
+                        .buttonStyle(BorderlessButtonStyle())
+                        .onHover { h in
+                            onHoverActionButton = h
                         }
                     default:
                         EmptyView()
@@ -69,22 +125,27 @@ public struct ReleaseNoteView: View {
                 }, label: {
                     Image("close", bundle: Bundle(for: VersionChecker.self))
                         .renderingMode(.template)
+                        .foregroundColor(onHoverCloseButton ? style.closeButtonHoverColor : style.closeButtonColor)
+                        .animation(.easeInOut)
+                        .onHover { h in
+                            onHoverCloseButton = h
+                        }
                 })
                 .buttonStyle(BorderlessButtonStyle())
             }
-            .padding(.leading)
-            .padding(.trailing)
+            .padding(.leading, 12)
+            .padding(.trailing, 12)
             Divider()
-                .padding(.horizontal)
+                .padding(.horizontal, 12)
             ScrollView {
-                NoteView(releases: history ?? [release])
+                NoteView(releases: history ?? [release], style: style.noteViewStyle)
+                    .padding(.leading, 16)
+                    .padding(.trailing, -6)
             }
         }
-        .padding(.top)
-        .background(Color(.windowBackgroundColor))
-        .cornerRadius(6.0)
-        .shadow(radius: 10)
-        .frame(minWidth: 200, idealWidth: 340, maxWidth: 400, minHeight: 200, idealHeight: 370, maxHeight: 400)
+        .padding(.top, 12)
+        .background(style.backgroundColor)
+        .frame(width: 340, height: 370)
     }
 }
 
@@ -127,6 +188,15 @@ struct ReleaseNoteView_Previews: PreviewProvider {
 
 struct NoteView: View {
 
+    struct NoteViewStyle {
+        var dateFont: Font = .body
+        var dateColor: Color = .gray
+        var versionNameFont: Font = .headline
+        var versionNameColor: Color = Color(.labelColor)
+
+        var parmaRenderer: ParmaRenderable?
+    }
+
     static let dateFormatter: DateFormatter = {
         let df = DateFormatter()
         df.dateStyle = .medium
@@ -135,17 +205,21 @@ struct NoteView: View {
     }()
 
     let releases: [AppRelease]
+    let style: NoteViewStyle
 
     var body: some View {
         VStack(alignment: .leading) {
             ForEach(releases) { release in
-                VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: 20) {
                     dateText(for: release.publicationDate)
-                        .foregroundColor(.gray)
+                        .font(style.dateFont)
+                        .foregroundColor(style.dateColor)
                     Text(release.versionName)
-                        .font(.headline)
+                        .font(style.versionNameFont)
+                        .foregroundColor(style.versionNameColor)
                         .multilineTextAlignment(.leading)
-                    Parma(release.mardownReleaseNotes)
+                        .padding(.top, -12)
+                    Parma(release.mardownReleaseNotes, render: style.parmaRenderer)
                         .padding(.top, 5)
                 }.padding(.leading)
                 .padding(.trailing)
