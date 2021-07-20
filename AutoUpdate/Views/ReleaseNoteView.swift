@@ -51,17 +51,18 @@ public struct ReleaseNoteView: View {
     private let history: [AppRelease]?
     private let checker: VersionChecker?
     private let style: ReleaseNoteViewStyle
+    private let closeAction: () -> Void
 
-    @Environment(\.presentationMode) var presentationMode
     @State private var showsVersionAndBuild = false
     @State private var onHoverCloseButton = false
     @State private var onHoverActionButton = false
 
-    public init(release: AppRelease, history: [AppRelease]? = nil, checker: VersionChecker? = nil, style: ReleaseNoteViewStyle = ReleaseNoteViewStyle()) {
+    public init(release: AppRelease, closeAction: @escaping () -> Void, history: [AppRelease]? = nil, checker: VersionChecker? = nil, style: ReleaseNoteViewStyle = ReleaseNoteViewStyle()) {
         self.release = release
         self.checker = checker
         self.history = history
         self.style = style
+        self.closeAction = closeAction
     }
 
     public var body: some View {
@@ -120,7 +121,7 @@ public struct ReleaseNoteView: View {
                 }
                 Button(action: {
                     withAnimation {
-                        presentationMode.wrappedValue.dismiss()
+                        closeAction()
                     }
                 }, label: {
                     Image("close", bundle: Bundle(for: VersionChecker.self))
@@ -178,10 +179,10 @@ struct ReleaseNoteView_Previews: PreviewProvider {
 
     static var previews: some View {
         Group {
-            ReleaseNoteView(release: v2, history: [v2, v1_5])
-            ReleaseNoteView(release: v2)
+            ReleaseNoteView(release: v2, closeAction: {}, history: [v2, v1_5])
+            ReleaseNoteView(release: v2, closeAction: {})
                 .frame(width: 340.0, height: 370.0)
-            ReleaseNoteView(release: v2)
+            ReleaseNoteView(release: v2, closeAction: {})
         }
     }
 }

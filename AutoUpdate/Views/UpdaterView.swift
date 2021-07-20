@@ -39,7 +39,9 @@ public struct UpdaterView: View {
                         showsReleaseNotes.toggle()
                     }
                     .sheet(isPresented: $showsReleaseNotes, content: {
-                        ReleaseNoteView(release: release, history: checker.missedReleases)
+                        ReleaseNoteView(release: release, closeAction: {
+                            showsReleaseNotes = false
+                        }, history: checker.missedReleases)
                             .frame(minWidth: 200, idealWidth: 340, maxWidth: 400, minHeight: 200, idealHeight: 370, maxHeight: 400)
                     })
                 }
@@ -51,7 +53,9 @@ public struct UpdaterView: View {
                         showsReleaseNotes.toggle()
                     }
                     .sheet(isPresented: $showsReleaseNotes, content: {
-                        ReleaseNoteView(release: release, history: checker.missedReleases)
+                        ReleaseNoteView(release: release, closeAction: {
+                            showsReleaseNotes = false
+                        }, history: checker.missedReleases)
                             .frame(minWidth: 200, idealWidth: 340, maxWidth: 400, minHeight: 200, idealHeight: 370, maxHeight: 400)
                     })
                 }
