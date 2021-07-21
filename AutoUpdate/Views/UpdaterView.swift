@@ -45,15 +45,15 @@ public struct UpdaterView: View {
                             .frame(minWidth: 200, idealWidth: 340, maxWidth: 400, minHeight: 200, idealHeight: 370, maxHeight: 400)
                     })
                 }
-            case .downloaded(let release, _):
+            case .downloaded(let downloadedRelease):
                 VStack(alignment: .leading) {
                     StatusView(title: "Update downloaded",
-                               subtitle: "\(checker.currentAppName()) v.\(release.version) have been downloaded and is ready for install.")
+                               subtitle: "\(checker.currentAppName()) v.\((downloadedRelease.appRelease.version)) have been downloaded and is ready for install.")
                     Button("Release notes") {
                         showsReleaseNotes.toggle()
                     }
                     .sheet(isPresented: $showsReleaseNotes, content: {
-                        ReleaseNoteView(release: release, closeAction: {
+                        ReleaseNoteView(release: downloadedRelease.appRelease, closeAction: {
                             showsReleaseNotes = false
                         }, history: checker.missedReleases)
                             .frame(minWidth: 200, idealWidth: 340, maxWidth: 400, minHeight: 200, idealHeight: 370, maxHeight: 400)
@@ -85,9 +85,9 @@ public struct UpdaterView: View {
                     Button("Update to \(release.version)") {
                         checker.downloadNewestRelease()
                     }.disabled(downloadButtonDisabled())
-                case .downloaded(_, let url):
+                case .downloaded(let release):
                     Button("Install and relauch") {
-                        checker.processInstallation(archiveURL: url, autorelaunch: true)
+                        checker.processInstallation(archiveURL: release.archiveURL, autorelaunch: true)
                     }
                 case .updateInstalled:
                     Button("Relaunch") {

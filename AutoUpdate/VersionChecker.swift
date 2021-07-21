@@ -22,7 +22,7 @@ public class VersionChecker: ObservableObject {
         case updateAvailable(release: AppRelease)
         case error(errorDesc: String)
         case downloading(progress: Progress)
-        case downloaded(release: AppRelease, archiveURL: URL)
+        case downloaded(release: DownloadedAppRelease)
         case installing
         case updateInstalled
 
@@ -44,6 +44,8 @@ public class VersionChecker: ObservableObject {
     private var releaseHistory: [AppRelease]?
     private var fakeAppVersion: String?
     private var fakeAppBuild: Int?
+
+    private typealias PendingInstall = DownloadedAppRelease
 
     @Published public private(set) var newRelease: AppRelease?
     @Published public private(set) var currentRelease: AppRelease?
@@ -92,10 +94,7 @@ public class VersionChecker: ObservableObject {
 
         guard state.canPerformCheck else { return }
 
-        var pendingInstallation: (release: AppRelease, archiveURL: URL)?
-        if case State.downloaded(let release, let archiveURL) = state {
-            pendingInstallation = (release, archiveURL)
-        }
+        let pendingInstallation = checkForPendingInstallations()
 
         state = .checking
 
@@ -109,8 +108,8 @@ public class VersionChecker: ObservableObject {
                     //If we have a newer version, make sure it's newer than the previously downloaded one
                     //If a new update was found, clean what was previously downloaded before downloading the new archive
                     if let pendingInstallation = pendingInstallation {
-                        guard latest > pendingInstallation.release else {
-                            self.state = .downloaded(release: pendingInstallation.release, archiveURL: pendingInstallation.archiveURL)
+                        guard latest > pendingInstallation.appRelease else {
+                            self.state = .downloaded(release: pendingInstallation)
                             return
                         }
                         try? FileManager.default.removeItem(at: pendingInstallation.archiveURL)
@@ -127,11 +126,11 @@ public class VersionChecker: ObservableObject {
                     self.newRelease = nil
 
                     if let pendingInstallation = pendingInstallation {
-                        self.state = .downloaded(release: pendingInstallation.release, archiveURL: pendingInstallation.archiveURL)
+                        self.state = .downloaded(release: pendingInstallation)
                     }
 
                     if error == .noUpdates, let pendingInstallation = pendingInstallation {
-                        self.state = .downloaded(release: pendingInstallation.release, archiveURL: pendingInstallation.archiveURL)
+                        self.state = .downloaded(release: pendingInstallation)
                     } else if error == .noUpdates {
                         self.state = .noUpdate
                     } else {
@@ -146,12 +145,10 @@ public class VersionChecker: ObservableObject {
     /// Download the newest release and process installation using the XPC service
     public func downloadNewestRelease() {
 
-        guard let release = newRelease else { return }
+        guard let release = newRelease, let downloadURL = release.downloadURL else { return }
 
         let session = URLSession.shared
-        let downloadTask = session.downloadTask(with: release.downloadURL) { fileURL, _, error in
-            let fileManager = FileManager.default
-
+        let downloadTask = session.downloadTask(with: downloadURL) { fileURL, _, error in
             guard error == nil,
                   let fileURL = fileURL,
                   let appSupportURL = self.applicationSupportDirectoryURL else {
@@ -165,35 +162,21 @@ public class VersionChecker: ObservableObject {
 
             do {
                 try self.createAppFolderInAppSupportIfNeeded(updateFolder)
-            } catch {
-                self.state = .error(errorDesc: error.localizedDescription)
-                return
-            }
-
-            let fileExtension = release.downloadURL.pathExtension
-            let fileName = release.downloadURL.deletingPathExtension().lastPathComponent
-
-            let finalFileName = updateFolder.appendingPathComponent("\(fileName)_\(release.version).\(release.buildNumber)")
-            let archiveURL = finalFileName.appendingPathExtension(fileExtension)
-            let jsonURL = finalFileName.appendingPathExtension("json")
-
-            do {
-                try fileManager.moveItem(at: fileURL, to: archiveURL)
-                let releaseData = try JSONEncoder().encode(release)
-                try releaseData.write(to: jsonURL)
+                let savedRelease = try self.saveDownloadedAppRelease(release, archiveURL: fileURL, in: updateFolder)
 
                 DispatchQueue.main.async {
                     if self.allowAutoInstall {
-                        self.processInstallation(archiveURL: archiveURL, autorelaunch: false)
+                        self.processInstallation(archiveURL: savedRelease.archiveURL, autorelaunch: false)
                     } else {
-                        self.state = .downloaded(release: release, archiveURL: archiveURL)
+                        self.state = .downloaded(release: savedRelease)
                     }
                 }
             } catch {
-                self.cleanup()
                 DispatchQueue.main.async {
                     self.state = .error(errorDesc: error.localizedDescription)
                 }
+                self.cleanup()
+                return
             }
         }
 
@@ -349,13 +332,66 @@ public class VersionChecker: ObservableObject {
     static func combinedReleaseNotes(for releases: [AppRelease]) -> [String] {
         releases.map({$0.mardownReleaseNotes})
     }
+
+    private func checkForPendingInstallations() -> PendingInstall? {
+        if case State.downloaded(let release) = state {
+            return release
+        } else if let appSupportURL = applicationSupportDirectoryURL {
+            let updateFolder = self.updateDirectory(in: appSupportURL)
+            let pendingReleases = findPendingReleases(in: updateFolder)
+            if let latest = pendingReleases.last,
+               latest.appRelease > AppRelease.appRelease(with: currentAppVersion(), buildNumber: currentAppBuild()) {
+            }
+        }
+        return nil
+    }
+
+    func findPendingReleases(in directory: URL) -> [DownloadedAppRelease] {
+        let fileManager = FileManager.default
+        let decoder = JSONDecoder()
+        do {
+            let files = try fileManager.contentsOfDirectory(atPath: directory.path)
+            let releases: [DownloadedAppRelease] = try files.compactMap { fileName in
+                guard fileName.hasSuffix("json") else { return nil }
+                let url = URL(fileURLWithPath: fileName, relativeTo: directory)
+                let data = try Data(contentsOf: url)
+                let release = try decoder.decode(DownloadedAppRelease.self, from: data)
+                return release
+            }
+            return releases.sorted()
+        } catch {
+            return []
+        }
+    }
+
+    func decomposedFilename(from url: URL) -> (fileName: String, fileExtension: String) {
+        let fileExtension = url.pathExtension
+        let fileName = url.deletingPathExtension().lastPathComponent
+        return (fileName, fileExtension)
+    }
+
+    func saveDownloadedAppRelease(_ release: AppRelease, archiveURL: URL, in directory: URL) throws -> DownloadedAppRelease {
+
+        guard let downloadURL = release.downloadURL else { throw VersionCheckerError.cantCreateRequiredFolders }
+        let downloadRelease = DownloadedAppRelease(appRelease: release, archiveURL: archiveURL)
+
+        let (fileName, fileExtension) = self.decomposedFilename(from: downloadURL)
+        let finalFileName = directory.appendingPathComponent("\(fileName)_\(release.version).\(release.buildNumber)")
+
+        let finalArchiveURL = finalFileName.appendingPathExtension(fileExtension)
+        let jsonURL = finalFileName.appendingPathExtension("json")
+
+        try FileManager.default.moveItem(at: archiveURL, to: finalArchiveURL)
+        let releaseData = try JSONEncoder().encode(downloadRelease)
+        try releaseData.write(to: jsonURL)
+        return downloadRelease
+    }
 }
 
 // MARK: - Helper functions
 extension VersionChecker {
 
     func currentAppVersion() -> String {
-
         if let fake = fakeAppVersion {
             return fake
         }
@@ -367,7 +403,6 @@ extension VersionChecker {
     }
 
     func currentAppBuild() -> Int {
-
         if let fake = fakeAppBuild {
             return fake
         }
