@@ -8,8 +8,8 @@
 import Foundation
 
 public struct DownloadedAppRelease: Codable, Equatable {
-    let appRelease: AppRelease
-    let archiveURL: URL
+    public let appRelease: AppRelease
+    public let archiveURL: URL
 
     static func downloadedAppRelease(with version: String, buildNumber: Int, archiveURL: URL) -> DownloadedAppRelease {
         let release = AppRelease.appRelease(with: version, buildNumber: buildNumber)
