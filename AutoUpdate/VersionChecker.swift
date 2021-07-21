@@ -145,7 +145,8 @@ public class VersionChecker: ObservableObject {
     /// Download the newest release and process installation using the XPC service
     public func downloadNewestRelease() {
 
-        guard let release = newRelease, let downloadURL = release.downloadURL else { return }
+        guard let release = newRelease else { return }
+        let downloadURL = release.downloadURL
 
         let session = URLSession.shared
         let downloadTask = session.downloadTask(with: downloadURL) { fileURL, _, error in
@@ -372,7 +373,7 @@ public class VersionChecker: ObservableObject {
 
     func saveDownloadedAppRelease(_ release: AppRelease, archiveURL: URL, in directory: URL) throws -> DownloadedAppRelease {
 
-        guard let downloadURL = release.downloadURL else { throw VersionCheckerError.cantCreateRequiredFolders }
+        let downloadURL = release.downloadURL
 
         let (fileName, fileExtension) = self.decomposedFilename(from: downloadURL)
         let finalFileName = directory.appendingPathComponent("\(fileName)_\(release.version).\(release.buildNumber)")
