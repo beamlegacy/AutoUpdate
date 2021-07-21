@@ -147,17 +147,24 @@ class AutoUpdateFrameworkTests: XCTestCase {
 
     func testFindPendingReleasesOnDisk() {
         let tempFolder = createTempTestFolderIfNeeded()
-        let jsonEncoder = JSONEncoder()
 
         let checker = VersionChecker(mockedReleases: sampleFeed, fakeAppVersion: "0.2")
         let v0_1DateComponents = DateComponents(year: 2020, month: 11, day: 20, hour: 17, minute: 45, second: 00)
 
         let onDiskRelease0_5 = AppRelease(versionName: "Version 0.5", version: "0.5", buildNumber: 1, mardownReleaseNotes: "This is release notes from Beam 0.4", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZip.zip")!)
+        guard let fakeDownloadURL0_5 = generateFakeDownloadFile() else {
+            XCTFail("Failed to generate download file")
+            return
+        }
 
         let onDiskRelease0_4 = AppRelease(versionName: "Version 0.4", version: "0.4", buildNumber: 1, mardownReleaseNotes: "This is release notes from Beam 0.4", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZip.zip")!)
+        guard let fakeDownloadURL0_4 = generateFakeDownloadFile() else {
+            XCTFail("Failed to generate download file")
+            return
+        }
 
-        let onDiskSavedRelease0_5 = try? checker.saveDownloadedAppRelease(onDiskRelease0_5, archiveURL: URL(fileURLWithPath: "/"), in: tempFolder)
-        let onDiskSavedRelease0_4 = try? checker.saveDownloadedAppRelease(onDiskRelease0_4, archiveURL: URL(fileURLWithPath: "/"), in: tempFolder)
+        _ = try? checker.saveDownloadedAppRelease(onDiskRelease0_4, archiveURL: fakeDownloadURL0_4, in: tempFolder)
+        let onDiskSavedRelease0_5 = try? checker.saveDownloadedAppRelease(onDiskRelease0_5, archiveURL: fakeDownloadURL0_5, in: tempFolder)
 
         let pending = checker.findPendingReleases(in: tempFolder)
         XCTAssertTrue(pending.count == 2)
@@ -167,25 +174,10 @@ class AutoUpdateFrameworkTests: XCTestCase {
             return
         }
         XCTAssertEqual(latest, onDiskSavedRelease0_5)
-    }
 
-    func testCheckForPendingInstall() {
-        let tempFolder = createTempTestFolderIfNeeded()
-        let jsonEncoder = JSONEncoder()
-
-        let checker = VersionChecker(mockedReleases: sampleFeed, fakeAppVersion: "0.2")
-
-        let onDiskRelease0_5 = AppRelease.appRelease(with: "0.5", buildNumber: 1)
-        let onDiskRelease0_4 = AppRelease.appRelease(with: "0.4", buildNumber: 1)
-        let onDiskdata0_5 = try? jsonEncoder.encode(onDiskRelease0_5)
-        let onDiskdata0_4 = try? jsonEncoder.encode(onDiskRelease0_4)
-        let fileURL0_5 = tempFolder.appendingPathComponent("Release0.5.json")
-        let fileURL0_4 = tempFolder.appendingPathComponent("Release0.4.json")
-        try? onDiskdata0_5?.write(to: fileURL0_5)
-        try? onDiskdata0_4?.write(to: fileURL0_4)
-
-        let fakeData = Data()
-        try? fakeData.write(to: tempFolder)
+        let installation = checker.checkForPendingInstallations(in: tempFolder)
+        XCTAssertNotNil(installation)
+        XCTAssertEqual(installation?.appRelease, onDiskRelease0_5)
     }
 
     var sampleFeed: [AppRelease] {
@@ -208,6 +200,15 @@ class AutoUpdateFrameworkTests: XCTestCase {
         return tempFolder
     }
 
+    private func createTempDownloadFolderIfNeeded() -> URL {
+        let fileManager = FileManager.default
+        let tempFolder = testTempFolderURL.appendingPathComponent("downloads")
+        if !fileManager.fileExists(atPath: tempFolder.path) {
+            try? fileManager.createDirectory(at: tempFolder, withIntermediateDirectories: true, attributes: nil)
+        }
+        return tempFolder
+    }
+
     private func cleanupTestFolderIfNeeded() {
         let fileManager = FileManager.default
         let tempFolder = testTempFolderURL
@@ -220,5 +221,17 @@ class AutoUpdateFrameworkTests: XCTestCase {
         let fileManager = FileManager.default
         let tempFolder = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first!.appendingPathComponent("AutoUpdateTests")
         return URL(fileURLWithPath: tempFolder.path)
+    }
+
+    private func generateFakeDownloadFile() -> URL? {
+        let downloadFolderURL = createTempDownloadFolderIfNeeded()
+        let fakeData = Data()
+        do {
+            let writeURL = downloadFolderURL.appendingPathComponent(UUID().uuidString)
+            try fakeData.write(to: writeURL)
+            return writeURL
+        } catch {
+            return nil
+        }
     }
 }

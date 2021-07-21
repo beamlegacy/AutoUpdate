@@ -45,7 +45,7 @@ public class VersionChecker: ObservableObject {
     private var fakeAppVersion: String?
     private var fakeAppBuild: Int?
 
-    private typealias PendingInstall = DownloadedAppRelease
+    internal typealias PendingInstall = DownloadedAppRelease
 
     @Published public private(set) var newRelease: AppRelease?
     @Published public private(set) var currentRelease: AppRelease?
@@ -94,7 +94,8 @@ public class VersionChecker: ObservableObject {
 
         guard state.canPerformCheck else { return }
 
-        let pendingInstallation = checkForPendingInstallations()
+        guard let appSupportDirectory = applicationSupportDirectoryURL else { return }
+        let pendingInstallation = checkForPendingInstallations(in: updateDirectory(in: appSupportDirectory))
 
         state = .checking
 
@@ -333,14 +334,14 @@ public class VersionChecker: ObservableObject {
         releases.map({$0.mardownReleaseNotes})
     }
 
-    private func checkForPendingInstallations() -> PendingInstall? {
+    func checkForPendingInstallations(in directory: URL ) -> PendingInstall? {
         if case State.downloaded(let release) = state {
             return release
-        } else if let appSupportURL = applicationSupportDirectoryURL {
-            let updateFolder = self.updateDirectory(in: appSupportURL)
-            let pendingReleases = findPendingReleases(in: updateFolder)
+        } else {
+            let pendingReleases = findPendingReleases(in: directory)
             if let latest = pendingReleases.last,
                latest.appRelease > AppRelease.appRelease(with: currentAppVersion(), buildNumber: currentAppBuild()) {
+                return latest
             }
         }
         return nil
@@ -353,7 +354,7 @@ public class VersionChecker: ObservableObject {
             let files = try fileManager.contentsOfDirectory(atPath: directory.path)
             let releases: [DownloadedAppRelease] = try files.compactMap { fileName in
                 guard fileName.hasSuffix("json") else { return nil }
-                let url = URL(fileURLWithPath: fileName, relativeTo: directory)
+                let url = directory.appendingPathComponent(fileName)
                 let data = try Data(contentsOf: url)
                 let release = try decoder.decode(DownloadedAppRelease.self, from: data)
                 return release
