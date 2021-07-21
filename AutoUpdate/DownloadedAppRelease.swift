@@ -12,7 +12,7 @@ public struct DownloadedAppRelease: Codable, Equatable {
     public let archiveURL: URL
 
     static func downloadedAppRelease(with version: String, buildNumber: Int, archiveURL: URL) -> DownloadedAppRelease {
-        let release = AppRelease.appRelease(with: version, buildNumber: buildNumber)
+        let release = AppRelease.basicAppRelease(with: version, buildNumber: buildNumber)
         return DownloadedAppRelease(appRelease: release, archiveURL: archiveURL)
     }
 }

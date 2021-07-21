@@ -339,7 +339,7 @@ public class VersionChecker: ObservableObject {
         } else {
             let pendingReleases = findPendingReleases(in: directory)
             if let latest = pendingReleases.last,
-               latest.appRelease > AppRelease.appRelease(with: currentAppVersion(), buildNumber: currentAppBuild()) {
+               latest.appRelease > AppRelease.basicAppRelease(with: currentAppVersion(), buildNumber: currentAppBuild()) {
                 return latest
             }
         }

@@ -14,7 +14,7 @@ public struct AppRelease: Codable {
     public let buildNumber: Int
     public let mardownReleaseNotes: String
     public let publicationDate: Date
-    public let downloadURL: URL?
+    public let downloadURL: URL
 }
 
 extension AppRelease {
@@ -53,8 +53,8 @@ extension AppRelease {
         task.resume()
     }
 
-    static func appRelease(with version: String, buildNumber: Int) -> AppRelease {
-        return AppRelease(versionName: "", version: version, buildNumber: buildNumber, mardownReleaseNotes: "", publicationDate: Date(), downloadURL: nil)
+    static func basicAppRelease(with version: String, buildNumber: Int) -> AppRelease {
+        return AppRelease(versionName: "", version: version, buildNumber: buildNumber, mardownReleaseNotes: "", publicationDate: Date(), downloadURL: URL(string: "http://")!)
     }
 
     static public func mockedReleases() -> [AppRelease] {
