@@ -173,15 +173,20 @@ public class VersionChecker: ObservableObject {
             let fileExtension = release.downloadURL.pathExtension
             let fileName = release.downloadURL.deletingPathExtension().lastPathComponent
 
-            let finalURL = updateFolder.appendingPathComponent("\(fileName)_\(release.version).\(release.buildNumber)").appendingPathExtension(fileExtension)
+            let finalFileName = updateFolder.appendingPathComponent("\(fileName)_\(release.version).\(release.buildNumber)")
+            let archiveURL = finalFileName.appendingPathExtension(fileExtension)
+            let jsonURL = finalFileName.appendingPathExtension("json")
 
             do {
-                try fileManager.moveItem(at: fileURL, to: finalURL)
+                try fileManager.moveItem(at: fileURL, to: archiveURL)
+                let releaseData = try JSONEncoder().encode(release)
+                try releaseData.write(to: jsonURL)
+
                 DispatchQueue.main.async {
                     if self.allowAutoInstall {
-                        self.processInstallation(archiveURL: finalURL, autorelaunch: false)
+                        self.processInstallation(archiveURL: archiveURL, autorelaunch: false)
                     } else {
-                        self.state = .downloaded(release: release, archiveURL: finalURL)
+                        self.state = .downloaded(release: release, archiveURL: archiveURL)
                     }
                 }
             } catch {
