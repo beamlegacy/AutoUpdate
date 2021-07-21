@@ -109,11 +109,10 @@ public class VersionChecker: ObservableObject {
                     //If we have a newer version, make sure it's newer than the previously downloaded one
                     //If a new update was found, clean what was previously downloaded before downloading the new archive
                     if let pendingInstallation = pendingInstallation {
-                        guard latest > pendingInstallation.appRelease else {
-                            self.state = .downloaded(release: pendingInstallation)
-                            return
-                        }
-                        try? FileManager.default.removeItem(at: pendingInstallation.archiveURL)
+                        self.state = .downloaded(release: pendingInstallation)
+                        return
+                    } else {
+                        self.cleanup()
                     }
 
                     self.newRelease = latest
@@ -374,7 +373,6 @@ public class VersionChecker: ObservableObject {
     func saveDownloadedAppRelease(_ release: AppRelease, archiveURL: URL, in directory: URL) throws -> DownloadedAppRelease {
 
         guard let downloadURL = release.downloadURL else { throw VersionCheckerError.cantCreateRequiredFolders }
-        let downloadRelease = DownloadedAppRelease(appRelease: release, archiveURL: archiveURL)
 
         let (fileName, fileExtension) = self.decomposedFilename(from: downloadURL)
         let finalFileName = directory.appendingPathComponent("\(fileName)_\(release.version).\(release.buildNumber)")
@@ -383,6 +381,7 @@ public class VersionChecker: ObservableObject {
         let jsonURL = finalFileName.appendingPathExtension("json")
 
         try FileManager.default.moveItem(at: archiveURL, to: finalArchiveURL)
+        let downloadRelease = DownloadedAppRelease(appRelease: release, archiveURL: finalArchiveURL)
         let releaseData = try JSONEncoder().encode(downloadRelease)
         try releaseData.write(to: jsonURL)
         return downloadRelease
