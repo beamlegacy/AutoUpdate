@@ -53,6 +53,10 @@ extension AppRelease {
         task.resume()
     }
 
+    static func basicAppRelease(with version: String, buildNumber: Int) -> AppRelease {
+        return AppRelease(versionName: "", version: version, buildNumber: buildNumber, mardownReleaseNotes: "", publicationDate: Date(), downloadURL: URL(string: "http://")!)
+    }
+
     static public func mockedReleases() -> [AppRelease] {
 
         let releaseNotes = """

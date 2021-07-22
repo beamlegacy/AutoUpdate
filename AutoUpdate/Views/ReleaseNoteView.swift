@@ -103,9 +103,9 @@ public struct ReleaseNoteView: View {
                         .onHover { h in
                             onHoverActionButton = h
                         }
-                    case .downloaded(_, let url):
+                    case .downloaded(let release):
                         Button(action: {
-                            checker.processInstallation(archiveURL: url, autorelaunch: true)
+                            checker.processInstallation(archiveURL: release.archiveURL, autorelaunch: true)
                         }, label: {
                             Text("Relaunch now")
                                 .underline()

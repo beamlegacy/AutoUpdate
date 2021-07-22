@@ -25,6 +25,7 @@
 		331FCC8926456C5900FD3FA7 /* UpdateInstallerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18D326414DFC00C4593E /* UpdateInstallerProtocol.swift */; };
 		331FCC8D264581DA00FD3FA7 /* ReleaseNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331FCC8C264581DA00FD3FA7 /* ReleaseNoteView.swift */; };
 		3331E6C426458D5400003345 /* AppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3331E6C326458D5400003345 /* AppView.swift */; };
+		3339F73126A8448C004EE693 /* DownloadedAppRelease.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3339F73026A8448C004EE693 /* DownloadedAppRelease.swift */; };
 		333A8DC426552FD600EEA7FB /* AppRelease.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18BB26403A7400C4593E /* AppRelease.swift */; };
 		333A8DC82655422400EEA7FB /* SimpleWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333A8DC72655422400EEA7FB /* SimpleWebView.swift */; };
 		333A8DCE26556FB100EEA7FB /* Parma in Frameworks */ = {isa = PBXBuildFile; productRef = 333A8DCD26556FB100EEA7FB /* Parma */; };
@@ -115,6 +116,7 @@
 		331FCC7826456B4D00FD3FA7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		331FCC8C264581DA00FD3FA7 /* ReleaseNoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReleaseNoteView.swift; sourceTree = "<group>"; };
 		3331E6C326458D5400003345 /* AppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppView.swift; sourceTree = "<group>"; };
+		3339F73026A8448C004EE693 /* DownloadedAppRelease.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadedAppRelease.swift; sourceTree = "<group>"; };
 		333A8DC02653FF7500EEA7FB /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		333A8DC72655422400EEA7FB /* SimpleWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleWebView.swift; sourceTree = "<group>"; };
 		3397C6F7269DD9540092FDD7 /* AutoUpdateFrameworkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AutoUpdateFrameworkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -230,6 +232,7 @@
 			isa = PBXGroup;
 			children = (
 				331E18BD26403F3E00C4593E /* VersionChecker.swift */,
+				3339F73026A8448C004EE693 /* DownloadedAppRelease.swift */,
 				331FCC8A26457FA800FD3FA7 /* Views */,
 				331FCC7726456B4D00FD3FA7 /* AutoUpdate.h */,
 				331FCC7826456B4D00FD3FA7 /* Info.plist */,
@@ -535,6 +538,7 @@
 				331FCC8526456C0900FD3FA7 /* ProgressiveStatusView.swift in Sources */,
 				331FCC8926456C5900FD3FA7 /* UpdateInstallerProtocol.swift in Sources */,
 				331FCC8426456C0900FD3FA7 /* VersionChecker.swift in Sources */,
+				3339F73126A8448C004EE693 /* DownloadedAppRelease.swift in Sources */,
 				331FCC8626456C0900FD3FA7 /* StatusView.swift in Sources */,
 				331FCC8D264581DA00FD3FA7 /* ReleaseNoteView.swift in Sources */,
 			);
