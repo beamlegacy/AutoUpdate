@@ -52,17 +52,19 @@ public struct ReleaseNoteView: View {
     private let checker: VersionChecker?
     private let style: ReleaseNoteViewStyle
     private let closeAction: () -> Void
+    private let showMissedReleasesRecap: Bool
 
     @State private var showsVersionAndBuild = false
     @State private var onHoverCloseButton = false
     @State private var onHoverActionButton = false
 
-    public init(release: AppRelease, closeAction: @escaping () -> Void, history: [AppRelease]? = nil, checker: VersionChecker? = nil, style: ReleaseNoteViewStyle = ReleaseNoteViewStyle()) {
+    public init(release: AppRelease, closeAction: @escaping () -> Void, history: [AppRelease]? = nil, checker: VersionChecker? = nil, style: ReleaseNoteViewStyle = ReleaseNoteViewStyle(), showMissedReleasesRecap: Bool = false) {
         self.release = release
         self.checker = checker
         self.history = history
         self.style = style
         self.closeAction = closeAction
+        self.showMissedReleasesRecap = showMissedReleasesRecap
     }
 
     public var body: some View {
@@ -83,7 +85,7 @@ public struct ReleaseNoteView: View {
                                 .foregroundColor(Color(.secondaryLabelColor))
                         }
                     }
-                    if let history = history, history.count > 1 {
+                    if let history = history, history.count > 1, showMissedReleasesRecap {
                         Text("\(history.count) updates since you last updated")
                             .foregroundColor(Color(.secondaryLabelColor))
                     }
@@ -107,7 +109,7 @@ public struct ReleaseNoteView: View {
                         Button(action: {
                             checker.processInstallation(archiveURL: release.archiveURL, autorelaunch: true)
                         }, label: {
-                            Text("Relaunch now")
+                            Text("Update now")
                                 .underline()
                         })
                         .foregroundColor(onHoverActionButton ? style.actionButtonHoverColor : style.actionButtonColor)
@@ -180,6 +182,7 @@ struct ReleaseNoteView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             ReleaseNoteView(release: v2, closeAction: {}, history: [v2, v1_5])
+            ReleaseNoteView(release: v2, closeAction: {}, history: [v2, v1_5], showMissedReleasesRecap: true)
             ReleaseNoteView(release: v2, closeAction: {})
                 .frame(width: 340.0, height: 370.0)
             ReleaseNoteView(release: v2, closeAction: {})
