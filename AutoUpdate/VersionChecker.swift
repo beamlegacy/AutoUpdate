@@ -62,6 +62,9 @@ public class VersionChecker: ObservableObject {
 
     public var autocheckTimeInterval: TimeInterval = 60
 
+    ///This code is executed before the the update installation.
+    public var customPreinstall: (() -> Void)?
+
     public var missedReleases: [AppRelease]? {
         guard let current = currentRelease else { return nil }
         let missedVersions = releases(after: current)
@@ -190,6 +193,8 @@ public class VersionChecker: ObservableObject {
     func processInstallation(archiveURL: URL, autorelaunch: Bool) {
 
         self.state = .installing
+
+        customPreinstall?()
 
         let connection = NSXPCConnection(serviceName: "com.tectec.UpdateInstaller")
         connection.remoteObjectInterface = NSXPCInterface(with: UpdateInstallerProtocol.self)
