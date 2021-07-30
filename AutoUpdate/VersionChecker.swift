@@ -221,7 +221,9 @@ public class VersionChecker: ObservableObject {
                 } else {
                     self.state = .updateInstalled
                     if autorelaunch {
-                        NSApp.terminate(self)
+                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+                            NSApp.terminate(self)
+                        }
                     }
                 }
                 connection.invalidate()
