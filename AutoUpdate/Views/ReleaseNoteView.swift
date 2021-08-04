@@ -12,7 +12,7 @@ public struct ReleaseNoteView: View {
 
     public struct ReleaseNoteViewStyle {
 
-        public init(titleFont: Font = .headline, titleColor: Color = Color(.labelColor), buttonFont: Font = .headline, buttonColor: Color = Color(.secondaryLabelColor), buttonHoverColor: Color = Color(.labelColor), closeButtonColor: Color = Color(.secondaryLabelColor), closeButtonHoverColor: Color = Color(.labelColor), dateFont: Font = .body, dateColor: Color = Color(.secondaryLabelColor), versionNameFont: Font = .headline, versionNameColor: Color = Color(.labelColor), parmaRenderer: ParmaRenderable? = nil, backgroundColor: Color = Color(.windowBackgroundColor)) {
+        public init(titleFont: Font = .headline, titleColor: Color = Color(.labelColor), buttonFont: Font = .headline, buttonColor: Color = Color(.secondaryLabelColor), buttonHoverColor: Color = Color(.labelColor), closeButtonColor: Color = Color(.secondaryLabelColor), closeButtonHoverColor: Color = Color(.labelColor), dateFont: Font = .body, dateColor: Color = Color(.secondaryLabelColor), versionNameFont: Font = .headline, versionNameColor: Color = Color(.labelColor), backgroundColor: Color = Color(.windowBackgroundColor), cellHoverColor: Color = .gray, separatorColor: Color = .gray, parmaRenderer: ParmaRenderable? = nil) {
             self.titleFont = titleFont
             self.titleColor = titleColor
             self.buttonFont = buttonFont
@@ -26,6 +26,8 @@ public struct ReleaseNoteView: View {
             self.versionNameColor = versionNameColor
             self.parmaRenderer = parmaRenderer
             self.backgroundColor = backgroundColor
+            self.cellHoverColor = cellHoverColor
+            self.separatorColor = separatorColor
         }
 
         public var titleFont: Font
@@ -41,9 +43,11 @@ public struct ReleaseNoteView: View {
         public var versionNameColor: Color
         public var parmaRenderer: ParmaRenderable?
         public var backgroundColor: Color
+        public var cellHoverColor: Color
+        public var separatorColor: Color
 
         var noteViewStyle: NoteView.NoteViewStyle {
-            return .init(dateFont: dateFont, dateColor: dateColor, versionNameFont: versionNameFont, versionNameColor: versionNameColor, parmaRenderer: parmaRenderer)
+            return .init(dateFont: dateFont, dateColor: dateColor, versionNameFont: versionNameFont, versionNameColor: versionNameColor, separatorColor: separatorColor, backgroundColor: backgroundColor, cellHoverColor: cellHoverColor, parmaRenderer: parmaRenderer)
         }
     }
 
@@ -53,23 +57,25 @@ public struct ReleaseNoteView: View {
     private let style: ReleaseNoteViewStyle
     private let closeAction: () -> Void
     private let showMissedReleasesRecap: Bool
+    private let showInlineNotes: Bool
 
     @State private var showsVersionAndBuild = false
     @State private var onHoverCloseButton = false
     @State private var onHoverActionButton = false
 
-    public init(release: AppRelease, closeAction: @escaping () -> Void, history: [AppRelease]? = nil, checker: VersionChecker? = nil, style: ReleaseNoteViewStyle = ReleaseNoteViewStyle(), showMissedReleasesRecap: Bool = false) {
+    public init(release: AppRelease, closeAction: @escaping () -> Void, history: [AppRelease]? = nil, checker: VersionChecker? = nil, style: ReleaseNoteViewStyle = ReleaseNoteViewStyle(), showMissedReleasesRecap: Bool = false, showInlineNotes: Bool = false) {
         self.release = release
         self.checker = checker
         self.history = history
         self.style = style
         self.closeAction = closeAction
         self.showMissedReleasesRecap = showMissedReleasesRecap
+        self.showInlineNotes = showInlineNotes
     }
 
     public var body: some View {
         VStack(alignment: .leading) {
-            HStack {
+            HStack(spacing: 14) {
                 VStack(alignment: .leading) {
                     HStack(alignment: .firstTextBaseline) {
                         Text("Changelog")
@@ -92,6 +98,14 @@ public struct ReleaseNoteView: View {
                 }
                 Spacer()
                 if let checker = checker {
+                    if let allNotesURL = checker.allReleaseNotesURL {
+                        Button(action: {
+                            NSWorkspace.shared.open(allNotesURL)
+                        }, label: {
+                            Text("View all")
+                        })
+                        .buttonStyle(BorderlessButtonStyle())
+                    }
                     switch checker.state {
                     case .updateAvailable:
                         Button(action: {
@@ -138,15 +152,15 @@ public struct ReleaseNoteView: View {
             }
             .padding(.leading, 12)
             .padding(.trailing, 12)
-            Divider()
+            .padding(.top, 12)
+            Separator(color: style.separatorColor)
                 .padding(.horizontal, 12)
+                .padding(.top, 4)
+                .padding(.bottom, -6)
             ScrollView {
-                NoteView(releases: history ?? [release], style: style.noteViewStyle)
-                    .padding(.leading, 16)
-                    .padding(.trailing, -6)
+                NoteView(releases: history ?? [release], style: style.noteViewStyle, showInlineNotes: showInlineNotes)
             }
         }
-        .padding(.top, 12)
         .background(style.backgroundColor)
         .frame(width: 340, height: 370)
     }
@@ -157,14 +171,14 @@ struct ReleaseNoteView_Previews: PreviewProvider {
     static let v2 = AppRelease(versionName: "Beam 2.0: Collaborate on Cards",
                                version: "2.0",
                                buildNumber: 50,
-                               mardownReleaseNotes: releaseNotes,
+                               releaseNotesMarkdown: releaseNotes,
                                publicationDate: Date(),
                                downloadURL: URL(string: "http://")!)
 
-    static let v1_5 = AppRelease(versionName: "Beam 1.5: Collaborate on Cards",
+    static let v1_5 = AppRelease(versionName: "Beam 1.5: To Infinity, beyond, beyond and beyond",
                                version: "1.5",
                                buildNumber: 30,
-                               mardownReleaseNotes: "This is Beam 1.5. \nMany improvements.",
+                               releaseNotesMarkdown: "This is Beam 1.5. \nMany improvements.",
                                publicationDate: Date(),
                                downloadURL: URL(string: "http://")!)
 
@@ -180,12 +194,16 @@ struct ReleaseNoteView_Previews: PreviewProvider {
     """
 
     static var previews: some View {
-        Group {
+        let checker = VersionChecker(mockedReleases: AppRelease.mockedReleases())
+        checker.allReleaseNotesURL = URL(string: "http://")
+
+        return Group {
             ReleaseNoteView(release: v2, closeAction: {}, history: [v2, v1_5])
             ReleaseNoteView(release: v2, closeAction: {}, history: [v2, v1_5], showMissedReleasesRecap: true)
             ReleaseNoteView(release: v2, closeAction: {})
                 .frame(width: 340.0, height: 370.0)
             ReleaseNoteView(release: v2, closeAction: {})
+            ReleaseNoteView(release: v2, closeAction: {}, history: nil, checker: checker)
         }
     }
 }
@@ -197,41 +215,76 @@ struct NoteView: View {
         var dateColor: Color = .gray
         var versionNameFont: Font = .headline
         var versionNameColor: Color = Color(.labelColor)
+        var separatorColor: Color = .gray
+        var backgroundColor: Color = Color(.windowBackgroundColor)
+        var cellHoverColor: Color = .gray
 
         var parmaRenderer: ParmaRenderable?
     }
 
     static let dateFormatter: DateFormatter = {
         let df = DateFormatter()
-        df.dateStyle = .medium
+        df.dateStyle = .long
 
         return df
     }()
 
     let releases: [AppRelease]
     let style: NoteViewStyle
+    let showInlineNotes: Bool
+
+    @State private var releaseHovered: AppRelease?
 
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 0) {
             ForEach(releases) { release in
-                VStack(alignment: .leading, spacing: 20) {
+                VStack(alignment: .leading, spacing: 6) {
                     dateText(for: release.publicationDate)
                         .font(style.dateFont)
                         .foregroundColor(style.dateColor)
+                        .padding(.top, 10)
                     Text(release.versionName)
+                        .lineLimit(2)
+                        .fixedSize(horizontal: false, vertical: true)
                         .font(style.versionNameFont)
                         .foregroundColor(style.versionNameColor)
                         .multilineTextAlignment(.leading)
-                        .padding(.top, -12)
-                    Parma(release.mardownReleaseNotes, render: style.parmaRenderer)
-                        .padding(.top, 5)
-                }.padding(.leading)
-                .padding(.trailing)
+                    if let notes = release.releaseNotesMarkdown, showInlineNotes {
+                        Parma(notes, render: style.parmaRenderer)
+                            .padding(.top, 5)
+                    }
+                    Separator(color: style.separatorColor)
+                        .padding(.top, 8)
+                        .padding(.bottom, 2)
+                }
+                .padding(.horizontal)
+                .onHover(perform: { hovering in
+                    guard release.releaseNoteURL != nil else { return }
+
+                    if hovering {
+                        releaseHovered = release
+                    } else if !hovering && releaseHovered == release {
+                        releaseHovered = nil
+                    }
+                })
+                .background(cellbackgeround(for: release))
+                .animation(.easeIn(duration: 0.2), value: releaseHovered)
+                .transition(.opacity)
+                .onTapGesture {
+                    if let releaseURL = release.releaseNoteURL {
+                        NSWorkspace.shared.open(releaseURL)
+                    }
+                }
             }
         }
     }
 
-    func dateText(for date: Date) -> Text {
+    private func cellbackgeround(for release: AppRelease) -> some View {
+        let color = release == releaseHovered ? style.cellHoverColor : style.backgroundColor
+        return color.offset(y: -2)
+    }
+
+    private func dateText(for date: Date) -> Text {
         let formattedDate = Self.dateFormatter.string(from: date)
         return Text(formattedDate)
     }

@@ -42,8 +42,8 @@ public class VersionChecker: ObservableObject {
     private var autocheckTimer: AnyCancellable?
 
     private var releaseHistory: [AppRelease]?
-    private var fakeAppVersion: String?
-    private var fakeAppBuild: Int?
+    private(set) var fakeAppVersion: String?
+    private(set) var fakeAppBuild: Int?
 
     internal typealias PendingInstall = DownloadedAppRelease
 
@@ -64,6 +64,9 @@ public class VersionChecker: ObservableObject {
 
     ///This code is executed before the the update installation.
     public var customPreinstall: (() -> Void)?
+
+    ///If set, this URL is opened when clicked on the "View all" button in the release note view
+    public var allReleaseNotesURL: URL?
 
     public var missedReleases: [AppRelease]? {
         guard let current = currentRelease else { return nil }
@@ -286,7 +289,7 @@ public class VersionChecker: ObservableObject {
         let currentRelease = AppRelease(versionName: currentFromFeed?.versionName ?? self.currentAppName(),
                                         version: currentVersion,
                                         buildNumber: currentBuild,
-                                        mardownReleaseNotes: currentFromFeed?.mardownReleaseNotes ?? "",
+                                        releaseNotesMarkdown: currentFromFeed?.releaseNotesMarkdown,
                                         publicationDate: currentFromFeed?.publicationDate ?? Date(),
                                         downloadURL: URL(string: "http://")!)
         self.currentRelease = currentRelease
@@ -335,10 +338,6 @@ public class VersionChecker: ObservableObject {
         }
 
         return older
-    }
-
-    static func combinedReleaseNotes(for releases: [AppRelease]) -> [String] {
-        releases.map({$0.mardownReleaseNotes})
     }
 
     func checkForPendingInstallations(in directory: URL ) -> PendingInstall? {
@@ -393,55 +392,5 @@ public class VersionChecker: ObservableObject {
         let releaseData = try JSONEncoder().encode(downloadRelease)
         try releaseData.write(to: jsonURL)
         return downloadRelease
-    }
-}
-
-// MARK: - Helper functions
-extension VersionChecker {
-
-    func currentAppVersion() -> String {
-        if let fake = fakeAppVersion {
-            return fake
-        }
-
-        guard let infos = Bundle.main.infoDictionary,
-              let version = infos["CFBundleShortVersionString"] as? String else { fatalError("Cant' get app's version from CFBundleShortVersionString key in Info.plist")
-        }
-        return version
-    }
-
-    func currentAppBuild() -> Int {
-        if let fake = fakeAppBuild {
-            return fake
-        }
-
-        guard let infos = Bundle.main.infoDictionary,
-              let version = infos["CFBundleVersion"] as? String,
-              let intVersion = Int(version) else { fatalError("Cant' get app's build from CFBundleVersion key in Info.plist, or it's not an Int number. We only support comparing Int build number.")
-        }
-        return intVersion
-    }
-
-    func currentAppName() -> String {
-        guard let infos = Bundle.main.infoDictionary,
-              let name = infos["CFBundleName"] as? String else { fatalError("Cant' get app's name from CFBundleName key in Info.plist")
-        }
-        return name
-    }
-
-    private var applicationSupportDirectoryURL: URL? {
-        let fileManager = FileManager.default
-        return fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
-    }
-
-    private func applicationDirectory(in applicationSupportURL: URL) -> URL {
-        let appDirectory = applicationSupportURL.appendingPathComponent(self.currentAppName())
-        return appDirectory
-    }
-
-    private func updateDirectory(in applicationSupportURL: URL) -> URL {
-        let appDirectory = applicationDirectory(in: applicationSupportURL)
-        let updateDirectory = appDirectory.appendingPathComponent("Updates")
-        return updateDirectory
     }
 }

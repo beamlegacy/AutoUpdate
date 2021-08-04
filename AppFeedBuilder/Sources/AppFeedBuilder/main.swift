@@ -22,11 +22,14 @@ struct AppFeedBuilder: ParsableCommand {
     @Argument(help: "The new version build number (should be an Int)")
     var buildNumber: Int
 
-    @Argument(help: "The release notes file URL for a text file in Markdown")
-    var mardownReleaseNotesURL: String
-
     @Argument(help: "The new version download URL. Must be an https URL pointing to a .zip file")
     var downloadURL: String
+
+    @Option(help: "The release notes in Markdown")
+    var releaseNotesMarkdown: String?
+
+    @Option(help: "The release notes URL to open on a tap on the release")
+    var releaseNotesURL: String?
 
     @Flag(help: "")
     var verbose = false
@@ -46,6 +49,13 @@ struct AppFeedBuilder: ParsableCommand {
               downloadURL.scheme == "https" else {
             throw ValidationError("Download URL is not a valid URL for a zip file")
         }
+
+        if let releaseNotesURL = releaseNotesURL {
+            guard let notesURL = URL(string: releaseNotesURL),
+                  notesURL.scheme == "https" else {
+                throw ValidationError("Release Notes URL is not a valid URL")
+            }
+        }
     }
 
     func run() throws {
@@ -60,11 +70,12 @@ struct AppFeedBuilder: ParsableCommand {
             throw ValidationError("Download URL is not a valid URL for a zip file")
         }
 
-        let noteURL = URL(fileURLWithPath: mardownReleaseNotesURL)
-        guard let notesData = try? Data(contentsOf: noteURL),
-              let releaseNotes = String(data: notesData, encoding: .utf8) else { throw ValidationError("Release note URL is not correct, or the content is not a text") }
+        var notesURL: URL?
+        if let releaseNotesURL = releaseNotesURL {
+            notesURL = URL(string: releaseNotesURL)
+        }
 
-        let newRelease = AppRelease(versionName: versionName, version: version, buildNumber: buildNumber, mardownReleaseNotes: releaseNotes, publicationDate: Date(), downloadURL: downloadURL)
+        let newRelease = AppRelease(versionName: versionName, version: version, buildNumber: buildNumber, releaseNotesMarkdown: releaseNotesMarkdown, releaseNoteURL: notesURL, publicationDate: Date(), downloadURL: downloadURL)
 
         let semaphore = DispatchSemaphore(value: 0)
         AppRelease.updateJSON(at: feedURL, with: newRelease) { feedJSONData in
@@ -97,5 +108,7 @@ struct AppFeedBuilder: ParsableCommand {
     }
 }
 
-//AppFeedBuilder.main(["https://raw.githubusercontent.com/eLud/update-proto/main/feed.json", "Beam 2.0", "2.0", "51", "This is a release note", "https://github.com/eLud/update-proto/raw/main/BeamUpdaterProto_v1.1.zip"])
+//AppFeedBuilder.main(["https://raw.githubusercontent.com/eLud/update-proto/main/feed.json", "Beam 2.0", "2.0", "51", "https://github.com/eLud/update-proto/raw/main/BeamUpdaterProto_v1.1.zip", "--release-notes-markdown", "This is a note"])
+//AppFeedBuilder.main(["https://raw.githubusercontent.com/eLud/update-proto/main/feed.json", "Beam 2.0", "2.0", "51", "https://github.com/eLud/update-proto/raw/main/BeamUpdaterProto_v1.1.zip", "--release-notes-url", "https://raw.githubusercontent.com/eLud/update-proto/main/feed.json"])
+//AppFeedBuilder.main(["https://raw.githubusercontent.com/eLud/update-proto/main/feed.json", "Beam 2.0", "2.0", "51", "https://github.com/eLud/update-proto/raw/main/BeamUpdaterProto_v1.1.zip", "--release-notes-url", "https://raw.githubusercontent.com/eLud/update-proto/main/feed.json", "--verbose"])
 AppFeedBuilder.main()
