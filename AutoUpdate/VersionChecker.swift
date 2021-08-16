@@ -114,7 +114,7 @@ public class VersionChecker: ObservableObject {
 
                     //If we have a newer version, make sure it's newer than the previously downloaded one
                     //If a new update was found, clean what was previously downloaded before downloading the new archive
-                    if let pendingInstallation = pendingInstallation {
+                    if let pendingInstallation = pendingInstallation, pendingInstallation.appRelease == latest {
                         self.state = .downloaded(release: pendingInstallation)
                         return
                     } else {
