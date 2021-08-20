@@ -56,6 +56,7 @@ public struct ReleaseNoteView: View {
     private let checker: VersionChecker?
     private let style: ReleaseNoteViewStyle
     private let closeAction: () -> Void
+    private let onActionButtonClickAdditionalAction: (() -> Void)?
     private let showMissedReleasesRecap: Bool
     private let showInlineNotes: Bool
 
@@ -63,12 +64,13 @@ public struct ReleaseNoteView: View {
     @State private var onHoverCloseButton = false
     @State private var onHoverActionButton = false
 
-    public init(release: AppRelease, closeAction: @escaping () -> Void, history: [AppRelease]? = nil, checker: VersionChecker? = nil, style: ReleaseNoteViewStyle = ReleaseNoteViewStyle(), showMissedReleasesRecap: Bool = false, showInlineNotes: Bool = false) {
+    public init(release: AppRelease, closeAction: @escaping () -> Void, beforeInstallAction: (() -> Void)? = nil, history: [AppRelease]? = nil, checker: VersionChecker? = nil, style: ReleaseNoteViewStyle = ReleaseNoteViewStyle(), showMissedReleasesRecap: Bool = false, showInlineNotes: Bool = false) {
         self.release = release
         self.checker = checker
         self.history = history
         self.style = style
         self.closeAction = closeAction
+        self.onActionButtonClickAdditionalAction = beforeInstallAction
         self.showMissedReleasesRecap = showMissedReleasesRecap
         self.showInlineNotes = showInlineNotes
     }
@@ -109,6 +111,7 @@ public struct ReleaseNoteView: View {
                     switch checker.state {
                     case .updateAvailable:
                         Button(action: {
+                            onActionButtonClickAdditionalAction?()
                             checker.downloadNewestRelease()
                         }, label: {
                             Text("Update now")
@@ -121,6 +124,7 @@ public struct ReleaseNoteView: View {
                         }
                     case .downloaded(let release):
                         Button(action: {
+                            onActionButtonClickAdditionalAction?()
                             checker.processInstallation(archiveURL: release.archiveURL, autorelaunch: true)
                         }, label: {
                             Text("Update now")
