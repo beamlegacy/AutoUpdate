@@ -115,7 +115,6 @@ public struct ReleaseNoteView: View {
                             checker.downloadNewestRelease()
                         }, label: {
                             Text("Update now")
-                                .underline()
                         })
                         .foregroundColor(onHoverActionButton ? style.actionButtonHoverColor : style.actionButtonColor)
                         .buttonStyle(BorderlessButtonStyle())
@@ -128,7 +127,6 @@ public struct ReleaseNoteView: View {
                             checker.processInstallation(archiveURL: release.archiveURL, autorelaunch: true)
                         }, label: {
                             Text("Update now")
-                                .underline()
                         })
                         .foregroundColor(onHoverActionButton ? style.actionButtonHoverColor : style.actionButtonColor)
                         .buttonStyle(BorderlessButtonStyle())
@@ -147,7 +145,7 @@ public struct ReleaseNoteView: View {
                     Image("close", bundle: Bundle(for: VersionChecker.self))
                         .renderingMode(.template)
                         .foregroundColor(onHoverCloseButton ? style.closeButtonHoverColor : style.closeButtonColor)
-                        .animation(.easeInOut)
+                        .animation(.easeInOut, value: onHoverCloseButton)
                         .onHover { h in
                             onHoverCloseButton = h
                         }
@@ -161,12 +159,22 @@ public struct ReleaseNoteView: View {
                 .padding(.horizontal, 12)
                 .padding(.top, 4)
                 .padding(.bottom, -6)
-            ScrollView {
-                NoteView(releases: history ?? [release], style: style.noteViewStyle, showInlineNotes: showInlineNotes)
-            }
+            content
         }
         .background(style.backgroundColor)
-        .frame(width: 340, height: 370)
+        .frame(minWidth: 284, maxWidth: 284, idealHeight: 370)
+    }
+
+    @ViewBuilder var content: some View {
+        let releases = history ?? [release]
+        let noteView = NoteView(releases: releases, style: style.noteViewStyle, showInlineNotes: showInlineNotes, showSeparator: releases.count > 1)
+
+        if releases.count == 1 {
+            noteView
+                .padding(.bottom, 10)
+        } else {
+            ScrollView(content: { noteView })
+        }
     }
 }
 
@@ -176,15 +184,17 @@ struct ReleaseNoteView_Previews: PreviewProvider {
                                version: "2.0",
                                buildNumber: 50,
                                releaseNotesMarkdown: releaseNotes,
+                               releaseNoteURL: URL(string: "https://www.test.com"),
                                publicationDate: Date(),
                                downloadURL: URL(string: "http://")!)
 
     static let v1_5 = AppRelease(versionName: "Beam 1.5: To Infinity, beyond, beyond and beyond",
-                               version: "1.5",
-                               buildNumber: 30,
-                               releaseNotesMarkdown: "This is Beam 1.5. \nMany improvements.",
-                               publicationDate: Date(),
-                               downloadURL: URL(string: "http://")!)
+                                 version: "1.5",
+                                 buildNumber: 30,
+                                 releaseNotesMarkdown: "This is Beam 1.5. \nMany improvements.",
+                                 releaseNoteURL: URL(string: "https://www.test.com"),
+                                 publicationDate: Date(),
+                                 downloadURL: URL(string: "http://")!)
 
     static let releaseNotes = """
     # Beam 2.0 : Collaborate on Cards
@@ -205,7 +215,6 @@ struct ReleaseNoteView_Previews: PreviewProvider {
             ReleaseNoteView(release: v2, closeAction: {}, history: [v2, v1_5])
             ReleaseNoteView(release: v2, closeAction: {}, history: [v2, v1_5], showMissedReleasesRecap: true)
             ReleaseNoteView(release: v2, closeAction: {})
-                .frame(width: 340.0, height: 370.0)
             ReleaseNoteView(release: v2, closeAction: {})
             ReleaseNoteView(release: v2, closeAction: {}, history: nil, checker: checker)
         }
@@ -236,6 +245,7 @@ struct NoteView: View {
     let releases: [AppRelease]
     let style: NoteViewStyle
     let showInlineNotes: Bool
+    let showSeparator: Bool
 
     @State private var releaseHovered: AppRelease?
 
@@ -258,6 +268,7 @@ struct NoteView: View {
                             .padding(.top, 5)
                     }
                     Separator(color: style.separatorColor)
+                        .opacity(showSeparator ? 1.0 : 0.0)
                         .padding(.top, 8)
                         .padding(.bottom, 2)
                 }
@@ -271,7 +282,7 @@ struct NoteView: View {
                         releaseHovered = nil
                     }
                 })
-                .background(cellbackgeround(for: release))
+                .background(cellBackground(for: release))
                 .animation(.easeIn(duration: 0.2), value: releaseHovered)
                 .transition(.opacity)
                 .onTapGesture {
@@ -283,7 +294,7 @@ struct NoteView: View {
         }
     }
 
-    private func cellbackgeround(for release: AppRelease) -> some View {
+    private func cellBackground(for release: AppRelease) -> some View {
         let color = release == releaseHovered ? style.cellHoverColor : style.backgroundColor
         return color.offset(y: -2)
     }
