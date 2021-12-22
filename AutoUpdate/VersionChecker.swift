@@ -40,6 +40,12 @@ public class VersionChecker: ObservableObject {
     private var mockData: Data?
     private var feedURL: URL?
     private var autocheckTimer: AnyCancellable?
+    private var session: URLSession
+    private static var sessionConfiguration: URLSessionConfiguration {
+        let config = URLSessionConfiguration.default
+        config.requestCachePolicy = .reloadIgnoringLocalAndRemoteCacheData
+        return config
+    }
 
     private var releaseHistory: [AppRelease]?
     private(set) var fakeAppVersion: String?
@@ -89,6 +95,8 @@ public class VersionChecker: ObservableObject {
         self.fakeAppBuild = fakeAppBuild
         self.fakeAppVersion = fakeAppVersion
 
+        self.session = URLSession(configuration: Self.sessionConfiguration)
+
         if autocheckEnabled {
             enableAutocheck()
         }
@@ -97,6 +105,8 @@ public class VersionChecker: ObservableObject {
     public init(feedURL: URL, autocheckEnabled: Bool = false) {
         self.feedURL = feedURL
         self.state = .noUpdate
+
+        self.session = URLSession(configuration: Self.sessionConfiguration)
         if autocheckEnabled {
             enableAutocheck()
         }
@@ -171,7 +181,6 @@ public class VersionChecker: ObservableObject {
 
         guard let release = newRelease else { return }
         let downloadURL = release.downloadURL
-        let session = URLSession.shared
         let downloadTask = session.downloadTask(with: downloadURL) { fileURL, _, error in
             guard error == nil,
                   let fileURL = fileURL,
@@ -344,7 +353,7 @@ public class VersionChecker: ObservableObject {
     private func fetchServerData(completion: @escaping (Data?) -> Void) {
         guard let feedURL = feedURL else { fatalError("Trying to get feed data with no url provided" ) }
         self.logMessage?("Fetching data from \(feedURL.absoluteString).")
-        let task = URLSession.shared.dataTask(with: feedURL) { data, _, _ in
+        let task = session.dataTask(with: feedURL) { data, _, _ in
             completion(data)
         }
 
