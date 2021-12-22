@@ -40,6 +40,11 @@ public class VersionChecker: ObservableObject {
     private var mockData: Data?
     private var feedURL: URL?
     private var autocheckTimer: AnyCancellable?
+    private var session: URLSession
+    private static var sessionConfiguration: URLSessionConfiguration {
+        let config = URLSessionConfiguration.default
+        config.requestCachePolicy = .reloadIgnoringLocalCacheData
+    }
 
     private var releaseHistory: [AppRelease]?
     private(set) var fakeAppVersion: String?
@@ -89,6 +94,8 @@ public class VersionChecker: ObservableObject {
         self.fakeAppBuild = fakeAppBuild
         self.fakeAppVersion = fakeAppVersion
 
+        self.session = URLSession(configuration: Self.sessionConfiguration)
+
         if autocheckEnabled {
             enableAutocheck()
         }
@@ -97,6 +104,8 @@ public class VersionChecker: ObservableObject {
     public init(feedURL: URL, autocheckEnabled: Bool = false) {
         self.feedURL = feedURL
         self.state = .noUpdate
+
+        self.session = URLSession(configuration: Self.sessionConfiguration)
         if autocheckEnabled {
             enableAutocheck()
         }
