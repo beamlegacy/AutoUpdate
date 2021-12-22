@@ -180,7 +180,6 @@ public class VersionChecker: ObservableObject {
 
         guard let release = newRelease else { return }
         let downloadURL = release.downloadURL
-        let session = URLSession.shared
         let downloadTask = session.downloadTask(with: downloadURL) { fileURL, _, error in
             guard error == nil,
                   let fileURL = fileURL,
@@ -353,7 +352,7 @@ public class VersionChecker: ObservableObject {
     private func fetchServerData(completion: @escaping (Data?) -> Void) {
         guard let feedURL = feedURL else { fatalError("Trying to get feed data with no url provided" ) }
         self.logMessage?("Fetching data from \(feedURL.absoluteString).")
-        let task = URLSession.shared.dataTask(with: feedURL) { data, _, _ in
+        let task = session.dataTask(with: feedURL) { data, _, _ in
             completion(data)
         }
 
