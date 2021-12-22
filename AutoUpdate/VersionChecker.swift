@@ -43,7 +43,8 @@ public class VersionChecker: ObservableObject {
     private var session: URLSession
     private static var sessionConfiguration: URLSessionConfiguration {
         let config = URLSessionConfiguration.default
-        config.requestCachePolicy = .reloadIgnoringLocalCacheData
+        config.requestCachePolicy = .reloadIgnoringLocalAndRemoteCacheData
+        return config
     }
 
     private var releaseHistory: [AppRelease]?
