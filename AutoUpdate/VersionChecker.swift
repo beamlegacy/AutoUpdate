@@ -70,7 +70,7 @@ public class VersionChecker: ObservableObject {
     ///true by default
     @Published public var allowAutoDownload = true
 
-    public var autocheckTimeInterval: TimeInterval = 60
+    public var autocheckTimeInterval: TimeInterval = 3600
 
     ///This code is executed before the the update installation.
     public var customPreinstall: (() -> Void)?
