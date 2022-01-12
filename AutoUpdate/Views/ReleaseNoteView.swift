@@ -162,7 +162,7 @@ public struct ReleaseNoteView: View {
             content
         }
         .background(style.backgroundColor)
-        .frame(minWidth: 284, maxWidth: 284, idealHeight: 370)
+        .frame(minWidth: 284, maxWidth: 284, maxHeight: 370)
     }
 
     @ViewBuilder var content: some View {
@@ -173,7 +173,9 @@ public struct ReleaseNoteView: View {
             noteView
                 .padding(.bottom, 10)
         } else {
-            ScrollView(content: { noteView })
+            ScrollView {
+                noteView
+            }.frame(height: min(CGFloat(releases.count) * 65, 260))
         }
     }
 }
