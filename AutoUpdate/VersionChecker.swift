@@ -112,6 +112,29 @@ public class VersionChecker: ObservableObject {
         }
     }
 
+    public func areAnyUpdatesAvailable(completion: @escaping (Bool) -> Void) {
+        guard state.canPerformCheck else {
+            logMessage?("Can't perform check. Current state: \(state)")
+            completion(false)
+            return
+        }
+
+        logMessage?("Checking for updates…")
+        checkRemoteUpdates { [unowned self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    self.logMessage?("Updates available")
+                    completion(true)
+                case .failure:
+                    self.logMessage?("No updates available")
+                    completion(false)
+                }
+            }
+        }
+
+    }
+
     /// Checks if update is available from the feed or the mock data and updates the state accordingly
     public func checkForUpdates() {
 
@@ -157,10 +180,6 @@ public class VersionChecker: ObservableObject {
                     self.newRelease = nil
 
                     if let pendingInstallation = pendingInstallation {
-                        self.state = .downloaded(release: pendingInstallation)
-                    }
-
-                    if error == .noUpdates, let pendingInstallation = pendingInstallation {
                         self.logMessage?("Check for update: no update, no update but there is a pending installation.")
                         self.state = .downloaded(release: pendingInstallation)
                     } else if error == .noUpdates {
