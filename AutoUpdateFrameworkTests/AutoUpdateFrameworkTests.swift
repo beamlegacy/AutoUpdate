@@ -101,7 +101,7 @@ class AutoUpdateFrameworkTests: XCTestCase {
 
         let e = expectation(description: "check")
 
-        checker.checkAndInstallUpdates()
+        checker.checkForUpdates()
         cancellable = checker.$state.sink { state in
             switch state {
             case .updateAvailable:
