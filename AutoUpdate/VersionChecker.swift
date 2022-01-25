@@ -112,8 +112,42 @@ public class VersionChecker: ObservableObject {
         }
     }
 
+    public func checkUpdates(completion: @escaping (Bool) -> Void) {
+        guard state.canPerformCheck else {
+            logMessage?("Can't perform check. Current state: \(state)")
+            completion(false)
+            return
+        }
+
+        guard let appSupportDirectory = applicationSupportDirectoryURL else { return }
+        let pendingInstallation = checkForPendingInstallations(in: updateDirectory(in: appSupportDirectory))
+
+        state = .checking
+        logMessage?("Checking for updates…")
+        checkRemoteUpdates { [unowned self] result in
+            DispatchQueue.main.async {
+                self.lastCheck = Date()
+                switch result {
+                case .success(let latest):
+                    state = .updateAvailable(release: latest)
+                    completion(true)
+                case .failure(let error):
+                    if error == .noUpdates, let pendingInstallation = pendingInstallation {
+                        self.logMessage?("Check for update: no update, no update but there is a pending installation.")
+                        self.state = .downloaded(release: pendingInstallation)
+                        completion(true)
+                    } else {
+                        self.state = .noUpdate
+                        completion(false)
+                    }
+                }
+            }
+        }
+
+    }
+
     /// Checks if update is available from the feed or the mock data and updates the state accordingly
-    public func checkForUpdates() {
+    public func checkAndInstallUpdates() {
 
         guard state.canPerformCheck else {
             logMessage?("Can't perform check. Current state: \(state)")
@@ -155,10 +189,6 @@ public class VersionChecker: ObservableObject {
 
                 case .failure(let error):
                     self.newRelease = nil
-
-                    if let pendingInstallation = pendingInstallation {
-                        self.state = .downloaded(release: pendingInstallation)
-                    }
 
                     if error == .noUpdates, let pendingInstallation = pendingInstallation {
                         self.logMessage?("Check for update: no update, no update but there is a pending installation.")
@@ -282,9 +312,9 @@ public class VersionChecker: ObservableObject {
         autocheckTimer = Timer.publish(every: self.autocheckTimeInterval, on: .main, in: .default)
             .autoconnect()
             .sink { [weak self] _ in
-                self?.checkForUpdates()
+                self?.checkAndInstallUpdates()
             }
-        self.checkForUpdates()
+        self.checkAndInstallUpdates()
     }
 
     private func checkRemoteUpdates(completion: @escaping (Result<AppRelease, VersionCheckerError>) -> Void) {

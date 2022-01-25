@@ -95,7 +95,7 @@ public struct UpdaterView: View {
                     }
                 default:
                     Button("Check for updates") {
-                        checker.checkForUpdates()
+                        checker.checkAndInstallUpdates()
                     }.disabled(checker.state == .checking)
                 }
             }
