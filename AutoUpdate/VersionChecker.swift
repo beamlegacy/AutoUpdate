@@ -112,34 +112,23 @@ public class VersionChecker: ObservableObject {
         }
     }
 
-    public func checkUpdates(completion: @escaping (Bool) -> Void) {
+    public func checkIfThereIsUpdates(completion: @escaping (Bool) -> Void) {
         guard state.canPerformCheck else {
             logMessage?("Can't perform check. Current state: \(state)")
             completion(false)
             return
         }
 
-        guard let appSupportDirectory = applicationSupportDirectoryURL else { return }
-        let pendingInstallation = checkForPendingInstallations(in: updateDirectory(in: appSupportDirectory))
-
-        state = .checking
         logMessage?("Checking for updates…")
         checkRemoteUpdates { [unowned self] result in
             DispatchQueue.main.async {
-                self.lastCheck = Date()
                 switch result {
-                case .success(let latest):
-                    state = .updateAvailable(release: latest)
+                case .success:
+                    self.logMessage?("Updates available")
                     completion(true)
-                case .failure(let error):
-                    if error == .noUpdates, let pendingInstallation = pendingInstallation {
-                        self.logMessage?("Check for update: no update, no update but there is a pending installation.")
-                        self.state = .downloaded(release: pendingInstallation)
-                        completion(true)
-                    } else {
-                        self.state = .noUpdate
-                        completion(false)
-                    }
+                case .failure:
+                    self.logMessage?("No updates available")
+                    completion(false)
                 }
             }
         }
