@@ -12,7 +12,7 @@ public struct ReleaseNoteView: View {
 
     public struct ReleaseNoteViewStyle {
 
-        public init(titleFont: Font = .headline, titleColor: Color = Color(.labelColor), buttonFont: Font = .headline, buttonColor: Color = Color(.secondaryLabelColor), buttonHoverColor: Color = Color(.labelColor), closeButtonColor: Color = Color(.secondaryLabelColor), closeButtonHoverColor: Color = Color(.labelColor), dateFont: Font = .body, dateColor: Color = Color(.secondaryLabelColor), versionNameFont: Font = .headline, versionNameColor: Color = Color(.labelColor), backgroundColor: Color = Color(.windowBackgroundColor), cellHoverColor: Color = .gray, separatorColor: Color = .gray, parmaRenderer: ParmaRenderable? = nil) {
+        public init(titleFont: Font = .headline, titleColor: Color = Color(.labelColor), buttonFont: Font = .headline, buttonColor: Color = Color(.secondaryLabelColor), buttonHoverColor: Color = Color(.labelColor), closeButtonColor: Color = Color(.secondaryLabelColor), closeButtonHoverColor: Color = Color(.labelColor), dateFont: Font = .body, dateColor: Color = Color(.secondaryLabelColor), versionNameFont: Font = .headline, versionNameColor: Color = Color(.labelColor), backgroundColor: Color = Color(.windowBackgroundColor), cellHoverColor: Color = .gray, separatorColor: Color = .gray, separatorView: AnyView? = nil, parmaRenderer: ParmaRenderable? = nil) {
             self.titleFont = titleFont
             self.titleColor = titleColor
             self.buttonFont = buttonFont
@@ -28,6 +28,7 @@ public struct ReleaseNoteView: View {
             self.backgroundColor = backgroundColor
             self.cellHoverColor = cellHoverColor
             self.separatorColor = separatorColor
+            self.separatorView = separatorView
         }
 
         public var titleFont: Font
@@ -45,9 +46,10 @@ public struct ReleaseNoteView: View {
         public var backgroundColor: Color
         public var cellHoverColor: Color
         public var separatorColor: Color
+        public var separatorView: AnyView?
 
         var noteViewStyle: NoteView.NoteViewStyle {
-            return .init(dateFont: dateFont, dateColor: dateColor, versionNameFont: versionNameFont, versionNameColor: versionNameColor, separatorColor: separatorColor, backgroundColor: backgroundColor, cellHoverColor: cellHoverColor, parmaRenderer: parmaRenderer)
+            return .init(dateFont: dateFont, dateColor: dateColor, versionNameFont: versionNameFont, versionNameColor: versionNameColor, separatorColor: separatorColor, separatorView: separatorView, backgroundColor: backgroundColor, cellHoverColor: cellHoverColor, parmaRenderer: parmaRenderer)
         }
     }
 
@@ -73,6 +75,16 @@ public struct ReleaseNoteView: View {
         self.onActionButtonClickAdditionalAction = beforeInstallAction
         self.showMissedReleasesRecap = showMissedReleasesRecap
         self.showInlineNotes = showInlineNotes
+    }
+
+    private var separator: some View {
+        Group {
+            if let separatorView = style.separatorView {
+                separatorView
+            } else {
+                Separator(color: style.separatorColor)
+            }
+        }
     }
 
     public var body: some View {
@@ -155,7 +167,7 @@ public struct ReleaseNoteView: View {
             .padding(.leading, 12)
             .padding(.trailing, 12)
             .padding(.top, 12)
-            Separator(color: style.separatorColor)
+            separator
                 .padding(.horizontal, 12)
                 .padding(.top, 4)
                 .padding(.bottom, -6)
@@ -231,6 +243,7 @@ struct NoteView: View {
         var versionNameFont: Font = .headline
         var versionNameColor: Color = Color(.labelColor)
         var separatorColor: Color = .gray
+        var separatorView: AnyView?
         var backgroundColor: Color = Color(.windowBackgroundColor)
         var cellHoverColor: Color = .gray
 
@@ -251,6 +264,16 @@ struct NoteView: View {
 
     @State private var releaseHovered: AppRelease?
 
+    private var separator: some View {
+        Group {
+            if let separatorView = style.separatorView {
+                separatorView
+            } else {
+                Separator(color: style.separatorColor)
+            }
+        }
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             ForEach(releases) { release in
@@ -269,7 +292,7 @@ struct NoteView: View {
                         Parma(notes, render: style.parmaRenderer)
                             .padding(.top, 5)
                     }
-                    Separator(color: style.separatorColor)
+                    separator
                         .opacity(showSeparator ? 1.0 : 0.0)
                         .padding(.top, 8)
                         .padding(.bottom, 2)
