@@ -13,7 +13,6 @@ public struct AppRelease: Codable {
     public let version: String
     public let buildNumber: String
     public let releaseNotesMarkdown: String?
-    public let mardownReleaseNotes: String
     public var releaseNoteURL: URL?
     public let publicationDate: Date
     public let downloadURL: URL
@@ -23,10 +22,48 @@ public struct AppRelease: Codable {
         self.version = version
         self.buildNumber = buildNumber
         self.releaseNotesMarkdown = releaseNotesMarkdown
-        self.mardownReleaseNotes = releaseNotesMarkdown ?? ""
         self.releaseNoteURL = releaseNoteURL
         self.publicationDate = publicationDate
         self.downloadURL = downloadURL
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        versionName = try container.decode(String.self, forKey: .versionName)
+        version = try container.decode(String.self, forKey: .version)
+
+        //Migration from old Int build numbers
+        if let intBuildNumber = try? container.decode(Int.self, forKey: .buildNumber) {
+            buildNumber = "\(intBuildNumber)"
+        } else {
+            buildNumber = try container.decode(String.self, forKey: .buildNumber)
+        }
+
+        releaseNotesMarkdown = try container.decodeIfPresent(String.self, forKey: .releaseNotesMarkdown)
+        releaseNoteURL = try container.decodeIfPresent(URL.self, forKey: .releaseNoteURL)
+        publicationDate = try container.decode(Date.self, forKey: .publicationDate)
+        downloadURL = try container.decode(URL.self, forKey: .downloadURL)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(versionName, forKey: .versionName)
+        try container.encode(version, forKey: .version)
+        try container.encode(buildNumber, forKey: .buildNumber)
+        try container.encode(releaseNotesMarkdown, forKey: .releaseNotesMarkdown)
+        try container.encode(publicationDate, forKey: .publicationDate)
+        try container.encode(downloadURL, forKey: .downloadURL)
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case versionName
+        case version
+        case buildNumber
+        case releaseNotesMarkdown
+        case releaseNoteURL
+        case publicationDate
+        case downloadURL
     }
 }
 
