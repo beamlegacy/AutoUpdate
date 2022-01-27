@@ -53,7 +53,7 @@ struct AppFeedBuilder: ParsableCommand {
         let splitted = buildNumber.split(separator: ".")
         _ = try splitted.map { subStr -> Int in
             guard let component = Int(subStr) else {
-                throw ValidationError("Build number format is not OK. It should be a String, with at most 3 integers separated by dots")
+                throw ValidationError("Build number format is not OK \"\(buildNumber)\". It should be a String, with at most 3 integers separated by dots")
             }
             return component
         }
@@ -118,5 +118,5 @@ struct AppFeedBuilder: ParsableCommand {
 
 //AppFeedBuilder.main(["https://raw.githubusercontent.com/eLud/update-proto/main/feed.json", "Beam 2.0", "2.0", "51", "https://github.com/eLud/update-proto/raw/main/BeamUpdaterProto_v1.1.zip", "--release-notes-markdown", "This is a note"])
 //AppFeedBuilder.main(["https://raw.githubusercontent.com/eLud/update-proto/main/feed.json", "Beam 2.0", "2.0", "51", "https://github.com/eLud/update-proto/raw/main/BeamUpdaterProto_v1.1.zip", "--release-notes-url", "https://raw.githubusercontent.com/eLud/update-proto/main/feed.json"])
-AppFeedBuilder.main(["https://raw.githubusercontent.com/eLud/update-proto/main/feed.json", "Beam 2.0", "2.0", "20220127.123209kjk", "https://github.com/eLud/update-proto/raw/main/BeamUpdaterProto_v1.1.zip", "--release-notes-url", "https://raw.githubusercontent.com/eLud/update-proto/main/feed.json", "--verbose"])
-//AppFeedBuilder.main()
+//AppFeedBuilder.main(["https://raw.githubusercontent.com/eLud/update-proto/main/feed.json", "Beam 2.0", "2.0", "20220127.171924", "https://github.com/eLud/update-proto/raw/main/BeamUpdaterProto_v1.1.zip", "--release-notes-url", "https://raw.githubusercontent.com/eLud/update-proto/main/feed.json", "--verbose"])
+AppFeedBuilder.main()
