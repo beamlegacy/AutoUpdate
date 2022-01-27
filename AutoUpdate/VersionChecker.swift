@@ -136,7 +136,8 @@ public class VersionChecker: ObservableObject {
     }
 
     /// Checks if update is available from the feed or the mock data and updates the state accordingly
-    public func checkForUpdates() {
+    // swiftlint:disable function_body_length
+    public func checkForUpdates(forceInstall: Bool = false) {
 
         guard state.canPerformCheck else {
             logMessage?("Can't perform check. Current state: \(state)")
@@ -162,6 +163,12 @@ public class VersionChecker: ObservableObject {
                     if let pendingInstallation = pendingInstallation, pendingInstallation.appRelease == latest {
                         self.state = .downloaded(release: pendingInstallation)
                         self.logMessage?("New update is already downloaded.")
+                        if self.allowAutoInstall || forceInstall {
+                            self.logMessage?(allowAutoInstall ?
+                                             "Auto-install enabled, will process installation." :
+                                                "Force-install, will process installation.")
+                            self.processInstallation(archiveURL: pendingInstallation.archiveURL, autorelaunch: true)
+                        }
                         return
                     } else {
                         self.cleanup()
@@ -173,7 +180,7 @@ public class VersionChecker: ObservableObject {
                     self.logMessage?("Update available, ready to download.")
 
                     if self.allowAutoDownload {
-                        self.downloadNewestRelease()
+                        self.downloadNewestRelease(forceInstall)
                     }
 
                 case .failure(let error):
@@ -196,7 +203,7 @@ public class VersionChecker: ObservableObject {
     }
 
     /// Download the newest release and process installation using the XPC service
-    public func downloadNewestRelease() {
+    public func downloadNewestRelease(_ forceInstall: Bool = false) {
 
         guard let release = newRelease else { return }
         let downloadURL = release.downloadURL
@@ -219,8 +226,10 @@ public class VersionChecker: ObservableObject {
                 let savedRelease = try self.saveDownloadedAppRelease(release, archiveURL: fileURL, in: updateFolder)
 
                 DispatchQueue.main.async {
-                    if self.allowAutoInstall {
-                        self.logMessage?("Auto-install enabled, will process installation.")
+                    if self.allowAutoInstall || forceInstall {
+                        self.logMessage?(self.allowAutoInstall ?
+                                         "Auto-install enabled, will process installation." :
+                                            "Force-install, will process installation.")
                         self.processInstallation(archiveURL: savedRelease.archiveURL, autorelaunch: false)
                     } else {
                         self.logMessage?("Auto-install disabled, waiting for user to request installation.")
