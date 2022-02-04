@@ -49,7 +49,7 @@ public class VersionChecker: ObservableObject {
 
     private var releaseHistory: [AppRelease]?
     private(set) var fakeAppVersion: String?
-    private(set) var fakeAppBuild: Int?
+    private(set) var fakeAppBuild: String?
 
     internal typealias PendingInstall = DownloadedAppRelease
 
@@ -87,7 +87,7 @@ public class VersionChecker: ObservableObject {
         return missedVersions
     }
 
-    public init(mockedReleases: [AppRelease], autocheckEnabled: Bool = false, fakeAppVersion: String? = nil, fakeAppBuild: Int? = nil) {
+    public init(mockedReleases: [AppRelease], autocheckEnabled: Bool = false, fakeAppVersion: String? = nil, fakeAppBuild: String? = nil) {
         let encoder = JSONEncoder()
         self.mockData = try? encoder.encode(mockedReleases)
         self.state = .noUpdate

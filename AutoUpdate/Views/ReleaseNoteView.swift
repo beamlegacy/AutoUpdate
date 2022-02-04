@@ -196,7 +196,7 @@ struct ReleaseNoteView_Previews: PreviewProvider {
 
     static let v2 = AppRelease(versionName: "Beam 2.0: Collaborate on Cards",
                                version: "2.0",
-                               buildNumber: 50,
+                               buildNumber: "50",
                                releaseNotesMarkdown: releaseNotes,
                                releaseNoteURL: URL(string: "https://www.test.com"),
                                publicationDate: Date(),
@@ -204,7 +204,7 @@ struct ReleaseNoteView_Previews: PreviewProvider {
 
     static let v1_5 = AppRelease(versionName: "Beam 1.5: To Infinity, beyond, beyond and beyond",
                                  version: "1.5",
-                                 buildNumber: 30,
+                                 buildNumber: "30",
                                  releaseNotesMarkdown: "This is Beam 1.5. \nMany improvements.",
                                  releaseNoteURL: URL(string: "https://www.test.com"),
                                  publicationDate: Date(),

@@ -21,16 +21,15 @@ extension VersionChecker {
         return version
     }
 
-    func currentAppBuild() -> Int {
+    func currentAppBuild() -> String {
         if let fake = fakeAppBuild {
             return fake
         }
 
         guard let infos = Bundle.main.infoDictionary,
-              let version = infos["CFBundleVersion"] as? String,
-              let intVersion = Int(version) else { fatalError("Cant' get app's build from CFBundleVersion key in Info.plist, or it's not an Int number. We only support comparing Int build number.")
+              let version = infos["CFBundleVersion"] as? String else { fatalError("Cant' get app's build from CFBundleVersion key in Info.plist, or it's not an Int number. We only support comparing Int build number.")
         }
-        return intVersion
+        return version
     }
 
     func currentAppName() -> String {
