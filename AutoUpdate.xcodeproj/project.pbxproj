@@ -30,6 +30,8 @@
 		333A8DC82655422400EEA7FB /* SimpleWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333A8DC72655422400EEA7FB /* SimpleWebView.swift */; };
 		333A8DCE26556FB100EEA7FB /* Parma in Frameworks */ = {isa = PBXBuildFile; productRef = 333A8DCD26556FB100EEA7FB /* Parma */; };
 		333F4CE526B9319A000D93EC /* VersionChecker+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333F4CE426B9319A000D93EC /* VersionChecker+Extensions.swift */; };
+		336E82D527B16F6000A196BC /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 336E82D327B16F6000A196BC /* Localizable.strings */; };
+		336E82D827B17DEE00A196BC /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 336E82D627B17DEE00A196BC /* Localizable.strings */; };
 		3397C6FA269DD9540092FDD7 /* AutoUpdateFrameworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3397C6F9269DD9540092FDD7 /* AutoUpdateFrameworkTests.swift */; };
 		3397C6FC269DD9540092FDD7 /* AutoUpdate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 331FCC7526456B4D00FD3FA7 /* AutoUpdate.framework */; };
 		33B27425264BFE1B00A318CD /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 33B27424264BFE1B00A318CD /* Media.xcassets */; };
@@ -122,6 +124,8 @@
 		333A8DC02653FF7500EEA7FB /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		333A8DC72655422400EEA7FB /* SimpleWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleWebView.swift; sourceTree = "<group>"; };
 		333F4CE426B9319A000D93EC /* VersionChecker+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VersionChecker+Extensions.swift"; sourceTree = "<group>"; };
+		336E82D427B16F6000A196BC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		336E82D727B17DEE00A196BC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		3397C6F7269DD9540092FDD7 /* AutoUpdateFrameworkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AutoUpdateFrameworkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3397C6F9269DD9540092FDD7 /* AutoUpdateFrameworkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoUpdateFrameworkTests.swift; sourceTree = "<group>"; };
 		3397C6FB269DD9540092FDD7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -225,6 +229,7 @@
 			children = (
 				331E18D326414DFC00C4593E /* UpdateInstallerProtocol.swift */,
 				331E18D926414DFC00C4593E /* Info.plist */,
+				336E82D627B17DEE00A196BC /* Localizable.strings */,
 				331E18E12641504C00C4593E /* main.swift */,
 				331E18E32641507300C4593E /* UpdateInstallerDelegate.swift */,
 				331E18E72641513D00C4593E /* UpdateInstaller.swift */,
@@ -241,6 +246,7 @@
 				331FCC8A26457FA800FD3FA7 /* Views */,
 				331FCC7726456B4D00FD3FA7 /* AutoUpdate.h */,
 				331FCC7826456B4D00FD3FA7 /* Info.plist */,
+				336E82D327B16F6000A196BC /* Localizable.strings */,
 				33B27424264BFE1B00A318CD /* Media.xcassets */,
 			);
 			path = AutoUpdate;
@@ -440,6 +446,7 @@
 			knownRegions = (
 				en,
 				Base,
+				fr,
 			);
 			mainGroup = 331E189D2640351200C4593E;
 			packageReferences = (
@@ -473,6 +480,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				336E82D827B17DEE00A196BC /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -481,6 +489,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				33B27425264BFE1B00A318CD /* Media.xcassets in Resources */,
+				336E82D527B16F6000A196BC /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -588,6 +597,25 @@
 			targetProxy = 3397C6FD269DD9540092FDD7 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		336E82D327B16F6000A196BC /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				336E82D427B16F6000A196BC /* fr */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		336E82D627B17DEE00A196BC /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				336E82D727B17DEE00A196BC /* fr */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		331E18B42640351600C4593E /* Debug */ = {

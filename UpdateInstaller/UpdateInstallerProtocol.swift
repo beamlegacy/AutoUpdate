@@ -26,4 +26,21 @@ enum UpdateInstallerError: String, Error {
     case failedToUnquarantine
     case signatureFailed
     case appReplacementFailed
+
+    var localizedErrorString: String {
+        switch self {
+        case .genericUnzipError:
+            return NSLocalizedString("Failed to unarchive update", comment: "")
+        case .unzippedContentNotFound:
+            return NSLocalizedString("Failed locate app in update", comment: "")
+        case .archiveContentNotCoherent:
+            return NSLocalizedString("Invalid update content", comment: "")
+        case .failedToUnquarantine:
+            return NSLocalizedString("Unable to unquarantine update", comment: "")
+        case .signatureFailed:
+            return NSLocalizedString("Update signature mismatch", comment: "")
+        case .appReplacementFailed:
+            return NSLocalizedString("Unable to move update to destination", comment: "")
+        }
+    }
 }

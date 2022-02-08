@@ -1,0 +1,42 @@
+/* No comment provided by engineer. */
+"(v.%@, build %@)" = "(v.%1$@, build %2$@)";
+
+/* No comment provided by engineer. */
+"%@ updates since you last updated" = "%@ versions depuis votre dernière mise à jour";
+
+/* No comment provided by engineer. */
+"Changelog" = "Nouveautés";
+
+/* No comment provided by engineer. */
+"Failed locate app in update" = "Impossible de localiser dans la mise à jour";
+
+/* No comment provided by engineer. */
+"Failed to unarchive update" = "Impossible de désarchiver la mise à jour";
+
+/* No comment provided by engineer. */
+"Invalid update content" = "Contenu de la mise à jour invalide";
+
+/* No comment provided by engineer. */
+"No available updates" = "Aucune mise à jour";
+
+/* No comment provided by engineer. */
+"No Internet connection" = "Connexion impossible";
+
+/* No comment provided by engineer. */
+"Unable to create required folders" = "Impossible de créer les fichiers requis";
+
+/* No comment provided by engineer. */
+"Unable to move update to destination" = "Impossible de déplacer l'app à destination";
+
+/* No comment provided by engineer. */
+"Unable to unquarantine update" = "Impossible de lever la quarantaine de l'app";
+
+/* No comment provided by engineer. */
+"Update now" = "Mettre à jour maintenant";
+
+/* No comment provided by engineer. */
+"Update signature mismatch" = "La signature de la mise à jour est invalide";
+
+/* No comment provided by engineer. */
+"View all" = "Tout voir";
+

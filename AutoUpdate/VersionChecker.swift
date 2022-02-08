@@ -14,6 +14,17 @@ public class VersionChecker: ObservableObject {
         case checkFailed
         case noUpdates
         case cantCreateRequiredFolders
+
+        var localizedErrorString: String {
+            switch self {
+            case .checkFailed:
+                return NSLocalizedString("No Internet connection", comment: "")
+            case .noUpdates:
+                return NSLocalizedString("No available updates", comment: "")
+            case .cantCreateRequiredFolders:
+                return NSLocalizedString("Unable to create required folders", comment: "")
+            }
+        }
     }
 
     public enum State: Equatable {
@@ -195,7 +206,7 @@ public class VersionChecker: ObservableObject {
                     } else {
                         self.logMessage?("Check for update: an error occured \(error).")
                         self.cleanup()
-                        self.state = .error(errorDesc: "\(error)")
+                        self.state = .error(errorDesc: "\(error.localizedErrorString)")
                     }
                 }
             }
@@ -285,7 +296,7 @@ public class VersionChecker: ObservableObject {
             DispatchQueue.main.async {
                 if !success, let xpcError = error, let updateError = UpdateInstallerError(rawValue: xpcError) {
                     self.logMessage?("UpdateInstaller returned an error: \(updateError).")
-                    self.state = .error(errorDesc: updateError.rawValue)
+                    self.state = .error(errorDesc: updateError.localizedErrorString)
                     return
                 } else if !success, let xpcError = error {
                     self.logMessage?("UpdateInstaller XPC returned a generic error: \(xpcError).")
