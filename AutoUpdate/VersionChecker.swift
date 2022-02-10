@@ -10,44 +10,6 @@ import Combine
 
 public class VersionChecker: ObservableObject {
 
-    enum VersionCheckerError: Error {
-        case checkFailed
-        case noUpdates
-        case cantCreateRequiredFolders
-
-        var localizedErrorString: String {
-            switch self {
-            case .checkFailed:
-                return NSLocalizedString("No Internet connection", comment: "")
-            case .noUpdates:
-                return NSLocalizedString("No available updates", comment: "")
-            case .cantCreateRequiredFolders:
-                return NSLocalizedString("Unable to create required folders", comment: "")
-            }
-        }
-    }
-
-    public enum State: Equatable {
-        case noUpdate
-        case checking
-        case updateAvailable(release: AppRelease)
-        case error(errorDesc: String)
-        case downloading(progress: Progress)
-        case downloaded(release: DownloadedAppRelease)
-        case installing
-        case updateInstalled
-
-        var canPerformCheck: Bool {
-            switch self {
-            case .noUpdate, .updateAvailable, .error, .downloaded:
-                return true
-            default:
-            return false
-            }
-
-        }
-    }
-
     private var mockData: Data?
     private var feedURL: URL?
     private var autocheckTimer: AnyCancellable?
@@ -81,7 +43,14 @@ public class VersionChecker: ObservableObject {
     ///true by default
     @Published public var allowAutoDownload = true
 
+    ///Autocheck time interval
+    ///Defaults to 3600 seconds
     public var autocheckTimeInterval: TimeInterval = 3600
+
+    ///If set to true, a timer will perform regular checks
+    ///See autocheckTimeInterval to set the interval
+    ///false by default
+    public private(set) var autocheckEnabled: Bool = false
 
     ///This code is executed before the the update installation.
     public var customPreinstall: (() -> Void)?
@@ -108,9 +77,7 @@ public class VersionChecker: ObservableObject {
 
         self.session = URLSession(configuration: Self.sessionConfiguration)
 
-        if autocheckEnabled {
-            enableAutocheck()
-        }
+        setAutocheckEnabled(autocheckEnabled)
     }
 
     public init(feedURL: URL, autocheckEnabled: Bool = false) {
@@ -118,9 +85,7 @@ public class VersionChecker: ObservableObject {
         self.state = .noUpdate
 
         self.session = URLSession(configuration: Self.sessionConfiguration)
-        if autocheckEnabled {
-            enableAutocheck()
-        }
+        setAutocheckEnabled(autocheckEnabled)
     }
 
     public func areAnyUpdatesAvailable(completion: @escaping (Bool) -> Void) {
@@ -190,7 +155,7 @@ public class VersionChecker: ObservableObject {
 
                     self.logMessage?("Update available, ready to download.")
 
-                    if self.allowAutoDownload {
+                    if self.allowAutoDownload || forceInstall {
                         self.downloadNewestRelease(forceInstall)
                     }
 
@@ -261,6 +226,21 @@ public class VersionChecker: ObservableObject {
         self.state = .downloading(progress: downloadTask.progress)
     }
 
+    public func setAutocheckEnabled(_ enabled: Bool) {
+        if enabled {
+            autocheckEnabled = true
+            autocheckTimer = Timer.publish(every: self.autocheckTimeInterval, on: .main, in: .default)
+                .autoconnect()
+                .sink { [weak self] _ in
+                    self?.checkForUpdates()
+                }
+            self.checkForUpdates()
+        } else {
+            autocheckEnabled = false
+            autocheckTimer = nil
+        }
+    }
+
     /// Pass the archive URL to the XPC service to extract it, and replace the existing binary
     /// - Parameter archiveURL: The URL of the zip archive
     func processInstallation(archiveURL: URL, autorelaunch: Bool) {
@@ -315,15 +295,6 @@ public class VersionChecker: ObservableObject {
                 connection.invalidate()
             }
         })
-    }
-
-    private func enableAutocheck() {
-        autocheckTimer = Timer.publish(every: self.autocheckTimeInterval, on: .main, in: .default)
-            .autoconnect()
-            .sink { [weak self] _ in
-                self?.checkForUpdates()
-            }
-        self.checkForUpdates()
     }
 
     private func checkRemoteUpdates(completion: @escaping (Result<AppRelease, VersionCheckerError>) -> Void) {
@@ -486,5 +457,45 @@ public class VersionChecker: ObservableObject {
         let releaseData = try JSONEncoder().encode(downloadRelease)
         try releaseData.write(to: jsonURL)
         return downloadRelease
+    }
+}
+
+extension VersionChecker {
+    enum VersionCheckerError: Error {
+        case checkFailed
+        case noUpdates
+        case cantCreateRequiredFolders
+
+        var localizedErrorString: String {
+            switch self {
+            case .checkFailed:
+                return NSLocalizedString("No Internet connection", comment: "")
+            case .noUpdates:
+                return NSLocalizedString("No available updates", comment: "")
+            case .cantCreateRequiredFolders:
+                return NSLocalizedString("Unable to create required folders", comment: "")
+            }
+        }
+    }
+
+    public enum State: Equatable {
+        case noUpdate
+        case checking
+        case updateAvailable(release: AppRelease)
+        case error(errorDesc: String)
+        case downloading(progress: Progress)
+        case downloaded(release: DownloadedAppRelease)
+        case installing
+        case updateInstalled
+
+        var canPerformCheck: Bool {
+            switch self {
+            case .noUpdate, .updateAvailable, .error, .downloaded:
+                return true
+            default:
+            return false
+            }
+
+        }
     }
 }

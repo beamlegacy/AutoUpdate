@@ -94,16 +94,6 @@ public struct ReleaseNoteView: View {
                     HStack(alignment: .firstTextBaseline) {
                         Text("Changelog")
                             .font(style.titleFont)
-                            .onTapGesture {
-                                withAnimation {
-                                    showsVersionAndBuild.toggle()
-                                }
-                        }
-                        if showsVersionAndBuild {
-                            Text("(v.\(release.version), build \(release.buildNumber))")
-                                .font(.subheadline)
-                                .foregroundColor(Color(.secondaryLabelColor))
-                        }
                     }
                     if let history = history, history.count > 1, showMissedReleasesRecap {
                         Text("\(history.count) updates since you last updated")
