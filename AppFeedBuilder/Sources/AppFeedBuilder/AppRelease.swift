@@ -54,6 +54,7 @@ public struct AppRelease: Codable {
         try container.encode(releaseNotesMarkdown, forKey: .releaseNotesMarkdown)
         try container.encode(publicationDate, forKey: .publicationDate)
         try container.encode(downloadURL, forKey: .downloadURL)
+        try container.encode(releaseNoteURL, forKey: .releaseNoteURL)
     }
 
     enum CodingKeys: String, CodingKey {
