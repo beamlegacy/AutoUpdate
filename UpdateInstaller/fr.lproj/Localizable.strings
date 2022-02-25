@@ -16,3 +16,8 @@
 /* No comment provided by engineer. */
 "Update signature mismatch" = "La signature de la mise à jour est invalide";
 
+/* No comment provided by engineer. */
+"Another app exists with the name of the update. You could try moving the app manually." = "Une app existe avec le même nom que la mise à jour. Essayez le déplacement manuel.";
+
+/* No comment provided by engineer. */
+"We can't write in the update destination folder. You could try moving the app manually." = "Impossible d'écrire dans le dossier de destination. Essayez le déplacement manuel.";

@@ -76,8 +76,7 @@ public class VersionChecker: ObservableObject {
         self.fakeAppVersion = fakeAppVersion
 
         self.session = URLSession(configuration: Self.sessionConfiguration)
-
-        setAutocheckEnabled(autocheckEnabled)
+        self.setAutocheckEnabled(autocheckEnabled)
     }
 
     public init(feedURL: URL, autocheckEnabled: Bool = false) {
@@ -85,10 +84,11 @@ public class VersionChecker: ObservableObject {
         self.state = .noUpdate
 
         self.session = URLSession(configuration: Self.sessionConfiguration)
-        setAutocheckEnabled(autocheckEnabled)
+        self.setAutocheckEnabled(autocheckEnabled)
     }
 
     public func areAnyUpdatesAvailable(completion: @escaping (Bool) -> Void) {
+
         guard state.canPerformCheck else {
             logMessage?("Can't perform check. Current state: \(state)")
             completion(false)
@@ -143,7 +143,7 @@ public class VersionChecker: ObservableObject {
                             self.logMessage?(allowAutoInstall ?
                                              "Auto-install enabled, will process installation." :
                                                 "Force-install, will process installation.")
-                            self.processInstallation(archiveURL: pendingInstallation.archiveURL, autorelaunch: true)
+                            self.processInstallation(downloadedRelease: pendingInstallation, autorelaunch: true)
                         }
                         return
                     } else {
@@ -206,7 +206,7 @@ public class VersionChecker: ObservableObject {
                         self.logMessage?(self.allowAutoInstall ?
                                          "Auto-install enabled, will process installation." :
                                             "Force-install, will process installation.")
-                        self.processInstallation(archiveURL: savedRelease.archiveURL, autorelaunch: false)
+                        self.processInstallation(downloadedRelease: savedRelease, autorelaunch: false)
                     } else {
                         self.logMessage?("Auto-install disabled, waiting for user to request installation.")
                         self.state = .downloaded(release: savedRelease)
@@ -243,7 +243,9 @@ public class VersionChecker: ObservableObject {
 
     /// Pass the archive URL to the XPC service to extract it, and replace the existing binary
     /// - Parameter archiveURL: The URL of the zip archive
-    func processInstallation(archiveURL: URL, autorelaunch: Bool) {
+    /// - Parameter autorelaunch: Should AutoUpdate quit and restart the app
+    /// - Parameter completion: Code to be executed when the update is finished or failed
+    func processInstallation(downloadedRelease: DownloadedAppRelease, autorelaunch: Bool, completion: ((Bool) -> Void)? = nil) {
 
         self.logMessage?("Processing installation…")
         self.state = .installing
@@ -254,22 +256,29 @@ public class VersionChecker: ObservableObject {
             self.logMessage?("Custom pre-install code executed.")
         }
 
-        let connection = NSXPCConnection(serviceName: "com.tectec.UpdateInstaller")
+        let connection = NSXPCConnection(serviceName: "co.beamapp.UpdateInstaller")
         connection.remoteObjectInterface = NSXPCInterface(with: UpdateInstallerProtocol.self)
         connection.resume()
 
         let service = connection.remoteObjectProxyWithErrorHandler { error in
             DispatchQueue.main.async {
-                self.logMessage?("Error getting remote object proxy for UpdateInstaller XPC.")
+                self.logMessage?("Error communicating with remote object proxy for UpdateInstaller XPC.")
                 self.state = .error(errorDesc: error.localizedDescription)
                 self.cleanup()
             }
         } as? UpdateInstallerProtocol
 
+        guard let updateService = service else {
+            self.logMessage?("Error getting remote object proxy for UpdateInstaller XPC.")
+            completion?(false)
+            return
+        }
+
         let pid = ProcessInfo.processInfo.processIdentifier
 
+        let archiveURL = downloadedRelease.archiveURL
         self.logMessage?("Request installation from UpdateInstaller XPC with archive at \(archiveURL.absoluteString). App PID is \(pid).")
-        service?.installUpdate(archiveURL: archiveURL, binaryToReplaceURL: Bundle.main.bundleURL, appPID: pid, reply: { success, error in
+        updateService.installUpdate(archiveURL: archiveURL, binaryToReplaceURL: Bundle.main.bundleURL, appPID: pid, reply: { success, error, updatedAppPath in
 
             self.cleanup()
 
@@ -277,7 +286,10 @@ public class VersionChecker: ObservableObject {
                 if !success, let xpcError = error, let updateError = UpdateInstallerError(rawValue: xpcError) {
                     self.logMessage?("UpdateInstaller returned an error: \(updateError).")
                     self.state = .error(errorDesc: updateError.localizedErrorString)
-                    return
+                    if let path = updatedAppPath {
+                        NSWorkspace.shared.activateFileViewerSelecting([URL(fileURLWithPath: path)])
+                    }
+                    completion?(false)
                 } else if !success, let xpcError = error {
                     self.logMessage?("UpdateInstaller XPC returned a generic error: \(xpcError).")
                     self.state = .error(errorDesc: xpcError)
@@ -293,6 +305,7 @@ public class VersionChecker: ObservableObject {
                     }
                 }
                 connection.invalidate()
+                completion?(success)
             }
         })
     }
@@ -495,7 +508,6 @@ extension VersionChecker {
             default:
             return false
             }
-
         }
     }
 }
