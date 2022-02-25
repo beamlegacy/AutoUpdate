@@ -87,7 +87,7 @@ public struct UpdaterView: View {
                     }.disabled(downloadButtonDisabled())
                 case .downloaded(let release):
                     Button("Install and relauch") {
-                        checker.processInstallation(archiveURL: release.archiveURL, autorelaunch: true)
+                        checker.processInstallation(downloadedRelease: release, autorelaunch: true)
                     }
                 case .updateInstalled:
                     Button("Relaunch") {

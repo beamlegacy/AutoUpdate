@@ -10,25 +10,36 @@ import Foundation
 class UpdateInstaller: UpdateInstallerProtocol {
 
     let fileManager = FileManager.default
+    private var updatedAppURL: URL?
 
-    func installUpdate(archiveURL: URL, binaryToReplaceURL: URL, appPID: Int32, reply: @escaping (Bool, String?) -> Void) {
-
+    func installUpdate(archiveURL: URL, binaryToReplaceURL: URL, appPID: Int32, reply: @escaping (Bool, String?, String?) -> Void) {
         do {
-            let updatedAppURL = try unarchiveZip(at: archiveURL)
+            updatedAppURL = try unarchiveZip(at: archiveURL)
+            guard let updatedAppURL = updatedAppURL else {
+                return
+            }
             try unquarantineApp(at: updatedAppURL)
             guard areAppSignatureIdentical(currentApp: binaryToReplaceURL, update: updatedAppURL) else { throw UpdateInstallerError.signatureFailed }
+            guard checkForAppRename(updateURL: updatedAppURL, replacedBinaryURL: binaryToReplaceURL) else {
+                fallbackInstallIfPossible(updatedAppURL: updatedAppURL, archiveURL: archiveURL)
+                throw UpdateInstallerError.existingAppAtDestination
+            }
+            guard canWriteAt(installDestination: binaryToReplaceURL) else {
+                fallbackInstallIfPossible(updatedAppURL: updatedAppURL, archiveURL: archiveURL)
+                throw UpdateInstallerError.diskPermissionError
+            }
             let installedAppURL = try install(updatedAppURL, replacedBinaryURL: binaryToReplaceURL, pid: appPID)
             relaunch(pid: appPID, at: installedAppURL)
         } catch {
             if let error = error as? UpdateInstallerError {
-                reply(false, error.rawValue)
+                reply(false, error.rawValue, updatedAppURL?.path)
             } else {
-                reply(false, error.localizedDescription)
+                reply(false, error.localizedDescription, nil)
             }
             return
         }
 
-        reply(true, nil)
+        reply(true, nil, nil)
     }
 
     private func unarchiveZip(at archiveURL: URL) throws -> URL {
@@ -61,8 +72,6 @@ class UpdateInstaller: UpdateInstallerProtocol {
         }
 
         guard unzippepAppsPaths.count == 1, let app = unzippepAppsPaths.first else { throw UpdateInstallerError.archiveContentNotCoherent }
-
-        try? fileManager.removeItem(at: archiveURL)
 
         return enclosingFolderURL.appendingPathComponent(app)
     }
@@ -141,6 +150,24 @@ class UpdateInstaller: UpdateInstallerProtocol {
         return signature
     }
 
+    ///Check is the app have been renamed, and is so, if it can still be installed
+    private func checkForAppRename(updateURL: URL, replacedBinaryURL: URL) -> Bool {
+
+        //Get current installed app name (check the replacedBinaryURL)
+        let replacedAppName = replacedBinaryURL.lastPathComponent
+        //Get the name on new app
+        let updatedAppName = updateURL.lastPathComponent
+        //Are they identical?
+        if replacedAppName == updatedAppName {
+            return true
+        } else {
+            //If not, check if there is not another app at the same location with the new name.
+            let installationDirectoryURL = replacedBinaryURL.deletingLastPathComponent()
+            let futureAppLocation = installationDirectoryURL.appendingPathComponent(updatedAppName)
+            return !fileManager.fileExists(atPath: futureAppLocation.path)
+        }
+    }
+
     private func install(_ updateURL: URL, replacedBinaryURL: URL, pid: Int32) throws -> URL {
 
         let fileExtension = replacedBinaryURL.pathExtension
@@ -181,5 +208,45 @@ class UpdateInstaller: UpdateInstallerProtocol {
         waitForExitTask.arguments =  ["-c", waitForExitScript]
 
         try? waitForExitTask.run()
+    }
+
+    private func canWriteAt(installDestination: URL) -> Bool {
+        //Check disk permissions
+        return fileManager.isWritableFile(atPath: installDestination.path)
+    }
+
+    /// Fallback installation. We try to move the app in the Download folder. If not possible because there is already an app with that name, try to move the archive, and make it's name unique
+    /// - Parameters:
+    ///   - appUpdateURL: URL of the updated app
+    ///   - archiveURL: URL of the zip archive
+    private func fallbackInstallIfPossible(updatedAppURL: URL, archiveURL: URL) {
+        guard let downloadFolder = fileManager.urls(for: .downloadsDirectory, in: .userDomainMask).first else { return }
+
+        let updateInDownloadFolder = downloadFolder.appendingPathComponent(updatedAppURL.lastPathComponent)
+        let archiveInDownloadFolder = downloadFolder.appendingPathComponent(archiveURL.lastPathComponent)
+
+        if move(file: updatedAppURL, to: updateInDownloadFolder) {
+            self.updatedAppURL = updateInDownloadFolder
+            return
+        } else {
+            move(file: archiveURL, to: archiveInDownloadFolder)
+            self.updatedAppURL = archiveInDownloadFolder
+            return
+        }
+    }
+
+    ///Tries to move the specified file to the destination.
+    /// - Parameters:
+    ///   - file: URL of the file to move
+    ///   - destination: Destination URL including the filename
+    /// - Returns: True is move was successful, false otherwise
+    @discardableResult private func move(file: URL, to destination: URL) -> Bool {
+        do {
+            try fileManager.moveItem(at: file, to: destination)
+            return true
+        } catch {
+            NSLog("Can't move file \(file) to \(destination): \(error)")
+            return false
+        }
     }
 }

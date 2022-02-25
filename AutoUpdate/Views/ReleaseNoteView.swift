@@ -59,22 +59,26 @@ public struct ReleaseNoteView: View {
     private let style: ReleaseNoteViewStyle
     private let closeAction: () -> Void
     private let onActionButtonClickAdditionalAction: (() -> Void)?
+    private let afterInstallAction: ((Bool) -> Void)?
     private let showMissedReleasesRecap: Bool
     private let showInlineNotes: Bool
+    private let autoRelaunchAfterInstall: Bool
 
     @State private var showsVersionAndBuild = false
     @State private var onHoverCloseButton = false
     @State private var onHoverActionButton = false
 
-    public init(release: AppRelease, closeAction: @escaping () -> Void, beforeInstallAction: (() -> Void)? = nil, history: [AppRelease]? = nil, checker: VersionChecker? = nil, style: ReleaseNoteViewStyle = ReleaseNoteViewStyle(), showMissedReleasesRecap: Bool = false, showInlineNotes: Bool = false) {
+    public init(release: AppRelease, closeAction: @escaping () -> Void, beforeInstallAction: (() -> Void)? = nil, afterInstallAction: ((Bool) -> Void)? = nil, history: [AppRelease]? = nil, checker: VersionChecker? = nil, style: ReleaseNoteViewStyle = ReleaseNoteViewStyle(), showMissedReleasesRecap: Bool = false, showInlineNotes: Bool = false, autoRelaunchAfterInstall: Bool = true) {
         self.release = release
         self.checker = checker
         self.history = history
         self.style = style
         self.closeAction = closeAction
         self.onActionButtonClickAdditionalAction = beforeInstallAction
+        self.afterInstallAction = afterInstallAction
         self.showMissedReleasesRecap = showMissedReleasesRecap
         self.showInlineNotes = showInlineNotes
+        self.autoRelaunchAfterInstall = autoRelaunchAfterInstall
     }
 
     private var separator: some View {
@@ -126,7 +130,7 @@ public struct ReleaseNoteView: View {
                     case .downloaded(let release):
                         Button(action: {
                             onActionButtonClickAdditionalAction?()
-                            checker.processInstallation(archiveURL: release.archiveURL, autorelaunch: true)
+                            checker.processInstallation(downloadedRelease: release, autorelaunch: autoRelaunchAfterInstall, completion: afterInstallAction)
                         }, label: {
                             Text("Update now")
                         })

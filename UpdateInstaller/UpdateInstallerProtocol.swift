@@ -15,8 +15,8 @@ import Foundation
     ///   - archiveURL: Archive URL on the file system
     ///   - binaryToReplaceURL: Current binary URL (the one to be updated)
     ///   - appPID: Current binary UNIX PID, used to watch for the app relaunch
-    ///   - reply: callback when te XPC service finished the update
-    func installUpdate(archiveURL: URL, binaryToReplaceURL: URL, appPID: Int32, reply: @escaping (Bool, String?) -> Void)
+    ///   - reply: callback when te XPC service finished the update. Contains a Bool for install success, a String? for error rawValue, and path for updated app if available
+    func installUpdate(archiveURL: URL, binaryToReplaceURL: URL, appPID: Int32, reply: @escaping (Bool, String?, String?) -> Void)
 }
 
 enum UpdateInstallerError: String, Error {
@@ -26,6 +26,8 @@ enum UpdateInstallerError: String, Error {
     case failedToUnquarantine
     case signatureFailed
     case appReplacementFailed
+    case existingAppAtDestination
+    case diskPermissionError
 
     var localizedErrorString: String {
         switch self {
@@ -41,6 +43,10 @@ enum UpdateInstallerError: String, Error {
             return NSLocalizedString("Update signature mismatch", comment: "")
         case .appReplacementFailed:
             return NSLocalizedString("Unable to move update to destination", comment: "")
+        case .existingAppAtDestination:
+            return NSLocalizedString("Another app exists with the name of the update. You could try moving the app manually.", comment: "")
+        case .diskPermissionError:
+            return NSLocalizedString("We can't write in the update destination folder. You could try moving the app manually.", comment: "")
         }
     }
 }
