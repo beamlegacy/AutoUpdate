@@ -24,7 +24,7 @@ class UpdateInstaller: UpdateInstallerProtocol {
                 fallbackInstallIfPossible(updatedAppURL: updatedAppURL, archiveURL: archiveURL)
                 throw UpdateInstallerError.existingAppAtDestination
             }
-            guard canWriteAt(installDestination: binaryToReplaceURL) else {
+            guard canWriteAt(installDestination: binaryToReplaceURL.deletingLastPathComponent()) else {
                 fallbackInstallIfPossible(updatedAppURL: updatedAppURL, archiveURL: archiveURL)
                 throw UpdateInstallerError.diskPermissionError
             }
@@ -210,6 +210,9 @@ class UpdateInstaller: UpdateInstallerProtocol {
         try? waitForExitTask.run()
     }
 
+    /// Check if we can write at the destination
+    /// - Parameter installDestination: The URL we want to check the write permission
+    /// - Returns: true if we can write at this URL, fasle otherwise.
     private func canWriteAt(installDestination: URL) -> Bool {
         //Check disk permissions
         return fileManager.isWritableFile(atPath: installDestination.path)
