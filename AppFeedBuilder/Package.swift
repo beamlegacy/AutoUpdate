@@ -8,7 +8,7 @@ let package = Package(
         .macOS(.v10_15)
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-argument-parser", .upToNextMajor(from: "0.4.3"))
+        .package(url: "https://github.com/apple/swift-argument-parser", .upToNextMajor(from: "1.0.0"))
     ],
     targets: [
         .target(name: "AppFeedBuilder",
