@@ -30,6 +30,7 @@
 		333A8DC82655422400EEA7FB /* SimpleWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333A8DC72655422400EEA7FB /* SimpleWebView.swift */; };
 		333A8DCE26556FB100EEA7FB /* Parma in Frameworks */ = {isa = PBXBuildFile; productRef = 333A8DCD26556FB100EEA7FB /* Parma */; };
 		333F4CE526B9319A000D93EC /* VersionChecker+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333F4CE426B9319A000D93EC /* VersionChecker+Extensions.swift */; };
+		33551D3827FDC57B00598164 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 33551D3727FDC57B00598164 /* ArgumentParser */; };
 		336E82D527B16F6000A196BC /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 336E82D327B16F6000A196BC /* Localizable.strings */; };
 		336E82D827B17DEE00A196BC /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 336E82D627B17DEE00A196BC /* Localizable.strings */; };
 		3397C6FA269DD9540092FDD7 /* AutoUpdateFrameworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3397C6F9269DD9540092FDD7 /* AutoUpdateFrameworkTests.swift */; };
@@ -37,7 +38,6 @@
 		33B27425264BFE1B00A318CD /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 33B27424264BFE1B00A318CD /* Media.xcassets */; };
 		33D9A2B926B859E8006AF370 /* Separator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33D9A2B826B859E8006AF370 /* Separator.swift */; };
 		33EBA560264ABD3E00369730 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33EBA55F264ABD3E00369730 /* main.swift */; };
-		33EBA566264ABDB800369730 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 33EBA565264ABDB800369730 /* ArgumentParser */; };
 		33EBA567264AC17900369730 /* AppRelease.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18BB26403A7400C4593E /* AppRelease.swift */; };
 /* End PBXBuildFile section */
 
@@ -141,6 +141,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				33551D3827FDC57B00598164 /* ArgumentParser in Frameworks */,
 				331FCC7C26456B4D00FD3FA7 /* AutoUpdate.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -172,7 +173,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				33EBA566264ABDB800369730 /* ArgumentParser in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -330,6 +330,9 @@
 				331FCC7B26456B4D00FD3FA7 /* PBXTargetDependency */,
 			);
 			name = AutoUpdateDemo;
+			packageProductDependencies = (
+				33551D3727FDC57B00598164 /* ArgumentParser */,
+			);
 			productName = BeamUpdaterProto;
 			productReference = 331E18A62640351200C4593E /* AutoUpdateDemo.app */;
 			productType = "com.apple.product-type.application";
@@ -406,7 +409,6 @@
 			);
 			name = AppFeedBuilder;
 			packageProductDependencies = (
-				33EBA565264ABDB800369730 /* ArgumentParser */,
 			);
 			productName = AppFeedBuilder;
 			productReference = 33EBA55D264ABD3E00369730 /* AppFeedBuilder */;
@@ -450,8 +452,8 @@
 			);
 			mainGroup = 331E189D2640351200C4593E;
 			packageReferences = (
-				33EBA564264ABDB800369730 /* XCRemoteSwiftPackageReference "swift-argument-parser" */,
 				333A8DCC26556FB100EEA7FB /* XCRemoteSwiftPackageReference "Parma" */,
+				33551D3627FDC57B00598164 /* XCRemoteSwiftPackageReference "swift-argument-parser" */,
 			);
 			productRefGroup = 331E18A72640351200C4593E /* Products */;
 			projectDirPath = "";
@@ -2050,12 +2052,12 @@
 				minimumVersion = 0.3.0;
 			};
 		};
-		33EBA564264ABDB800369730 /* XCRemoteSwiftPackageReference "swift-argument-parser" */ = {
+		33551D3627FDC57B00598164 /* XCRemoteSwiftPackageReference "swift-argument-parser" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/apple/swift-argument-parser";
+			repositoryURL = "https://github.com/apple/swift-argument-parser.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.4.3;
+				minimumVersion = 1.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -2066,9 +2068,9 @@
 			package = 333A8DCC26556FB100EEA7FB /* XCRemoteSwiftPackageReference "Parma" */;
 			productName = Parma;
 		};
-		33EBA565264ABDB800369730 /* ArgumentParser */ = {
+		33551D3727FDC57B00598164 /* ArgumentParser */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 33EBA564264ABDB800369730 /* XCRemoteSwiftPackageReference "swift-argument-parser" */;
+			package = 33551D3627FDC57B00598164 /* XCRemoteSwiftPackageReference "swift-argument-parser" */;
 			productName = ArgumentParser;
 		};
 /* End XCSwiftPackageProductDependency section */
