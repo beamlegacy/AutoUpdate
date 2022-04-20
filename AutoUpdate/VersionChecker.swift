@@ -52,8 +52,11 @@ public class VersionChecker: ObservableObject {
     ///false by default
     public private(set) var autocheckEnabled: Bool = false
 
-    ///This code is executed before the the update installation.
+    ///This code is executed before the update installation.
     public var customPreinstall: (() -> Void)?
+
+    ///This code is executed after the update installation.
+    public var customPostinstall: ((Bool) -> Void)?
 
     ///Use this to get log message from AutoUpdate
     public var logMessage: ((String) -> Void)?
@@ -87,11 +90,11 @@ public class VersionChecker: ObservableObject {
         self.setAutocheckEnabled(autocheckEnabled)
     }
 
-    public func areAnyUpdatesAvailable(completion: @escaping (Bool) -> Void) {
+    public func areAnyUpdatesAvailable(completion: @escaping (AppRelease?) -> Void) {
 
         guard state.canPerformCheck else {
             logMessage?("Can't perform check. Current state: \(state)")
-            completion(false)
+            completion(nil)
             return
         }
 
@@ -99,12 +102,12 @@ public class VersionChecker: ObservableObject {
         checkRemoteUpdates { [unowned self] result in
             DispatchQueue.main.async {
                 switch result {
-                case .success:
+                case .success(let release):
                     self.logMessage?("Updates available")
-                    completion(true)
+                    completion(release)
                 case .failure:
                     self.logMessage?("No updates available")
-                    completion(false)
+                    completion(nil)
                 }
             }
         }
@@ -245,7 +248,7 @@ public class VersionChecker: ObservableObject {
     /// - Parameter archiveURL: The URL of the zip archive
     /// - Parameter autorelaunch: Should AutoUpdate quit and restart the app
     /// - Parameter completion: Code to be executed when the update is finished or failed
-    func processInstallation(downloadedRelease: DownloadedAppRelease, autorelaunch: Bool, completion: ((Bool) -> Void)? = nil) {
+    public func processInstallation(downloadedRelease: DownloadedAppRelease, autorelaunch: Bool, completion: ((Bool) -> Void)? = nil) {
 
         self.logMessage?("Processing installation…")
         self.state = .installing
@@ -270,6 +273,7 @@ public class VersionChecker: ObservableObject {
 
         guard let updateService = service else {
             self.logMessage?("Error getting remote object proxy for UpdateInstaller XPC.")
+            customPostinstall?(false)
             completion?(false)
             return
         }
@@ -282,29 +286,29 @@ public class VersionChecker: ObservableObject {
 
             self.cleanup()
 
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [weak self] in
                 if !success, let xpcError = error, let updateError = UpdateInstallerError(rawValue: xpcError) {
-                    self.logMessage?("UpdateInstaller returned an error: \(updateError).")
-                    self.state = .error(errorDesc: updateError.localizedErrorString)
+                    self?.logMessage?("UpdateInstaller returned an error: \(updateError).")
+                    self?.state = .error(errorDesc: updateError.localizedErrorString)
                     if let path = updatedAppPath {
                         NSWorkspace.shared.activateFileViewerSelecting([URL(fileURLWithPath: path)])
                     }
-                    completion?(false)
                 } else if !success, let xpcError = error {
-                    self.logMessage?("UpdateInstaller XPC returned a generic error: \(xpcError).")
-                    self.state = .error(errorDesc: xpcError)
+                    self?.logMessage?("UpdateInstaller XPC returned a generic error: \(xpcError).")
+                    self?.state = .error(errorDesc: xpcError)
                 } else {
-                    self.logMessage?("UpdateInstaller a successful install.")
-                    self.state = .updateInstalled
+                    self?.logMessage?("UpdateInstaller a successful install.")
+                    self?.state = .updateInstalled
                     if autorelaunch {
-                        self.logMessage?("AutoRelaunch is enabled. Will quit the app in 1 second.")
+                        self?.logMessage?("AutoRelaunch is enabled. Will quit the app in 1 second.")
                         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-                            self.logMessage?("Quitting the app.")
+                            self?.logMessage?("Quitting the app.")
                             NSApp.terminate(self)
                         }
                     }
                 }
                 connection.invalidate()
+                self?.customPostinstall?(success)
                 completion?(success)
             }
         })

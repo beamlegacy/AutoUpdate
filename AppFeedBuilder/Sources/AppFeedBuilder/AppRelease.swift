@@ -131,11 +131,11 @@ extension AppRelease {
         let v1_1 = AppRelease(versionName: "Proin senectus vitae odio gravida massa", version: "1.1", buildNumber: "5", releaseNotesMarkdown: "This is the version 1.1! \n*Lots of new stuff*", publicationDate: Calendar.current.date(from: v1_1DateComponents)!, downloadURL: URL(string: "https://github.com/eLud/update-proto/raw/main/BeamUpdaterProto_v1.1.zip")!)
 
         let v2_0DateComponents = DateComponents(year: 2021, month: 7, day: 29, hour: 14, minute: 35, second: 00)
-        let v2_0 = AppRelease(versionName: "Sed maecenas morbi feugiat tincidunt",
+        let v2_0 = AppRelease(versionName: "beam beta",
                               version: "2.0", buildNumber: "50",
-                              releaseNotesMarkdown: releaseNotes,
+                              releaseNoteURL: URL(string: "https://public.beamapp.co/beam/note/f7643c95-e6d9-4800-8499-89f900cfc2a8/Changelog"),
                               publicationDate: Calendar.current.date(from: v2_0DateComponents)!,
-                              downloadURL: URL(string: "https://s3.eu-west-3.amazonaws.com/downloads.dev.beamapp.co/bluepineapple/0.1.0/20220208.012015/Beam.zip")!)
+                              downloadURL: URL(string: "https://s3.eu-west-3.amazonaws.com/downloads.dev.beamapp.co/bluepineapple/0.5.1/20220420.110635/Beam.zip")!)
 
         let versions = [v0_1, v0_1_1, v1_1, v2_0]
         return versions
