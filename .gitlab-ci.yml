@@ -44,11 +44,12 @@ test_project:
     expire_in: 7d
     when: always
     paths:
-      - cobertura.xml
       - fastlane/test_output/tests.xml
       - logs
     reports:
-      cobertura: cobertura.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: cobertura.xml    
       junit: test_output/tests.xml
   coverage: '/Test Coverage\: \d+(?:\.\d*)?\%/'
   only:
