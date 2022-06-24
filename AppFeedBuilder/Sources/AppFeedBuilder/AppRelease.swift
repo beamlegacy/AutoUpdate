@@ -110,17 +110,6 @@ extension AppRelease {
 
     static public func mockedReleases() -> [AppRelease] {
 
-        let releaseNotes = """
-        ## Collaboration, collaboration, collaboration
-
-        - Pharetra, malesuada tellus amet orci iaculis et. In nunc, augue in orci netus maecenas. In eget arcu a augue. Dui pulvinar pellentesque.
-        - Tempor sit erat amet parturient pretium nunc.
-        - Urna arcu libero, neque, placerat risus porta commodo, nulla. Diam ac aliquam velit ipsum.
-        - Et nulla sed justo facilisi. Lobortis ligula a nisl.
-        - Nunc, morbi praesent non suscipit. In massa purus quis molestie. Nam lectus massa mattis fringilla quam. Vel tortor quis a sit tellus lorem amet placerat tellus. Semper dui massa phasellus nisl.
-        - At amet nibh nibh nibh elementum. In sagittis consectetur ut massa pulvinar.
-        """
-
         let v0_1DateComponents = DateComponents(year: 2021, month: 5, day: 24, hour: 17, minute: 45, second: 00)
         let v0_1 = AppRelease(versionName: "Dis maecenas et pretium diam", version: "0.1", buildNumber: "1", releaseNotesMarkdown: nil, publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.zip")!)
 
