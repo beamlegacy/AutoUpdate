@@ -1,6 +1,6 @@
 //
 //  ContentView.swift
-//  BeamUpdaterProto
+//  AutoUpdate
 //
 //  Created by Ludovic Ollagnier on 03/05/2021.
 //
@@ -95,7 +95,9 @@ public struct UpdaterView: View {
                     }
                 default:
                     Button("Check for updates") {
-                        checker.checkForUpdates()
+                        Task {
+                            await checker.checkForUpdates()
+                        }
                     }.disabled(checker.state == .checking)
                 }
             }

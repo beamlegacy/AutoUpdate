@@ -6,6 +6,7 @@ default:
   - unset cd
   - eval "$(rbenv init -)"
   - bundle install
+  - xcversion install "13.2.1"
 
 stages:
   - test

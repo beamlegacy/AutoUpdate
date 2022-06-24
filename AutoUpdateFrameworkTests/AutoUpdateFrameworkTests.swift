@@ -110,7 +110,7 @@ class AutoUpdateFrameworkTests: XCTestCase {
         XCTAssertEqual(v0_1ter, v0_1bis)
     }
 
-    func testReleaseHistory() {
+    func testReleaseHistory() async {
 
         let v0_1DateComponents = DateComponents(year: 2020, month: 11, day: 20, hour: 17, minute: 45, second: 00)
         let v0_1 = AppRelease(versionName: "Version 0.1", version: "0.1", buildNumber: "1", releaseNotesMarkdown: "This is release notes from Beam 0.1", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.zip")!)
@@ -123,7 +123,7 @@ class AutoUpdateFrameworkTests: XCTestCase {
 
         let e = expectation(description: "check")
 
-        checker.checkForUpdates()
+        await checker.checkForUpdates()
         cancellable = checker.$state.sink { state in
             switch state {
             case .updateAvailable:
@@ -143,7 +143,7 @@ class AutoUpdateFrameworkTests: XCTestCase {
             print(state)
         }
 
-        waitForExpectations(timeout: 5, handler: nil)
+        await waitForExpectations(timeout: 5, handler: nil)
     }
 
     func testFileNameDecomposition() {
@@ -220,6 +220,65 @@ class AutoUpdateFrameworkTests: XCTestCase {
             e.fulfill()
         }
         waitForExpectations(timeout: 30, handler: nil)
+    }
+
+    func testPreinstallActions() {
+        let checker = VersionChecker(mockedReleases: sampleFeed)
+        var string = NSString()
+        checker.customPreinstall = {
+            string = "customPreinstall"
+        }
+
+        checker.preinstallAction()
+
+        XCTAssert(string == "customPreinstall")
+    }
+
+    @MainActor
+    func testHandleCheckSuccessNewUpdate() {
+        let checker = VersionChecker(mockedReleases: sampleFeed)
+
+        let release = sampleFeed[0]
+        checker.handleCheckSuccess(with: release, pendingInstallation: nil)
+        XCTAssertTrue(checker.state == .updateAvailable(release: sampleFeed[0]))
+        XCTAssertEqual(checker.newRelease, release)
+    }
+
+    @MainActor
+    func testHandleCheckSuccessDownloaded() {
+        let checker = VersionChecker(mockedReleases: sampleFeed)
+
+        let release = sampleFeed[0]
+        let downloadedRelease = DownloadedAppRelease(appRelease: release, archiveURL: testTempFolderURL)
+        checker.handleCheckSuccess(with: release, pendingInstallation: downloadedRelease)
+        XCTAssertTrue(checker.state == .downloaded(release: downloadedRelease))
+    }
+
+    @MainActor
+    func testHandleCheckSuccessDownloadedOlder() {
+        let checker = VersionChecker(mockedReleases: sampleFeed)
+
+        let release = sampleFeed[1]
+        let downloadedRelease = DownloadedAppRelease(appRelease: sampleFeed[0], archiveURL: testTempFolderURL)
+        checker.handleCheckSuccess(with: release, pendingInstallation: downloadedRelease)
+        XCTAssertTrue(checker.state == .updateAvailable(release: release))
+    }
+
+    @MainActor
+    func testHandleCheckFailureNoUpdate() {
+        let checker = VersionChecker(mockedReleases: sampleFeed)
+
+        checker.handleCheckFailure(with: .noUpdates, pendingInstallation: nil)
+        XCTAssertTrue(checker.state == .noUpdate)
+    }
+
+    @MainActor
+    func testHandleCheckFailureButDownloaded() {
+        let checker = VersionChecker(mockedReleases: sampleFeed)
+
+        let downloadedRelease = DownloadedAppRelease(appRelease: sampleFeed[0], archiveURL: testTempFolderURL)
+        checker.handleCheckFailure(with: .noUpdates, pendingInstallation: downloadedRelease)
+        XCTAssertTrue(checker.state == .downloaded(release: downloadedRelease))
     }
 
     var sampleFeed: [AppRelease] {

@@ -1,6 +1,6 @@
 //
 //  VersionChecker.swift
-//  BeamUpdaterProto
+//  AutoUpdate
 //
 //  Created by Ludovic Ollagnier on 03/05/2021.
 //
@@ -10,25 +10,25 @@ import Combine
 
 public class VersionChecker: ObservableObject {
 
-    private var mockData: Data?
-    private var feedURL: URL?
+    var mockData: Data?
+    var feedURL: URL?
     private var autocheckTimer: AnyCancellable?
-    private var session: URLSession
+    var session: URLSession
     private static var sessionConfiguration: URLSessionConfiguration {
         let config = URLSessionConfiguration.default
         config.requestCachePolicy = .reloadIgnoringLocalAndRemoteCacheData
         return config
     }
 
-    private var releaseHistory: [AppRelease]?
+    var releaseHistory: [AppRelease]?
     private(set) var fakeAppVersion: String?
     private(set) var fakeAppBuild: String?
 
     internal typealias PendingInstall = DownloadedAppRelease
 
-    @Published public private(set) var newRelease: AppRelease?
-    @Published public private(set) var currentRelease: AppRelease?
-    @Published public private(set) var state: State {
+    @Published public internal(set) var newRelease: AppRelease?
+    @Published public internal(set) var currentRelease: AppRelease?
+    @Published public internal(set) var state: State {
         didSet {
             logMessage?("AutoUpdate state changed: \(state)")
         }
@@ -90,98 +90,60 @@ public class VersionChecker: ObservableObject {
         self.setAutocheckEnabled(autocheckEnabled)
     }
 
-    public func areAnyUpdatesAvailable(completion: @escaping (AppRelease?) -> Void) {
+    /// Checks if an update is available and update the state
+    /// - Returns: The latest release found
+    @discardableResult
+    public func checkForUpdates() async -> AppRelease? {
 
         guard state.canPerformCheck else {
             logMessage?("Can't perform check. Current state: \(state)")
-            completion(nil)
-            return
+            return nil
         }
 
-        logMessage?("Checking for updates…")
-        checkRemoteUpdates { [unowned self] result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let release):
-                    self.logMessage?("Updates available")
-                    completion(release)
-                case .failure:
-                    self.logMessage?("No updates available")
-                    completion(nil)
-                }
-            }
-        }
-
-    }
-
-    /// Checks if update is available from the feed or the mock data and updates the state accordingly
-    // swiftlint:disable function_body_length
-    public func checkForUpdates(forceInstall: Bool = false) {
-
-        guard state.canPerformCheck else {
-            logMessage?("Can't perform check. Current state: \(state)")
-            return
-        }
-
-        guard let appSupportDirectory = applicationSupportDirectoryURL else { return }
+        guard let appSupportDirectory = applicationSupportDirectoryURL else { return nil }
         let pendingInstallation = checkForPendingInstallations(in: updateDirectory(in: appSupportDirectory))
 
-        state = .checking
         logMessage?("Checking for updates…")
+        await setState(.checking)
 
-        checkRemoteUpdates { [unowned self] result in
-            DispatchQueue.main.async {
-                self.lastCheck = Date()
+        let result = await checkRemoteUpdates()
 
-                switch result {
-                case .success(let latest):
-                    self.logMessage?("Check for update: new update found. \(latest)")
+        Task { @MainActor in
+            self.lastCheck = Date()
+        }
 
-                    //If we have a new version, make sure it's newer than the previously downloaded one
-                    //If a new update was found, clean what was previously downloaded before downloading the new archive
-                    if let pendingInstallation = pendingInstallation, pendingInstallation.appRelease == latest {
-                        self.state = .downloaded(release: pendingInstallation)
-                        self.logMessage?("New update is already downloaded.")
-                        if self.allowAutoInstall || forceInstall {
-                            self.logMessage?(allowAutoInstall ?
-                                             "Auto-install enabled, will process installation." :
-                                                "Force-install, will process installation.")
-                            self.processInstallation(downloadedRelease: pendingInstallation, autorelaunch: true)
-                        }
-                        return
-                    } else {
-                        self.cleanup()
-                    }
+        switch result {
+        case .success(let release):
+            await self.handleCheckSuccess(with: release, pendingInstallation: pendingInstallation)
+            return release
+        case .failure(let error):
+            await self.handleCheckFailure(with: error, pendingInstallation: pendingInstallation)
+            return nil
+        }
+    }
 
-                    self.newRelease = latest
-                    self.state = .updateAvailable(release: latest)
+    /// Checks if update is available and then downloads it or install depending on the preferences.
+    /// If autoDownload and autoInstall are disabled, and you don't force install, nothing will happen
+    public func performUpdateIfAvailable(forceInstall: Bool = false) async {
 
-                    self.logMessage?("Update available, ready to download.")
+        await checkForUpdates()
 
-                    if self.allowAutoDownload || forceInstall {
-                        self.downloadNewestRelease(forceInstall)
-                    }
-
-                case .failure(let error):
-                    self.newRelease = nil
-
-                    if let pendingInstallation = pendingInstallation {
-                        self.logMessage?("Check for update: no update, no update but there is a pending installation.")
-                        self.state = .downloaded(release: pendingInstallation)
-                    } else if error == .noUpdates {
-                        self.logMessage?("Check for update: no update.")
-                        self.state = .noUpdate
-                    } else {
-                        self.logMessage?("Check for update: an error occured \(error).")
-                        self.cleanup()
-                        self.state = .error(errorDesc: "\(error.localizedErrorString)")
-                    }
-                }
+        if case .downloaded(let release) = state {
+            if self.allowAutoInstall || forceInstall {
+                self.logMessage?(self.allowAutoInstall ?
+                                 "Auto-install enabled, will process installation."
+                                 : "Force-install, will process installation.")
+                await self.processInstallation(downloadedRelease: release, autorelaunch: true)
+            }
+        } else if case .updateAvailable = state {
+            if self.allowAutoDownload || forceInstall {
+                await self.downloadNewestRelease(forceInstall)
             }
         }
     }
 
     /// Download the newest release and process installation using the XPC service
+    @MainActor
     public func downloadNewestRelease(_ forceInstall: Bool = false) {
 
         guard let release = newRelease else { return }
@@ -190,12 +152,10 @@ public class VersionChecker: ObservableObject {
             guard error == nil,
                   let fileURL = fileURL,
                   let appSupportURL = self.applicationSupportDirectoryURL else {
-                DispatchQueue.main.async {
-                    self.logMessage?("Error while downloading new update.")
-                    self.state = .error(errorDesc: error?.localizedDescription ?? "An error occured")
-                }
-                return
-            }
+                      self.logMessage?("Error while downloading new update.")
+                      self.state = .error(errorDesc: error?.localizedDescription ?? "An error occured")
+                      return
+                  }
 
             let updateFolder = self.updateDirectory(in: appSupportURL)
 
@@ -203,8 +163,8 @@ public class VersionChecker: ObservableObject {
             do {
                 try self.createAppFolderInAppSupportIfNeeded(updateFolder)
                 let savedRelease = try self.saveDownloadedAppRelease(release, archiveURL: fileURL, in: updateFolder)
-
-                DispatchQueue.main.async {
+                
+                Task { @MainActor in
                     if self.allowAutoInstall || forceInstall {
                         self.logMessage?(self.allowAutoInstall ?
                                          "Auto-install enabled, will process installation." :
@@ -216,7 +176,7 @@ public class VersionChecker: ObservableObject {
                     }
                 }
             } catch {
-                DispatchQueue.main.async {
+                Task { @MainActor in
                     self.state = .error(errorDesc: error.localizedDescription)
                 }
                 self.cleanup()
@@ -229,18 +189,25 @@ public class VersionChecker: ObservableObject {
         self.state = .downloading(progress: downloadTask.progress)
     }
 
-    public func setAutocheckEnabled(_ enabled: Bool) {
+    public func setAutocheckEnabled(_ enabled: Bool, checkImmediately: Bool = false) {
         if enabled {
             autocheckEnabled = true
             autocheckTimer = Timer.publish(every: self.autocheckTimeInterval, on: .main, in: .default)
                 .autoconnect()
-                .sink { [weak self] _ in
-                    self?.checkForUpdates()
+                .sink { _ in
+                    Task {
+                        await self.performUpdateIfAvailable()
+                    }
                 }
-            self.checkForUpdates()
         } else {
             autocheckEnabled = false
             autocheckTimer = nil
+        }
+
+        if checkImmediately {
+            Task {
+                await self.performUpdateIfAvailable()
+            }
         }
     }
 
@@ -248,30 +215,16 @@ public class VersionChecker: ObservableObject {
     /// - Parameter archiveURL: The URL of the zip archive
     /// - Parameter autorelaunch: Should AutoUpdate quit and restart the app
     /// - Parameter completion: Code to be executed when the update is finished or failed
+    @MainActor
     public func processInstallation(downloadedRelease: DownloadedAppRelease, autorelaunch: Bool, completion: ((Bool) -> Void)? = nil) {
 
         self.logMessage?("Processing installation…")
         self.state = .installing
 
-        if let customPreinstall = customPreinstall {
-            self.logMessage?("Executing the custom pre-install code.")
-            customPreinstall()
-            self.logMessage?("Custom pre-install code executed.")
-        }
+        preinstallAction()
 
-        let connection = NSXPCConnection(serviceName: "co.beamapp.UpdateInstaller")
-        connection.remoteObjectInterface = NSXPCInterface(with: UpdateInstallerProtocol.self)
-        connection.resume()
-
-        let service = connection.remoteObjectProxyWithErrorHandler { error in
-            DispatchQueue.main.async {
-                self.logMessage?("Error communicating with remote object proxy for UpdateInstaller XPC.")
-                self.state = .error(errorDesc: error.localizedDescription)
-                self.cleanup()
-            }
-        } as? UpdateInstallerProtocol
-
-        guard let updateService = service else {
+        let connection = setUpXPCConnection()
+        guard let updateProxy = setUpXPObjectProxy(using: connection) else {
             self.logMessage?("Error getting remote object proxy for UpdateInstaller XPC.")
             customPostinstall?(false)
             completion?(false)
@@ -282,7 +235,7 @@ public class VersionChecker: ObservableObject {
 
         let archiveURL = downloadedRelease.archiveURL
         self.logMessage?("Request installation from UpdateInstaller XPC with archive at \(archiveURL.absoluteString). App PID is \(pid).")
-        updateService.installUpdate(archiveURL: archiveURL, binaryToReplaceURL: Bundle.main.bundleURL, appPID: pid, reply: { success, error, updatedAppPath in
+        updateProxy.installUpdate(archiveURL: archiveURL, binaryToReplaceURL: Bundle.main.bundleURL, appPID: pid, reply: { success, error, updatedAppPath in
 
             self.cleanup()
 
@@ -301,10 +254,7 @@ public class VersionChecker: ObservableObject {
                     self?.state = .updateInstalled
                     if autorelaunch {
                         self?.logMessage?("AutoRelaunch is enabled. Will quit the app in 1 second.")
-                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-                            self?.logMessage?("Quitting the app.")
-                            NSApp.terminate(self)
-                        }
+                        self?.quitApp(after: 1)
                     }
                 }
                 connection.invalidate()
@@ -313,170 +263,9 @@ public class VersionChecker: ObservableObject {
             }
         })
     }
-
-    private func checkRemoteUpdates(completion: @escaping (Result<AppRelease, VersionCheckerError>) -> Void) {
-
-        if let mock = mockData {
-            if let release = findNewestRelease(data: mock) {
-                completion(.success(release))
-            } else {
-                completion(.failure(.noUpdates))
-            }
-            return
-        } else {
-            //Get the real data from the real feed
-            fetchServerData { data in
-                guard let serverData = data else {
-                    completion(.failure(.checkFailed))
-                    return
-                }
-
-                if let release = self.findNewestRelease(data: serverData) {
-                    completion(.success(release))
-                } else {
-                    completion(.failure(.noUpdates))
-                }
-                return
-            }
-        }
-    }
-
-    private func findNewestRelease(data: Data) -> AppRelease? {
-
-        let decoder = JSONDecoder()
-        // Get current app version
-        // Compare to the feed's highest version
-        var versions = try? decoder.decode([AppRelease].self, from: data)
-        versions?.sort(by: >)
-        guard let highestVersion = versions?.first else { return nil }
-
-        self.releaseHistory = versions
-
-        let currentVersion = self.currentAppVersion()
-        let currentBuild = self.currentAppBuild()
-
-        let currentFromFeed = versions?.filter({ release in
-            release.buildNumber == currentBuild && release.version == currentVersion
-        }).first
-
-        let currentRelease = AppRelease(versionName: currentFromFeed?.versionName ?? self.currentAppName(),
-                                        version: currentVersion,
-                                        buildNumber: currentBuild,
-                                        releaseNotesMarkdown: currentFromFeed?.releaseNotesMarkdown,
-                                        publicationDate: currentFromFeed?.publicationDate ?? Date(),
-                                        downloadURL: URL(string: "http://")!)
-
-        DispatchQueue.main.async {
-            self.currentRelease = currentRelease
-        }
-
-        if highestVersion > currentRelease {
-            return highestVersion
-        } else {
-            return nil
-        }
-    }
-
-    private func fetchServerData(completion: @escaping (Data?) -> Void) {
-        guard let feedURL = feedURL else { fatalError("Trying to get feed data with no url provided" ) }
-        self.logMessage?("Fetching data from \(feedURL.absoluteString).")
-        let task = session.dataTask(with: feedURL) { data, _, _ in
-            completion(data)
-        }
-
-        task.resume()
-    }
-
-    /// Checks if the folder at the provided URL is existing, and create it if not.
-    /// - Parameter folderURL: The URL of the folder to check and create
-    /// - Throws: If we can't create the folder, this function throws VersionCheckerError.cantCreateRequiredFolders
-    private func createAppFolderInAppSupportIfNeeded(_ folderURL: URL) throws {
-        self.logMessage?("Creating update folder.")
-        let fileManager = FileManager.default
-        guard !fileManager.fileExists(atPath: folderURL.path) else { return }
-
-        do {
-            try fileManager.createDirectory(at: folderURL, withIntermediateDirectories: true, attributes: nil)
-        } catch {
-            self.logMessage?("Can't create update folder \(error).")
-            throw VersionCheckerError.cantCreateRequiredFolders
-        }
-    }
-
-    /// Removes the update directory to let the filesystem clean after success or failure
-    private func cleanup() {
-        guard let appSupport = applicationSupportDirectoryURL else { return }
-        self.logMessage?("Cleaning up the update directory.")
-        let fileManager = FileManager.default
-        try? fileManager.removeItem(at: updateDirectory(in: appSupport))
-    }
-
-    func releases(after release: AppRelease) -> [AppRelease] {
-        guard let history = self.releaseHistory else { return [] }
-        let older = history.filter {
-            $0 > release
-        }
-
-        return older
-    }
-
-    func checkForPendingInstallations(in directory: URL ) -> PendingInstall? {
-        if case State.downloaded(let release) = state {
-            return release
-        } else {
-            let pendingReleases = findPendingReleases(in: directory)
-            if let latest = pendingReleases.last,
-               latest.appRelease > AppRelease.basicAppRelease(with: currentAppVersion(), buildNumber: currentAppBuild()) {
-                return latest
-            }
-        }
-        return nil
-    }
-
-    func findPendingReleases(in directory: URL) -> [DownloadedAppRelease] {
-        let fileManager = FileManager.default
-        let decoder = JSONDecoder()
-        do {
-            let files = try fileManager.contentsOfDirectory(atPath: directory.path)
-            let releases: [DownloadedAppRelease] = try files.compactMap { fileName in
-                guard fileName.hasSuffix("json") else { return nil }
-                let url = directory.appendingPathComponent(fileName)
-                let data = try Data(contentsOf: url)
-                let release = try decoder.decode(DownloadedAppRelease.self, from: data)
-                return release
-            }
-            return releases.sorted()
-        } catch {
-            return []
-        }
-    }
-
-    func decomposedFilename(from url: URL) -> (fileName: String, fileExtension: String) {
-        let fileExtension = url.pathExtension
-        let fileName = url.deletingPathExtension().lastPathComponent
-        return (fileName, fileExtension)
-    }
-
-    func saveDownloadedAppRelease(_ release: AppRelease, archiveURL: URL, in directory: URL) throws -> DownloadedAppRelease {
-
-        let downloadURL = release.downloadURL
-
-        let (fileName, fileExtension) = self.decomposedFilename(from: downloadURL)
-        let finalFileName = directory.appendingPathComponent("\(fileName)_\(release.version).\(release.buildNumber)")
-
-        let finalArchiveURL = finalFileName.appendingPathExtension(fileExtension)
-        let jsonURL = finalFileName.appendingPathExtension("json")
-
-        self.logMessage?("Saving build \(release.buildNumber) from \(archiveURL.absoluteString) to \(finalArchiveURL.absoluteString).")
-
-        try FileManager.default.moveItem(at: archiveURL, to: finalArchiveURL)
-        let downloadRelease = DownloadedAppRelease(appRelease: release, archiveURL: finalArchiveURL)
-        let releaseData = try JSONEncoder().encode(downloadRelease)
-        try releaseData.write(to: jsonURL)
-        return downloadRelease
-    }
 }
 
+// MARK: - Additional types
 extension VersionChecker {
     enum VersionCheckerError: Error {
         case checkFailed
