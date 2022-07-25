@@ -104,7 +104,6 @@ extension VersionChecker {
         let currentRelease = AppRelease(versionName: currentFromFeed?.versionName ?? self.currentAppName(),
                                         version: currentVersion,
                                         buildNumber: currentBuild,
-                                        releaseNotesMarkdown: currentFromFeed?.releaseNotesMarkdown,
                                         publicationDate: currentFromFeed?.publicationDate ?? Date(),
                                         downloadURL: URL(string: "http://")!)
 

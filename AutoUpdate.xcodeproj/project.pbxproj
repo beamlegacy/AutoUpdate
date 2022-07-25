@@ -28,7 +28,6 @@
 		3339F73126A8448C004EE693 /* DownloadedAppRelease.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3339F73026A8448C004EE693 /* DownloadedAppRelease.swift */; };
 		333A8DC426552FD600EEA7FB /* AppRelease.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331E18BB26403A7400C4593E /* AppRelease.swift */; };
 		333A8DC82655422400EEA7FB /* SimpleWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333A8DC72655422400EEA7FB /* SimpleWebView.swift */; };
-		333A8DCE26556FB100EEA7FB /* Parma in Frameworks */ = {isa = PBXBuildFile; productRef = 333A8DCD26556FB100EEA7FB /* Parma */; };
 		333F4CE526B9319A000D93EC /* VersionChecker+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333F4CE426B9319A000D93EC /* VersionChecker+Extensions.swift */; };
 		3352DFDD28649D9E003952C0 /* VersionChecker+FileManagement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3352DFDC28649D9E003952C0 /* VersionChecker+FileManagement.swift */; };
 		3352DFDF28649EE5003952C0 /* VersionChecker+Private.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3352DFDE28649EE5003952C0 /* VersionChecker+Private.swift */; };
@@ -161,7 +160,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				333A8DCE26556FB100EEA7FB /* Parma in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -377,7 +375,6 @@
 			);
 			name = AutoUpdate;
 			packageProductDependencies = (
-				333A8DCD26556FB100EEA7FB /* Parma */,
 			);
 			productName = AutoUpdate;
 			productReference = 331FCC7526456B4D00FD3FA7 /* AutoUpdate.framework */;
@@ -458,7 +455,6 @@
 			);
 			mainGroup = 331E189D2640351200C4593E;
 			packageReferences = (
-				333A8DCC26556FB100EEA7FB /* XCRemoteSwiftPackageReference "Parma" */,
 				33551D3627FDC57B00598164 /* XCRemoteSwiftPackageReference "swift-argument-parser" */,
 			);
 			productRefGroup = 331E18A72640351200C4593E /* Products */;
@@ -2437,14 +2433,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		333A8DCC26556FB100EEA7FB /* XCRemoteSwiftPackageReference "Parma" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/dasautoooo/Parma";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.3.0;
-			};
-		};
 		33551D3627FDC57B00598164 /* XCRemoteSwiftPackageReference "swift-argument-parser" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-argument-parser.git";
@@ -2456,11 +2444,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		333A8DCD26556FB100EEA7FB /* Parma */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 333A8DCC26556FB100EEA7FB /* XCRemoteSwiftPackageReference "Parma" */;
-			productName = Parma;
-		};
 		33551D3727FDC57B00598164 /* ArgumentParser */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 33551D3627FDC57B00598164 /* XCRemoteSwiftPackageReference "swift-argument-parser" */;

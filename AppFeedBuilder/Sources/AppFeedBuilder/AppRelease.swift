@@ -12,16 +12,14 @@ public struct AppRelease: Codable {
     public let versionName: String
     public let version: String
     public let buildNumber: String
-    public let releaseNotesMarkdown: String?
     public var releaseNoteURL: URL?
     public let publicationDate: Date
     public let downloadURL: URL
 
-    public init(versionName: String, version: String, buildNumber: String, releaseNotesMarkdown: String? = nil, releaseNoteURL: URL? = nil, publicationDate: Date, downloadURL: URL) {
+    public init(versionName: String, version: String, buildNumber: String, releaseNoteURL: URL? = nil, publicationDate: Date, downloadURL: URL) {
         self.versionName = versionName
         self.version = version
         self.buildNumber = buildNumber
-        self.releaseNotesMarkdown = releaseNotesMarkdown
         self.releaseNoteURL = releaseNoteURL
         self.publicationDate = publicationDate
         self.downloadURL = downloadURL
@@ -40,7 +38,6 @@ public struct AppRelease: Codable {
             buildNumber = try container.decode(String.self, forKey: .buildNumber)
         }
 
-        releaseNotesMarkdown = try container.decodeIfPresent(String.self, forKey: .releaseNotesMarkdown)
         releaseNoteURL = try container.decodeIfPresent(URL.self, forKey: .releaseNoteURL)
         publicationDate = try container.decode(Date.self, forKey: .publicationDate)
         downloadURL = try container.decode(URL.self, forKey: .downloadURL)
@@ -51,7 +48,6 @@ public struct AppRelease: Codable {
         try container.encode(versionName, forKey: .versionName)
         try container.encode(version, forKey: .version)
         try container.encode(buildNumber, forKey: .buildNumber)
-        try container.encode(releaseNotesMarkdown, forKey: .releaseNotesMarkdown)
         try container.encode(publicationDate, forKey: .publicationDate)
         try container.encode(downloadURL, forKey: .downloadURL)
         try container.encode(releaseNoteURL, forKey: .releaseNoteURL)
@@ -61,7 +57,6 @@ public struct AppRelease: Codable {
         case versionName
         case version
         case buildNumber
-        case releaseNotesMarkdown
         case releaseNoteURL
         case publicationDate
         case downloadURL
@@ -105,19 +100,19 @@ extension AppRelease {
     }
 
     static func basicAppRelease(with version: String, buildNumber: String) -> AppRelease {
-        return AppRelease(versionName: "", version: version, buildNumber: buildNumber, releaseNotesMarkdown: "", publicationDate: Date(), downloadURL: URL(string: "http://")!)
+        return AppRelease(versionName: "", version: version, buildNumber: buildNumber, publicationDate: Date(), downloadURL: URL(string: "http://")!)
     }
 
     static public func mockedReleases() -> [AppRelease] {
 
         let v0_1DateComponents = DateComponents(year: 2021, month: 5, day: 24, hour: 17, minute: 45, second: 00)
-        let v0_1 = AppRelease(versionName: "Dis maecenas et pretium diam", version: "0.1", buildNumber: "1", releaseNotesMarkdown: nil, publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.zip")!)
+        let v0_1 = AppRelease(versionName: "Dis maecenas et pretium diam", version: "0.1", buildNumber: "1", publicationDate: Calendar.current.date(from: v0_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.zip")!)
 
         let v0_1_1DateComponents = DateComponents(year: 2021, month: 6, day: 03, hour: 17, minute: 45, second: 00)
-        let v0_1_1 = AppRelease(versionName: "Imperdiet elementum condimentum vel malesuada mollis", version: "0.1.1", buildNumber: "2", releaseNotesMarkdown: nil, releaseNoteURL: URL(string: "http://www.beamapp.co"), publicationDate: Calendar.current.date(from: v0_1_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.1.zip")!)
+        let v0_1_1 = AppRelease(versionName: "Imperdiet elementum condimentum vel malesuada mollis", version: "0.1.1", buildNumber: "2", releaseNoteURL: URL(string: "http://www.beamapp.co"), publicationDate: Calendar.current.date(from: v0_1_1DateComponents)!, downloadURL: URL(string: "https://www.beamapp.co/downloads/someZipv0.1.1.zip")!)
 
         let v1_1DateComponents = DateComponents(year: 2021, month: 6, day: 21, hour: 14, minute: 35, second: 00)
-        let v1_1 = AppRelease(versionName: "Proin senectus vitae odio gravida massa", version: "1.1", buildNumber: "5", releaseNotesMarkdown: "This is the version 1.1! \n*Lots of new stuff*", publicationDate: Calendar.current.date(from: v1_1DateComponents)!, downloadURL: URL(string: "https://github.com/eLud/update-proto/raw/main/BeamUpdaterProto_v1.1.zip")!)
+        let v1_1 = AppRelease(versionName: "Proin senectus vitae odio gravida massa", version: "1.1", buildNumber: "5", publicationDate: Calendar.current.date(from: v1_1DateComponents)!, downloadURL: URL(string: "https://github.com/eLud/update-proto/raw/main/BeamUpdaterProto_v1.1.zip")!)
 
         let v2_0DateComponents = DateComponents(year: 2021, month: 7, day: 29, hour: 14, minute: 35, second: 00)
         let v2_0 = AppRelease(versionName: "beam beta",
