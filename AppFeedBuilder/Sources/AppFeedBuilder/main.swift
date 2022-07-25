@@ -25,9 +25,6 @@ struct AppFeedBuilder: ParsableCommand {
     @Argument(help: "The new version download URL. Must be an https URL pointing to a .zip file")
     var downloadURL: String
 
-    @Option(help: "The release notes in Markdown")
-    var releaseNotesMarkdown: String?
-
     @Option(help: "The release notes URL to open on a tap on the release")
     var releaseNotesURL: String?
 
@@ -83,7 +80,7 @@ struct AppFeedBuilder: ParsableCommand {
             notesURL = URL(string: releaseNotesURL)
         }
 
-        let newRelease = AppRelease(versionName: versionName, version: version, buildNumber: buildNumber, releaseNotesMarkdown: releaseNotesMarkdown, releaseNoteURL: notesURL, publicationDate: Date(), downloadURL: downloadURL)
+        let newRelease = AppRelease(versionName: versionName, version: version, buildNumber: buildNumber, releaseNoteURL: notesURL, publicationDate: Date(), downloadURL: downloadURL)
 
         let semaphore = DispatchSemaphore(value: 0)
         AppRelease.updateJSON(at: feedURL, with: newRelease) { feedJSONData in

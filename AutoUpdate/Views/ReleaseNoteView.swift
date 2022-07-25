@@ -6,13 +6,12 @@
 //
 
 import SwiftUI
-import Parma
 
 public struct ReleaseNoteView: View {
 
     public struct ReleaseNoteViewStyle {
 
-        public init(titleFont: Font = .headline, titleColor: Color = Color(.labelColor), buttonFont: Font = .headline, buttonColor: Color = Color(.secondaryLabelColor), buttonHoverColor: Color = Color(.labelColor), closeButtonColor: Color = Color(.secondaryLabelColor), closeButtonHoverColor: Color = Color(.labelColor), dateFont: Font = .body, dateColor: Color = Color(.secondaryLabelColor), versionNameFont: Font = .headline, versionNameColor: Color = Color(.labelColor), backgroundColor: Color = Color(.windowBackgroundColor), cellHoverColor: Color = .gray, separatorColor: Color = .gray, separatorView: AnyView? = nil, parmaRenderer: ParmaRenderable? = nil) {
+        public init(titleFont: Font = .headline, titleColor: Color = Color(.labelColor), buttonFont: Font = .headline, buttonColor: Color = Color(.secondaryLabelColor), buttonHoverColor: Color = Color(.labelColor), closeButtonColor: Color = Color(.secondaryLabelColor), closeButtonHoverColor: Color = Color(.labelColor), dateFont: Font = .body, dateColor: Color = Color(.secondaryLabelColor), versionNameFont: Font = .headline, versionNameColor: Color = Color(.labelColor), backgroundColor: Color = Color(.windowBackgroundColor), cellHoverColor: Color = .gray, separatorColor: Color = .gray, separatorView: AnyView? = nil) {
             self.titleFont = titleFont
             self.titleColor = titleColor
             self.buttonFont = buttonFont
@@ -24,7 +23,6 @@ public struct ReleaseNoteView: View {
             self.dateColor = dateColor
             self.versionNameFont = versionNameFont
             self.versionNameColor = versionNameColor
-            self.parmaRenderer = parmaRenderer
             self.backgroundColor = backgroundColor
             self.cellHoverColor = cellHoverColor
             self.separatorColor = separatorColor
@@ -42,14 +40,13 @@ public struct ReleaseNoteView: View {
         public var dateColor: Color
         public var versionNameFont: Font
         public var versionNameColor: Color
-        public var parmaRenderer: ParmaRenderable?
         public var backgroundColor: Color
         public var cellHoverColor: Color
         public var separatorColor: Color
         public var separatorView: AnyView?
 
         var noteViewStyle: NoteView.NoteViewStyle {
-            return .init(dateFont: dateFont, dateColor: dateColor, versionNameFont: versionNameFont, versionNameColor: versionNameColor, separatorColor: separatorColor, separatorView: separatorView, backgroundColor: backgroundColor, cellHoverColor: cellHoverColor, parmaRenderer: parmaRenderer)
+            return .init(dateFont: dateFont, dateColor: dateColor, versionNameFont: versionNameFont, versionNameColor: versionNameColor, separatorColor: separatorColor, separatorView: separatorView, backgroundColor: backgroundColor, cellHoverColor: cellHoverColor)
         }
     }
 
@@ -61,14 +58,13 @@ public struct ReleaseNoteView: View {
     private let onActionButtonClickAdditionalAction: (() -> Void)?
     private let afterInstallAction: ((Bool) -> Void)?
     private let showMissedReleasesRecap: Bool
-    private let showInlineNotes: Bool
     private let autoRelaunchAfterInstall: Bool
 
     @State private var showsVersionAndBuild = false
     @State private var onHoverCloseButton = false
     @State private var onHoverActionButton = false
 
-    public init(release: AppRelease, closeAction: @escaping () -> Void, beforeInstallAction: (() -> Void)? = nil, afterInstallAction: ((Bool) -> Void)? = nil, history: [AppRelease]? = nil, checker: VersionChecker? = nil, style: ReleaseNoteViewStyle = ReleaseNoteViewStyle(), showMissedReleasesRecap: Bool = false, showInlineNotes: Bool = false, autoRelaunchAfterInstall: Bool = true) {
+    public init(release: AppRelease, closeAction: @escaping () -> Void, beforeInstallAction: (() -> Void)? = nil, afterInstallAction: ((Bool) -> Void)? = nil, history: [AppRelease]? = nil, checker: VersionChecker? = nil, style: ReleaseNoteViewStyle = ReleaseNoteViewStyle(), showMissedReleasesRecap: Bool = false, autoRelaunchAfterInstall: Bool = true) {
         self.release = release
         self.checker = checker
         self.history = history
@@ -77,7 +73,6 @@ public struct ReleaseNoteView: View {
         self.onActionButtonClickAdditionalAction = beforeInstallAction
         self.afterInstallAction = afterInstallAction
         self.showMissedReleasesRecap = showMissedReleasesRecap
-        self.showInlineNotes = showInlineNotes
         self.autoRelaunchAfterInstall = autoRelaunchAfterInstall
     }
 
@@ -173,7 +168,7 @@ public struct ReleaseNoteView: View {
 
     @ViewBuilder var content: some View {
         let releases = history ?? [release]
-        let noteView = NoteView(releases: releases, style: style.noteViewStyle, showInlineNotes: showInlineNotes, showSeparator: releases.count > 1)
+        let noteView = NoteView(releases: releases, style: style.noteViewStyle, showSeparator: releases.count > 1)
 
         if releases.count == 1 {
             noteView
@@ -191,7 +186,6 @@ struct ReleaseNoteView_Previews: PreviewProvider {
     static let v2 = AppRelease(versionName: "Beam 2.0: Collaborate on Cards",
                                version: "2.0",
                                buildNumber: "50",
-                               releaseNotesMarkdown: releaseNotes,
                                releaseNoteURL: URL(string: "https://www.test.com"),
                                publicationDate: Date(),
                                downloadURL: URL(string: "http://")!)
@@ -199,7 +193,6 @@ struct ReleaseNoteView_Previews: PreviewProvider {
     static let v1_5 = AppRelease(versionName: "Beam 1.5: To Infinity, beyond, beyond and beyond",
                                  version: "1.5",
                                  buildNumber: "30",
-                                 releaseNotesMarkdown: "This is Beam 1.5. \nMany improvements.",
                                  releaseNoteURL: URL(string: "https://www.test.com"),
                                  publicationDate: Date(),
                                  downloadURL: URL(string: "http://")!)
@@ -240,8 +233,6 @@ struct NoteView: View {
         var separatorView: AnyView?
         var backgroundColor: Color = Color(.windowBackgroundColor)
         var cellHoverColor: Color = .gray
-
-        var parmaRenderer: ParmaRenderable?
     }
 
     static let dateFormatter: DateFormatter = {
@@ -253,7 +244,6 @@ struct NoteView: View {
 
     let releases: [AppRelease]
     let style: NoteViewStyle
-    let showInlineNotes: Bool
     let showSeparator: Bool
 
     @State private var releaseHovered: AppRelease?
@@ -282,10 +272,6 @@ struct NoteView: View {
                         .font(style.versionNameFont)
                         .foregroundColor(style.versionNameColor)
                         .multilineTextAlignment(.leading)
-                    if let notes = release.releaseNotesMarkdown, showInlineNotes {
-                        Parma(notes, render: style.parmaRenderer)
-                            .padding(.top, 5)
-                    }
                     separator
                         .opacity(showSeparator ? 1.0 : 0.0)
                         .padding(.top, 8)

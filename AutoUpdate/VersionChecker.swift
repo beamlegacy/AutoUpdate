@@ -163,7 +163,7 @@ public class VersionChecker: ObservableObject {
             do {
                 try self.createAppFolderInAppSupportIfNeeded(updateFolder)
                 let savedRelease = try self.saveDownloadedAppRelease(release, archiveURL: fileURL, in: updateFolder)
-                
+
                 Task { @MainActor in
                     if self.allowAutoInstall || forceInstall {
                         self.logMessage?(self.allowAutoInstall ?
@@ -300,6 +300,27 @@ extension VersionChecker {
                 return true
             default:
             return false
+            }
+        }
+
+        public var informativeMessage: String {
+            switch self {
+            case .noUpdate:
+                return NSLocalizedString("Up to date.", comment: "")
+            case .checking:
+                return NSLocalizedString("Checking for updates…", comment: "")
+            case .updateAvailable:
+                return NSLocalizedString("Update available.", comment: "")
+            case .error(errorDesc: let errorDesc):
+                return NSLocalizedString("An error occured: \(errorDesc).", comment: "")
+            case .downloading:
+                return NSLocalizedString("Downloading update…", comment: "")
+            case .downloaded:
+                return NSLocalizedString("Update downloaded, ready for install.", comment: "")
+            case .installing:
+                return NSLocalizedString("Installing update…", comment: "")
+            case .updateInstalled:
+                return NSLocalizedString("Updated.", comment: "")
             }
         }
     }
