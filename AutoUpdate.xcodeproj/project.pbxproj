@@ -424,7 +424,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1250;
-				LastUpgradeCheck = 1320;
+				LastUpgradeCheck = 1340;
 				TargetAttributes = {
 					331E18A52640351200C4593E = {
 						CreatedOnToolsVersion = 12.5;
@@ -522,7 +522,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "PATH=${PATH}:/opt/homebrew/bin\nif which swiftlint >/dev/null; then\n  swiftlint --lenient\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+			shellScript = "PATH=${PATH}:/opt/homebrew/bin\nif which swiftlint >/dev/null; then\n  swiftlint --lenient\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
