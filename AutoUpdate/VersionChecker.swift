@@ -275,7 +275,7 @@ extension VersionChecker {
         var localizedErrorString: String {
             switch self {
             case .checkFailed:
-                return NSLocalizedString("No Internet connection", comment: "")
+                return NSLocalizedString("Unable to check for updates", comment: "")
             case .noUpdates:
                 return NSLocalizedString("No available updates", comment: "")
             case .cantCreateRequiredFolders:
