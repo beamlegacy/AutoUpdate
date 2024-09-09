@@ -19,7 +19,7 @@ import Foundation
     func installUpdate(archiveURL: URL, binaryToReplaceURL: URL, appPID: Int32, reply: @escaping (Bool, String?, String?) -> Void)
 }
 
-enum UpdateInstallerError: String, Error {
+public enum UpdateInstallerError: String, Error {
     case genericUnzipError
     case unzippedContentNotFound
     case archiveContentNotCoherent
@@ -29,7 +29,7 @@ enum UpdateInstallerError: String, Error {
     case existingAppAtDestination
     case diskPermissionError
 
-    var localizedErrorString: String {
+    public var localizedErrorString: String {
         switch self {
         case .genericUnzipError:
             return NSLocalizedString("Failed to unarchive update", comment: "")

@@ -63,9 +63,9 @@ public struct AppRelease: Codable {
     }
 }
 
-extension AppRelease {
+public extension AppRelease {
 
-    static func updateJSON(at feedURL: URL, with release: AppRelease, completion: @escaping (Data?) -> Void) {
+    public static func updateJSON(at feedURL: URL, with release: AppRelease, completion: @escaping (Data?) -> Void) {
         getReleases(at: feedURL) { feed in
 
             var initialFeed = feed ?? []
@@ -81,7 +81,7 @@ extension AppRelease {
         }
     }
 
-    static func getReleases(at feedURL: URL, completion: @escaping ([AppRelease]?) -> Void ) {
+    public static func getReleases(at feedURL: URL, completion: @escaping ([AppRelease]?) -> Void ) {
         let task = URLSession.shared.dataTask(with: feedURL) { data, _, _ in
             guard let data = data else {
                 completion(nil)
@@ -145,7 +145,7 @@ extension AppRelease: Identifiable {
 }
 
 extension String {
-    func versionCompare(_ otherVersion: String) -> ComparisonResult {
+    public func versionCompare(_ otherVersion: String) -> ComparisonResult {
 
         let versionDelimiter = "."
 

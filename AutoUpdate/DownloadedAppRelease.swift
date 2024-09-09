@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Common
 
 public struct DownloadedAppRelease: Codable, Equatable {
     public let appRelease: AppRelease

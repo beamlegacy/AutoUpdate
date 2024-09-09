@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Common
 
 // MARK: - File management
 extension VersionChecker {

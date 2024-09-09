@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Common
 
 public struct ReleaseNoteView: View {
 

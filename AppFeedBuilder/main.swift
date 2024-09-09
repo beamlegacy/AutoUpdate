@@ -7,6 +7,7 @@
 
 import Foundation
 import ArgumentParser
+import Common
 
 struct AppFeedBuilder: ParsableCommand {
 
