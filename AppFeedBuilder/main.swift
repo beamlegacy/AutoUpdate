@@ -114,7 +114,8 @@ struct AppFeedBuilder: ParsableCommand {
     }
 }
 
-//AppFeedBuilder.main(["https://raw.githubusercontent.com/eLud/update-proto/main/feed.json", "Beam 2.0", "2.0", "51", "https://github.com/eLud/update-proto/raw/main/BeamUpdaterProto_v1.1.zip", "--release-notes-markdown", "This is a note"])
+AppFeedBuilder.main(["https://dl.hellom1.com/beta/AppFeed.json", "M1 Desktop", "0.2.0", "228", "https://dl.hellom1.com/beta/M1_Desktop-0.2.0-228.zip", "--release-notes-url", "https://raw.githubusercontent.com/eLud/update-proto/main/feed.json"])
 //AppFeedBuilder.main(["https://raw.githubusercontent.com/eLud/update-proto/main/feed.json", "Beam 2.0", "2.0", "51", "https://github.com/eLud/update-proto/raw/main/BeamUpdaterProto_v1.1.zip", "--release-notes-url", "https://raw.githubusercontent.com/eLud/update-proto/main/feed.json"])
 //AppFeedBuilder.main(["https://raw.githubusercontent.com/eLud/update-proto/main/feed.json", "Beam 2.0", "2.0", "20220127.171924", "https://github.com/eLud/update-proto/raw/main/BeamUpdaterProto_v1.1.zip", "--release-notes-url", "https://raw.githubusercontent.com/eLud/update-proto/main/feed.json", "--verbose"])
-AppFeedBuilder.main()
+//AppFeedBuilder.main()
+  
