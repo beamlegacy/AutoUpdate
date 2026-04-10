@@ -12,6 +12,7 @@ public class VersionChecker: ObservableObject {
 
     var mockData: Data?
     var feedURL: URL?
+    var gitHubAssetName: String?
     private var autocheckTimer: AnyCancellable?
     var session: URLSession
     private static var sessionConfiguration: URLSessionConfiguration {
@@ -84,6 +85,27 @@ public class VersionChecker: ObservableObject {
 
     public init(feedURL: URL, autocheckEnabled: Bool = false) {
         self.feedURL = feedURL
+        self.state = .noUpdate
+
+        self.session = URLSession(configuration: Self.sessionConfiguration)
+        self.setAutocheckEnabled(autocheckEnabled)
+    }
+
+    /// Initializes a `VersionChecker` backed by a GitHub repository's Releases page.
+    ///
+    /// - Parameters:
+    ///   - gitHubRepo: The `owner/repo` slug, e.g. `"beamlegacy/beam"`.
+    ///   - assetName: The exact filename of the release asset to download, e.g. `"Beam.zip"`.
+    ///   - autocheckEnabled: Whether to start the periodic update timer immediately.
+    ///
+    /// **Tag format:** versions are read from the release tag. Supported formats:
+    /// - `v1.2.3` → version `1.2.3`, buildNumber `"0"`
+    /// - `v1.2.3+456` → version `1.2.3`, buildNumber `"456"`
+    ///
+    /// Prereleases are automatically ignored.
+    public init(gitHubRepo: String, assetName: String, autocheckEnabled: Bool = false) {
+        self.feedURL = URL(string: "https://api.github.com/repos/\(gitHubRepo)/releases")
+        self.gitHubAssetName = assetName
         self.state = .noUpdate
 
         self.session = URLSession(configuration: Self.sessionConfiguration)
@@ -275,7 +297,7 @@ extension VersionChecker {
         var localizedErrorString: String {
             switch self {
             case .checkFailed:
-                return NSLocalizedString("No Internet connection", comment: "")
+                return NSLocalizedString("Unable to check for updates", comment: "")
             case .noUpdates:
                 return NSLocalizedString("No available updates", comment: "")
             case .cantCreateRequiredFolders:

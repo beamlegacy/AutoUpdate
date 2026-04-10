@@ -31,6 +31,7 @@
 		333F4CE526B9319A000D93EC /* VersionChecker+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333F4CE426B9319A000D93EC /* VersionChecker+Extensions.swift */; };
 		3352DFDD28649D9E003952C0 /* VersionChecker+FileManagement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3352DFDC28649D9E003952C0 /* VersionChecker+FileManagement.swift */; };
 		3352DFDF28649EE5003952C0 /* VersionChecker+Private.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3352DFDE28649EE5003952C0 /* VersionChecker+Private.swift */; };
+		87D9DBA0989F49DE8A3330A0 /* GitHubReleaseFeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D9AA3F48A984561BBED907D /* GitHubReleaseFeed.swift */; };
 		33551D3827FDC57B00598164 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 33551D3727FDC57B00598164 /* ArgumentParser */; };
 		336E82D527B16F6000A196BC /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 336E82D327B16F6000A196BC /* Localizable.strings */; };
 		336E82D827B17DEE00A196BC /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 336E82D627B17DEE00A196BC /* Localizable.strings */; };
@@ -127,6 +128,7 @@
 		333F4CE426B9319A000D93EC /* VersionChecker+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VersionChecker+Extensions.swift"; sourceTree = "<group>"; };
 		3352DFDC28649D9E003952C0 /* VersionChecker+FileManagement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VersionChecker+FileManagement.swift"; sourceTree = "<group>"; };
 		3352DFDE28649EE5003952C0 /* VersionChecker+Private.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VersionChecker+Private.swift"; sourceTree = "<group>"; };
+		5D9AA3F48A984561BBED907D /* GitHubReleaseFeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubReleaseFeed.swift; sourceTree = "<group>"; };
 		336E82D427B16F6000A196BC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		336E82D727B17DEE00A196BC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		3397C6F7269DD9540092FDD7 /* AutoUpdateFrameworkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AutoUpdateFrameworkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -247,6 +249,7 @@
 				3352DFDC28649D9E003952C0 /* VersionChecker+FileManagement.swift */,
 				3352DFDE28649EE5003952C0 /* VersionChecker+Private.swift */,
 				3339F73026A8448C004EE693 /* DownloadedAppRelease.swift */,
+				5D9AA3F48A984561BBED907D /* GitHubReleaseFeed.swift */,
 				331FCC8A26457FA800FD3FA7 /* Views */,
 				331FCC7726456B4D00FD3FA7 /* AutoUpdate.h */,
 				331FCC7826456B4D00FD3FA7 /* Info.plist */,
@@ -563,6 +566,7 @@
 				331FCC8426456C0900FD3FA7 /* VersionChecker.swift in Sources */,
 				3352DFDF28649EE5003952C0 /* VersionChecker+Private.swift in Sources */,
 				3339F73126A8448C004EE693 /* DownloadedAppRelease.swift in Sources */,
+				87D9DBA0989F49DE8A3330A0 /* GitHubReleaseFeed.swift in Sources */,
 				331FCC8626456C0900FD3FA7 /* StatusView.swift in Sources */,
 				331FCC8D264581DA00FD3FA7 /* ReleaseNoteView.swift in Sources */,
 			);
