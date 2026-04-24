@@ -324,6 +324,164 @@ class AutoUpdateFrameworkTests: XCTestCase {
         return URL(fileURLWithPath: tempFolder.path)
     }
 
+    // MARK: - GitHub feed tests
+
+    func testGitHubTagParsingWithV() {
+        let (version, build) = GitHubAPIRelease.parseTag("v1.2.3")
+        XCTAssertEqual(version, "1.2.3")
+        XCTAssertEqual(build, "0")
+    }
+
+    func testGitHubTagParsingWithoutV() {
+        let (version, build) = GitHubAPIRelease.parseTag("1.2.3")
+        XCTAssertEqual(version, "1.2.3")
+        XCTAssertEqual(build, "0")
+    }
+
+    func testGitHubTagParsingWithBuildNumber() {
+        let (version, build) = GitHubAPIRelease.parseTag("v1.2.3+456")
+        XCTAssertEqual(version, "1.2.3")
+        XCTAssertEqual(build, "456")
+    }
+
+    func testGitHubTagParsingWithReleaseSuffix() {
+        let (version, build) = GitHubAPIRelease.parseTag("0.20.0-release")
+        XCTAssertEqual(version, "0.20.0")
+        XCTAssertEqual(build, "0")
+    }
+
+    func testGitHubTagParsingWithBetaSuffix() {
+        let (version, build) = GitHubAPIRelease.parseTag("0.20.0-beta")
+        XCTAssertEqual(version, "0.20.0")
+        XCTAssertEqual(build, "0")
+    }
+
+    func testGitHubTagParsingUppercaseV() {
+        let (version, build) = GitHubAPIRelease.parseTag("V2.0.0")
+        XCTAssertEqual(version, "2.0.0")
+        XCTAssertEqual(build, "0")
+    }
+
+    func testGitHubReleaseToAppRelease() {
+        let json = """
+        [{
+            "tag_name": "v1.2.0",
+            "name": "Release 1.2.0",
+            "published_at": "2024-01-15T10:00:00Z",
+            "html_url": "https://github.com/owner/repo/releases/tag/v1.2.0",
+            "prerelease": false,
+            "assets": [
+                { "name": "App.zip", "browser_download_url": "https://example.com/App.zip" }
+            ]
+        }]
+        """.data(using: .utf8)!
+
+        let checker = VersionChecker(mockedReleases: [], fakeAppVersion: "1.0.0", fakeAppBuild: "0")
+        let release = checker.findNewestGitHubRelease(data: json, assetName: "App.zip")
+
+        XCTAssertNotNil(release)
+        XCTAssertEqual(release?.version, "1.2.0")
+        XCTAssertEqual(release?.buildNumber, "0")
+        XCTAssertEqual(release?.versionName, "Release 1.2.0")
+        XCTAssertEqual(release?.downloadURL, URL(string: "https://example.com/App.zip"))
+        XCTAssertEqual(release?.releaseNoteURL, URL(string: "https://github.com/owner/repo/releases/tag/v1.2.0"))
+    }
+
+    func testGitHubFeedIgnoresPrereleases() {
+        let json = """
+        [{
+            "tag_name": "v2.0.0-beta",
+            "name": "Beta",
+            "published_at": "2024-06-01T00:00:00Z",
+            "html_url": "https://github.com/owner/repo/releases/tag/v2.0.0-beta",
+            "prerelease": true,
+            "assets": [
+                { "name": "App.zip", "browser_download_url": "https://example.com/App2.zip" }
+            ]
+        }]
+        """.data(using: .utf8)!
+
+        let checker = VersionChecker(mockedReleases: [], fakeAppVersion: "1.0.0", fakeAppBuild: "0")
+        let release = checker.findNewestGitHubRelease(data: json, assetName: "App.zip")
+
+        XCTAssertNil(release)
+    }
+
+    func testGitHubFeedIgnoresWrongAssetName() {
+        let json = """
+        [{
+            "tag_name": "v1.5.0",
+            "name": "Release 1.5.0",
+            "published_at": "2024-03-01T00:00:00Z",
+            "html_url": "https://github.com/owner/repo/releases/tag/v1.5.0",
+            "prerelease": false,
+            "assets": [
+                { "name": "Source.zip", "browser_download_url": "https://example.com/Source.zip" }
+            ]
+        }]
+        """.data(using: .utf8)!
+
+        let checker = VersionChecker(mockedReleases: [], fakeAppVersion: "1.0.0", fakeAppBuild: "0")
+        let release = checker.findNewestGitHubRelease(data: json, assetName: "App.zip")
+
+        XCTAssertNil(release)
+    }
+
+    func testGitHubFeedPicksNewestRelease() {
+        let json = """
+        [
+            {
+                "tag_name": "v1.1.0",
+                "name": "Release 1.1.0",
+                "published_at": "2024-01-01T00:00:00Z",
+                "html_url": "https://github.com/owner/repo/releases/tag/v1.1.0",
+                "prerelease": false,
+                "assets": [{ "name": "App.zip", "browser_download_url": "https://example.com/v1.1.0/App.zip" }]
+            },
+            {
+                "tag_name": "v1.3.0",
+                "name": "Release 1.3.0",
+                "published_at": "2024-03-01T00:00:00Z",
+                "html_url": "https://github.com/owner/repo/releases/tag/v1.3.0",
+                "prerelease": false,
+                "assets": [{ "name": "App.zip", "browser_download_url": "https://example.com/v1.3.0/App.zip" }]
+            },
+            {
+                "tag_name": "v1.2.0",
+                "name": "Release 1.2.0",
+                "published_at": "2024-02-01T00:00:00Z",
+                "html_url": "https://github.com/owner/repo/releases/tag/v1.2.0",
+                "prerelease": false,
+                "assets": [{ "name": "App.zip", "browser_download_url": "https://example.com/v1.2.0/App.zip" }]
+            }
+        ]
+        """.data(using: .utf8)!
+
+        let checker = VersionChecker(mockedReleases: [], fakeAppVersion: "1.0.0", fakeAppBuild: "0")
+        let release = checker.findNewestGitHubRelease(data: json, assetName: "App.zip")
+
+        XCTAssertEqual(release?.version, "1.3.0")
+        XCTAssertEqual(release?.downloadURL, URL(string: "https://example.com/v1.3.0/App.zip"))
+    }
+
+    func testGitHubFeedReturnsNilWhenAlreadyUpToDate() {
+        let json = """
+        [{
+            "tag_name": "v1.0.0",
+            "name": "Release 1.0.0",
+            "published_at": "2024-01-01T00:00:00Z",
+            "html_url": "https://github.com/owner/repo/releases/tag/v1.0.0",
+            "prerelease": false,
+            "assets": [{ "name": "App.zip", "browser_download_url": "https://example.com/App.zip" }]
+        }]
+        """.data(using: .utf8)!
+
+        let checker = VersionChecker(mockedReleases: [], fakeAppVersion: "1.0.0", fakeAppBuild: "0")
+        let release = checker.findNewestGitHubRelease(data: json, assetName: "App.zip")
+
+        XCTAssertNil(release)
+    }
+
     private func generateFakeDownloadFile() -> URL? {
         let downloadFolderURL = createTempDownloadFolderIfNeeded()
         let fakeData = Data()

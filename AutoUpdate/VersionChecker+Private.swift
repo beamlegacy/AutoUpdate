@@ -31,6 +31,14 @@ extension VersionChecker {
             } else {
                 return .failure(.noUpdates)
             }
+        } else if let assetName = gitHubAssetName {
+            let data = await fetchServerData()
+            guard let serverData = data else { return .failure(.checkFailed) }
+            if let release = findNewestGitHubRelease(data: serverData, assetName: assetName) {
+                return .success(release)
+            } else {
+                return .failure(.noUpdates)
+            }
         } else {
             //Get the real data from the real feed
             let data = await fetchServerData()
@@ -45,6 +53,33 @@ extension VersionChecker {
                 return .failure(.noUpdates)
             }
         }
+    }
+
+    func findNewestGitHubRelease(data: Data, assetName: String) -> AppRelease? {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+
+        guard let githubReleases = try? decoder.decode([GitHubAPIRelease].self, from: data) else { return nil }
+
+        let appReleases = githubReleases.compactMap { $0.toAppRelease(matchingAsset: assetName) }.sorted(by: >)
+        self.releaseHistory = appReleases
+
+        let currentVersion = self.currentAppVersion()
+        let currentBuild = self.currentAppBuild()
+        let currentRelease = AppRelease(
+            versionName: self.currentAppName(),
+            version: currentVersion,
+            buildNumber: currentBuild,
+            publicationDate: Date(),
+            downloadURL: URL(string: "http://")!
+        )
+
+        DispatchQueue.main.async {
+            self.currentRelease = currentRelease
+        }
+
+        guard let newest = appReleases.first, newest > currentRelease else { return nil }
+        return newest
     }
 
     @MainActor
